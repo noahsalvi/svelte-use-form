@@ -1,7 +1,10 @@
 # Usage
-
-import { useForm, Validators } from "svelte-use-form";
-const form = useForm({password: { validators: [Validators.minLength(5)] }})
+```svelte
+<script>
+    import { useForm, Validators } from "svelte-use-form";
+    
+    const form = useForm({password: { validators: [Validators.minLength(5)] }})
+</script>
 
 <form use:form>
     <input name="password">
@@ -10,3 +13,4 @@ const form = useForm({password: { validators: [Validators.minLength(5)] }})
     {/if}
     <button disabled={$form.valid}>
 </form>
+```
