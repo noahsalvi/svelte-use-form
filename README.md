@@ -9,6 +9,7 @@
 <form use:form>
   <input name="password" />
   <button disabled={!$form.valid}>Submit</button> <br />
+  
   {#if $form.password.touched && $form.password.errors.minLength}
     The password requires at least {$form.password.errors.minLength} characters.
   {/if}
