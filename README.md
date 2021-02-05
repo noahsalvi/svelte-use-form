@@ -1,4 +1,5 @@
 # Usage
+
 ```html
 <script>
   import { useForm, Validators } from "svelte-use-form";
@@ -8,10 +9,15 @@
 
 <form use:form>
   <input name="password" />
-  <button disabled={!$form.valid}>Submit</button> <br />
-  
-  {#if $form.password.touched && $form.password.errors.minLength}
-    The password requires at least {$form.password.errors.minLength} characters.
-  {/if}
+  <button disabled="{!$form.valid}">Submit</button> <br />
+
+  {#if $form.password.touched && $form.password.errors.minLength} The password
+  requires at least {$form.password.errors.minLength} characters. {/if}
 </form>
+
+<style>
+  :global(input.invalid) {
+    border-color: red;
+  }
+</style>
 ```
