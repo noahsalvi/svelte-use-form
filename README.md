@@ -1,5 +1,5 @@
 # Usage
-```svelte
+```html
 <script>
   import { useForm, Validators } from "svelte-use-form";
 
