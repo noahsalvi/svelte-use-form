@@ -3,7 +3,8 @@ import { FormControl } from "./formControl";
 export class Form {
   [control: string]: FormControl;
 
-  get valid(): boolean | any {
+  /**Returns boolean */
+  get valid(): any {
     let valid = true;
     for (const [k, v] of Object.entries(this)) {
       if (this[k] instanceof FormControl && !v.valid) {
@@ -11,6 +12,17 @@ export class Form {
       }
     }
     return valid;
+  }
+
+  /** Returns boolean */
+  get touched(): any {
+    let touched = true;
+    for (const [k, v] of Object.entries(this)) {
+      if (this[k] instanceof FormControl && !v.touched) {
+        touched = false;
+      }
+    }
+    return touched;
   }
 
   constructor(initialData: { [control: string]: { validators: [] } }) {

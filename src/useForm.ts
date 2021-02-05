@@ -12,7 +12,6 @@ export function useForm(initialData) {
 
     return {
       detroy() {
-        // Remove event listeners
         removeEventListenersFromInputElements();
       },
     };
