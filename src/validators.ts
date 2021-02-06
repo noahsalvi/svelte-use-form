@@ -25,6 +25,13 @@ export class Validators {
     }
     return { email: {} };
   }
+
+  static number(value: string): Validator {
+    if (/^[0-9]+$/.test(value)) {
+      return null;
+    }
+    return { number: {} };
+  }
 }
 /** Function that should return null if correct else a object with the key being the name of the error and a truthy value.*/
 export type Validator = { [errorName: string]: any };

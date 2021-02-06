@@ -1,4 +1,5 @@
 import { setContext } from "svelte";
+import { handleChromeAutofill } from "./chrome-autofill";
 import { Form } from "./form";
 import { FormControl } from "./formControl";
 
@@ -34,7 +35,7 @@ export function useForm(initialData) {
       if (!state[name]) {
         state[name] = new FormControl("", []);
       }
-
+      handleChromeAutofill(inputElement, state[name], notifyListeners);
       inputElement.addEventListener("input", handleInput);
       inputElement.addEventListener("blur", handleBlur);
     }
