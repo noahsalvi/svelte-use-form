@@ -1,3 +1,4 @@
+import { setContext } from "svelte";
 import { Form } from "./form";
 import { FormControl } from "./formControl";
 
@@ -77,7 +78,7 @@ export function useForm(initialData) {
     }
   }
 
-  function subscribe(callback: (reactiveForm: Form) => {}) {
+  function subscribe(callback: (form: Form) => {}) {
     subscribers.push(callback);
     callback(state);
 
@@ -101,5 +102,9 @@ export function useForm(initialData) {
 
   action.subscribe = subscribe;
   action.set = set;
+
+  // Passing state via context to subcomponents like Hint
+  setContext("svelte-use-form_form", action);
+
   return action;
 }

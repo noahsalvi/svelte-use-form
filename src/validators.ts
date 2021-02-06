@@ -5,7 +5,7 @@ export class Validators {
 
   static maxLength(length: number) {
     return function (value: string): Validator {
-      return value.trim().length >= length ? null : { maxLength: length };
+      return value.trim().length <= length ? null : { maxLength: length };
     };
   }
 
