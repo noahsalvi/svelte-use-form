@@ -8,7 +8,7 @@ export function useForm(initialData) {
   const subscribers = [];
 
   function action(node: HTMLFormElement) {
-    setupReactiveForm(node);
+    setupForm(node);
 
     return {
       detroy() {
@@ -17,7 +17,7 @@ export function useForm(initialData) {
     };
   }
 
-  function setupReactiveForm(node: HTMLFormElement) {
+  function setupForm(node: HTMLFormElement) {
     const inputElements = node.getElementsByTagName("input");
     if (!inputElements) return;
     addListenersToInputElements(inputElements as any);
@@ -36,31 +36,38 @@ export function useForm(initialData) {
 
       inputElement.addEventListener("input", handleInput);
       inputElement.addEventListener("blur", handleBlur);
-      // handleInput({ target: inputElement });
     }
   }
 
-  function handleInput({ target: node }) {
-    const name = node["name"];
-    const value = node["value"];
-    state[name].value = value;
-    const valid = state[name].valid;
+  function handleInput({ target: node }: Event) {
+    if (node instanceof HTMLInputElement) {
+      const name = node["name"];
+      const value = node["value"];
+      state[name].value = value;
+      const valid = state[name].valid;
 
-    if (valid) {
-      node.classList.remove("invalid");
-    } else {
-      node.classList.add("invalid");
+      if (valid) {
+        node.setCustomValidity("");
+      } else {
+        node.setCustomValidity("svelte-use-form-invalid");
+      }
+
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
-  function handleBlur({ target: node }) {
-    const name = node["name"];
-    state[name].touched = true;
-    node.classList.add("touched");
+  function handleBlur({ target: node }: Event) {
+    if (node instanceof HTMLInputElement) {
+      const name = node["name"];
+      const control = state[name];
 
-    notifyListeners();
+      if (!control.touched) handleInput({ target: node } as any);
+
+      control.touched = true;
+      node.classList.add("touched");
+
+      notifyListeners();
+    }
   }
 
   function removeEventListenersFromInputElements() {
