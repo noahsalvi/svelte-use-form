@@ -4,7 +4,7 @@ import { Form } from "./form";
 import { FormControl } from "./formControl";
 
 export interface FormProperties {
-  [control: string]: { initial: string; validators: [] };
+  [control: string]: { initial?: string; validators: [] };
 }
 
 export function useForm(properties: FormProperties) {
