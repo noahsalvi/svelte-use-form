@@ -3,7 +3,7 @@
   import type { Form } from "./form";
 
   export let name = "";
-  export let error = "";
+  export let on = "";
   export let hideWhen = "";
   export let hideWhenRequired = false;
   export let untouched = false;
@@ -19,7 +19,7 @@
   $: errors = $form[name].errors;
   $: hideWhenError = hideWhen ? errors[hideWhen] : "";
   $: requiredError = errors["required"];
-  $: value = errors[error];
+  $: value = errors[on];
 </script>
 
 {#if !(hideWhenRequired && requiredError) && !hideWhenError}
