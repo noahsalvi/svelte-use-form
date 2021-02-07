@@ -11,7 +11,7 @@ yarn add -D svelte-use-form
 ```
 ## Usage
 It's pretty self-explanatory, just check out the examples below 😉<br>
-Just make sure to prefix the form `$` , when accessing its state.
+Just make sure to prefix the form with `$` , when accessing its state.
 
 ### Minimal Example
 ```html
@@ -75,17 +75,17 @@ Returns an `action` that can be used on a form. It binds the form state to the f
 #### $newForm
 Subscribe to the form with `$` prefix to access the state of the form. It returns a `Form` instance.
 ### Form
-valid: boolean
-touched: boolean
-[formControl]: FormControl
+- valid: boolean
+- touched: boolean
+- [formControl]: FormControl
 
 Every input in the form will be accessible through the form directly. e.g. `<input name="email" />` === $form.email
 ### FormControl
-value: string
-valid: boolean
-validate: function
-touched: boolean
-errors: {[errorName: string]: any}
+- value: string
+- valid: boolean
+- validate: function
+- touched: boolean
+- errors: {[errorName: string]: any}
 
 ### Hint
 Properties:
