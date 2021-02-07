@@ -25,9 +25,11 @@ export class Form {
     return touched;
   }
 
-  constructor(initialData: { [control: string]: { validators: [] } }) {
+  constructor(initialData: {
+    [control: string]: { initial: string; validators: [] };
+  }) {
     for (const [k, v] of Object.entries(initialData)) {
-      this[k] = new FormControl("", v.validators);
+      this[k] = new FormControl(v.initial, v.validators);
     }
   }
 }

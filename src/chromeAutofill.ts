@@ -33,7 +33,7 @@ export function handleChromeAutofill(
   function handleAnimationStart(event: AnimationEvent) {
     if (event.animationName.includes(animationName)) {
       const newValue = control.value;
-      if (initialValue == newValue) {
+      if (newValue && initialValue == newValue) {
         control.valid = true;
         callback();
       }

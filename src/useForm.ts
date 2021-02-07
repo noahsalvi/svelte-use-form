@@ -1,10 +1,14 @@
 import { setContext } from "svelte";
-import { handleChromeAutofill } from "./chrome-autofill";
+import { handleChromeAutofill } from "./chromeAutofill";
 import { Form } from "./form";
 import { FormControl } from "./formControl";
 
-export function useForm(initialData) {
-  let state: Form = new Form(initialData);
+export interface FormProperties {
+  [control: string]: { initial: string; validators: [] };
+}
+
+export function useForm(properties: FormProperties) {
+  let state: Form = new Form(properties);
 
   let inputs: HTMLElement[] = [];
   const subscribers = [];
@@ -28,16 +32,30 @@ export function useForm(initialData) {
     notifyListeners();
   }
 
-  function addListenersToInputElements(inputElements: HTMLElement[]) {
+  function addListenersToInputElements(inputElements: HTMLInputElement[]) {
     for (const inputElement of inputElements) {
       const name = inputElement["name"];
 
       if (!state[name]) {
         state[name] = new FormControl("", []);
       }
-      handleChromeAutofill(inputElement, state[name], notifyListeners);
+
+      handleAutofill(inputElement, state[name]);
       inputElement.addEventListener("input", handleInput);
       inputElement.addEventListener("blur", handleBlur);
+    }
+  }
+
+  function handleAutofill(
+    inputElement: HTMLInputElement,
+    formControl: FormControl
+  ) {
+    // If the browser fills the value without triggering a event
+    if (inputElement.value !== formControl.initial) {
+      handleInput({ inputElement } as any);
+    } else {
+      // Chrome sometimes fills the input without actually writing a value to it, this combats it
+      handleChromeAutofill(inputElement, formControl, notifyListeners);
     }
   }
 

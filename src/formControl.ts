@@ -2,6 +2,7 @@ export class FormControl {
   private _value: string;
   validators: ((value: string) => boolean)[];
   errors = {};
+  initial = "";
   valid = true;
   touched = false;
 
@@ -34,6 +35,7 @@ export class FormControl {
 
   constructor(value: string, validators: []) {
     this.validators = validators;
+    this.initial = value;
     this.value = value;
   }
 }
