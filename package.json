@@ -36,7 +36,7 @@
     "svelte", "action", "use", "form", "reactive", "reactiveform", "lightweight", "compact"
   ],
   "description": "The most svelte Form Library!",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/noahsalvi/svelte-use-form.git"
