@@ -9,11 +9,10 @@ const css = `
 
 input:-webkit-autofill {
     animation-name: svelte-use-form-webkit-autofill;
-    animation-delay: 100ms;
 }
 `;
 
-function addAnimationTriggerToAutofill() {
+function startAnimationWhenAutofilled() {
   const style = document.createElement("style");
   style.setAttribute("type", "text/css");
   style.appendChild(document.createTextNode(css));
@@ -21,22 +20,23 @@ function addAnimationTriggerToAutofill() {
 }
 
 export function handleChromeAutofill(
-  input: HTMLElement,
+  input: HTMLInputElement,
   control: FormControl,
   callback: Function
 ) {
   if (!isChrome()) return;
-  addAnimationTriggerToAutofill();
 
-  const initialValue = control.value;
-  input.addEventListener("animationstart", handleAnimationStart);
   function handleAnimationStart(event: AnimationEvent) {
     if (event.animationName.includes(animationName)) {
-      const newValue = control.value;
-      if (newValue && initialValue == newValue) {
+      const currentValue = input.value;
+      // If chrome did not actually fill the value of the input
+      if (!currentValue) {
         control.valid = true;
         callback();
       }
     }
   }
+
+  input.addEventListener("animationstart", handleAnimationStart);
+  startAnimationWhenAutofilled();
 }

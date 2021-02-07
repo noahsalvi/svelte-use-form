@@ -50,13 +50,23 @@ export function useForm(properties: FormProperties) {
     inputElement: HTMLInputElement,
     formControl: FormControl
   ) {
+    // Chrome sometimes fills the input without actually writing a value to it, this combats it
+    handleChromeAutofill(inputElement, formControl, notifyListeners);
+
     // If the browser fills the value without triggering a event
-    if (inputElement.value !== formControl.initial) {
-      handleInput({ inputElement } as any);
-    } else {
-      // Chrome sometimes fills the input without actually writing a value to it, this combats it
-      handleChromeAutofill(inputElement, formControl, notifyListeners);
+    function handleNoEventAutofilling() {
+      if (inputElement.value !== formControl.initial) {
+        handleBlur({ target: inputElement } as any);
+        return true;
+      }
+      return false;
     }
+
+    const autofillingWithoutEventInstantly = handleNoEventAutofilling();
+
+    // In a SPA App the form is not filled instantly so we wait 100ms
+    if (!autofillingWithoutEventInstantly)
+      setTimeout(() => handleNoEventAutofilling(), 100);
   }
 
   function handleInput({ target: node }: Event) {
