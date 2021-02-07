@@ -1,8 +1,8 @@
 export class FormControl {
   private _value: string;
+  initial: string;
   validators: ((value: string) => boolean)[];
   errors = {};
-  initial = "";
   valid = true;
   touched = false;
 

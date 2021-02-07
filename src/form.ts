@@ -29,7 +29,7 @@ export class Form {
     [control: string]: { initial: string; validators: [] };
   }) {
     for (const [k, v] of Object.entries(initialData)) {
-      this[k] = new FormControl(v.initial, v.validators);
+      this[k] = new FormControl(v.initial ?? "", v.validators);
     }
   }
 }
