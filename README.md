@@ -26,7 +26,7 @@ Just make sure to prefix the form `$` , when accessing its state.
   <button disabled={!$form.valid}>Submit</button> <br />
   
   <Hint name="title" on="minLength" let:value>
-	  The title requires at least {value} characters.
+    The title requires at least {value} characters.
   </Hint>
 </form>
 
@@ -57,8 +57,8 @@ or you can also print the error message like this:
   <input type="email" name="email" />
   
   <HintGroup name="email">
-	  <Hint on="required">This is a mandatory field</Hint>
-	  <Hint on="email" hideWhenRequired>Email is not valid</Hint>
+    <Hint on="required">This is a mandatory field</Hint>
+    <Hint on="email" hideWhenRequired>Email is not valid</Hint>
   </HintGroup>
 
   <input type="password" name="password" />
