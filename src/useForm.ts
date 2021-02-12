@@ -2,9 +2,13 @@ import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
 import { Form } from "./form";
 import { FormControl } from "./formControl";
+import type { Validator } from "./validators";
 
 export interface FormProperties {
-  [control: string]: { initial?: string; validators: [] };
+  [control: string]: {
+    initial?: string;
+    validators: ((value: string) => Validator)[];
+  };
 }
 
 export function useForm(properties: FormProperties) {
@@ -17,7 +21,8 @@ export function useForm(properties: FormProperties) {
     setupForm(node);
 
     return {
-      detroy() {
+      update: () => {},
+      detroy: () => {
         removeEventListenersFromInputElements();
       },
     };

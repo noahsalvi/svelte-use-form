@@ -1,7 +1,9 @@
+import type { Validator } from "./validators";
+
 export class FormControl {
   private _value: string;
   initial: string;
-  validators: ((value: string) => boolean)[];
+  validators: ((value: string) => Validator)[];
   errors = {};
   valid = true;
   touched = false;
@@ -33,7 +35,7 @@ export class FormControl {
     return valid;
   }
 
-  constructor(value: string, validators: []) {
+  constructor(value: string, validators: ((value: string) => Validator)[]) {
     this.validators = validators;
     this.initial = value;
     this.value = value;

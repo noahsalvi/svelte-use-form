@@ -83,7 +83,7 @@ useForm() returns a svelte `store` (Observable) that is also an `action`. (That'
 #### properties
 
 - { [name_of_input: string]: {initial?: string, validators: Validator[] }
-  - inital = the initial value for the input
+  - initial = the initial value for the input
   - validators
     e.g. useForm({ firstname: { initial: "John", validators: [Validators.required] } })
 
