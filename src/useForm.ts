@@ -2,12 +2,12 @@ import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
 import { Form } from "./form";
 import { FormControl } from "./formControl";
-import type { Validator } from "./validators";
+import type { ValidationErrors } from "./validators";
 
 export interface FormProperties {
   [control: string]: {
     initial?: string;
-    validators: ((value: string) => Validator)[];
+    validators: ((value: string) => ValidationErrors)[];
   };
 }
 

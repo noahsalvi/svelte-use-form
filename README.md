@@ -99,6 +99,7 @@ Subscribe to the form with `$` prefix to access the state of the form. It return
 
 - valid: boolean
 - touched: boolean
+- values: { [formControlName]: value } > Returns an object with the keys and the values being the name of the FormControl and its value.
 - [formcontrol]: FormControl
 
 Every input in the form will be accessible through the form directly. e.g. `<input name="email" />` === $form.email
@@ -144,8 +145,8 @@ Use the Validators class which exposes the following validation functions:
 
 A validator needs to be a function that returns null if valid else an object with the key being the name of the error when invalid. The value of the object will be accessible through the error. e.g. $form.title.errors.name_of_error -> 'info'.
 
-```javascript
-function validateBelow5(value) {
+```typescript
+function validateBelow5(value): ValidationErrors {
 	return value < 5 ? null : { validateBelow5: `${value} is lower than 5` }
 }
 

@@ -2,33 +2,50 @@ import { FormControl } from "./formControl";
 import type { FormProperties } from "./useForm";
 
 export class Form {
-  [control: string]: FormControl;
+  [formControlName: string]: FormControl;
 
-  /**Returns boolean */
-  get valid(): any {
+  // @ts-expect-error - Due to index signature
+  get valid(): boolean {
     let valid = true;
-    for (const [k, v] of Object.entries(this)) {
-      if (this[k] instanceof FormControl && !v.valid) {
-        valid = false;
-      }
-    }
+    this.forEachFormControl((formControl) => {
+      if (!formControl.valid) valid = false;
+    });
     return valid;
   }
 
-  /** Returns boolean */
-  get touched(): any {
+  // @ts-expect-error - Due to index signature
+  get touched(): boolean {
     let touched = true;
-    for (const [k, v] of Object.entries(this)) {
-      if (this[k] instanceof FormControl && !v.touched) {
-        touched = false;
-      }
-    }
+    this.forEachFormControl((formControl) => {
+      if (!formControl.touched) touched = false;
+    });
     return touched;
   }
 
+  // @ts-expect-error - Due to index signature
+  get values(): { [formControlName: string]: FormControl } {
+    let values = {};
+    this.forEachFormControl((formControl, key) => {
+      values[key] = formControl.value;
+    });
+
+    return values;
+  }
+
   constructor(initialData: FormProperties) {
-    for (const [k, v] of Object.entries(initialData)) {
+    for (const [k, v] of Object.entries(initialData ?? {})) {
       this[k] = new FormControl(v.initial ?? "", v.validators);
+    }
+  }
+
+  // @ts-expect-error - Due to index signature
+  private forEachFormControl(
+    callback: (formControl: FormControl, key?: string) => void
+  ) {
+    for (const [key, value] of Object.entries(this)) {
+      if (value instanceof FormControl) {
+        callback(value, key);
+      }
     }
   }
 }

@@ -1,21 +1,21 @@
 export class Validators {
-  static required(value: string): Validator {
-    return value.trim() ? null : { required: {} };
+  static required(value: string): ValidationErrors | null {
+    return value.trim() ? null : { required: true };
   }
 
   static maxLength(length: number) {
-    return function (value: string): Validator {
+    return function (value: string): ValidationErrors | null {
       return value.trim().length <= length ? null : { maxLength: length };
     };
   }
 
   static minLength(length: number) {
-    return function (value: string): Validator {
+    return function (value: string): ValidationErrors | null {
       return value.trim().length >= length ? null : { minLength: length };
     };
   }
 
-  static email(value: string): Validator {
+  static email(value: string): ValidationErrors | null {
     if (
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
         value
@@ -26,12 +26,12 @@ export class Validators {
     return { email: {} };
   }
 
-  static number(value: string): Validator {
+  static number(value: string): ValidationErrors | null {
     if (/^[0-9]+$/.test(value)) {
       return null;
     }
     return { number: {} };
   }
 }
-/** Function that should return null if correct else a object with the key being the name of the error and a truthy value.*/
-export type Validator = { [errorName: string]: any };
+/** An object that contains errors thrown by the validator. */
+export type ValidationErrors = { [errorName: string]: any };

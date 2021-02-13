@@ -1,12 +1,31 @@
-import type { Validator } from "./validators";
+import type { ValidationErrors } from "./validators";
 
+/** A FormControl represents the state of a form member like (input, textarea...) */
 export class FormControl {
-  private _value: string;
-  initial: string;
-  validators: ((value: string) => Validator)[];
-  errors = {};
+  validators: ((value: string) => ValidationErrors)[];
+
+  /**
+   * Returns an object containing possible ValidationErrors
+   * ### Example (All validators are throwing an error)
+   * `{ required: true, minLength: 4, maxLength: 20 }`
+   * ### Example 2 (Only required is not valid)
+   * `{ required: true }`
+   */
+  errors: { [errorName: string]: ValidationErrors } = {};
+
+  /** If the FormControl passed all given validators. */
   valid = true;
+
+  /**
+   * If the FormControl has been interacted with.
+   * (triggered by blur event)
+   */
   touched = false;
+
+  /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
+  readonly initial: string;
+
+  private _value: string;
 
   get value() {
     return this._value;
@@ -17,6 +36,7 @@ export class FormControl {
     this.validate();
   }
 
+  /** Validate the FormControl by querying through the given validators. */
   validate() {
     let valid = true;
     this.errors = {};
@@ -35,7 +55,10 @@ export class FormControl {
     return valid;
   }
 
-  constructor(value: string, validators: ((value: string) => Validator)[]) {
+  constructor(
+    value: string,
+    validators: ((value: string) => ValidationErrors)[]
+  ) {
     this.validators = validators;
     this.initial = value;
     this.value = value;
