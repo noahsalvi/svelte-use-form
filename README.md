@@ -100,7 +100,7 @@ Subscribe to the form with `$` prefix to access the state of the form. It return
 - valid: boolean
 - touched: boolean
 - values: { [formControlName]: value } > Returns an object with the keys and the values being the name of the FormControl and its value.
-- [formcontrol]: FormControl
+- `[formcontrol]: FormControl`
 
 Every input in the form will be accessible through the form directly. e.g. `<input name="email" />` === $form.email
 
