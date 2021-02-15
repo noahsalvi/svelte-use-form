@@ -2,17 +2,17 @@ import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
 import { Form } from "./form";
 import { FormControl } from "./formControl";
-import type { ValidationErrors } from "./validators";
+import type { Validator } from "./validators";
 
 export interface FormProperties {
   [control: string]: {
     initial?: string;
-    validators: ((value: string) => ValidationErrors)[];
+    validators: Validator[];
   };
 }
 
-export function useForm(properties: FormProperties) {
-  let state: Form = new Form(properties);
+export function useForm(properties?: FormProperties) {
+  let state: Form = new Form(properties ?? {});
 
   let inputs: HTMLElement[] = [];
   const subscribers = [];
@@ -31,13 +31,13 @@ export function useForm(properties: FormProperties) {
   function setupForm(node: HTMLFormElement) {
     const inputElements = node.getElementsByTagName("input");
     if (!inputElements) return;
-    addListenersToInputElements(inputElements as any);
+    setupInputElements(inputElements as any);
     inputs.push(...inputElements);
 
     notifyListeners();
   }
 
-  function addListenersToInputElements(inputElements: HTMLInputElement[]) {
+  function setupInputElements(inputElements: HTMLInputElement[]) {
     for (const inputElement of inputElements) {
       const name = inputElement["name"];
 
@@ -45,10 +45,16 @@ export function useForm(properties: FormProperties) {
         state[name] = new FormControl("", []);
       }
 
+      setInitialValue(inputElement, state[name]);
       handleAutofill(inputElement, state[name]);
+
       inputElement.addEventListener("input", handleInput);
       inputElement.addEventListener("blur", handleBlur);
     }
+  }
+
+  function setInitialValue(input: HTMLInputElement, formControl: FormControl) {
+    if (formControl.initial) input.value = formControl.initial;
   }
 
   function handleAutofill(
@@ -58,7 +64,7 @@ export function useForm(properties: FormProperties) {
     // Chrome sometimes fills the input without actually writing a value to it, this combats it
     handleChromeAutofill(inputElement, formControl, notifyListeners);
 
-    // If the browser fills the value without triggering a event
+    // If the browser writes a value without triggering an event
     function handleNoEventAutofilling() {
       if (inputElement.value !== formControl.initial) {
         handleBlur({ target: inputElement } as any);
@@ -69,7 +75,7 @@ export function useForm(properties: FormProperties) {
 
     const autofillingWithoutEventInstantly = handleNoEventAutofilling();
 
-    // In a SPA App the form is not filled instantly so we wait 100ms
+    // In a SPA App the form is sometimes not filled instantly so we wait 100ms
     if (!autofillingWithoutEventInstantly)
       setTimeout(() => handleNoEventAutofilling(), 100);
   }
@@ -84,7 +90,7 @@ export function useForm(properties: FormProperties) {
       if (valid) {
         node.setCustomValidity("");
       } else {
-        node.setCustomValidity("svelte-use-form-invalid");
+        node.setCustomValidity("Field is invalid");
       }
 
       notifyListeners();
@@ -93,8 +99,7 @@ export function useForm(properties: FormProperties) {
 
   function handleBlur({ target: node }: Event) {
     if (node instanceof HTMLInputElement) {
-      const name = node["name"];
-      const control = state[name];
+      const control = state[node.name];
 
       if (!control.touched) handleInput({ target: node } as any);
 
@@ -112,11 +117,11 @@ export function useForm(properties: FormProperties) {
     }
   }
 
-  function subscribe(callback: (form: Form) => {}) {
+  function subscribe(callback: (form: Form) => void) {
     subscribers.push(callback);
     callback(state);
 
-    return () => unsubscribe(callback);
+    return { unsubscribe: () => unsubscribe(callback) };
   }
 
   function unsubscribe(subscriber: Function) {

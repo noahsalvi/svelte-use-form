@@ -1,8 +1,8 @@
-import type { ValidationErrors } from "./validators";
+import type { ValidationErrors, Validator } from "./validators";
 
 /** A FormControl represents the state of a form member like (input, textarea...) */
 export class FormControl {
-  validators: ((value: string) => ValidationErrors)[];
+  validators: Validator[];
 
   /**
    * Returns an object containing possible ValidationErrors
@@ -55,10 +55,7 @@ export class FormControl {
     return valid;
   }
 
-  constructor(
-    value: string,
-    validators: ((value: string) => ValidationErrors)[]
-  ) {
+  constructor(value: string, validators: Validator[]) {
     this.validators = validators;
     this.initial = value;
     this.value = value;

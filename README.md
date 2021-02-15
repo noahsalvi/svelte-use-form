@@ -21,9 +21,9 @@ Just make sure to prefix the form with `$` , when accessing its state.
 
 ```html
 <script>
-  import { useForm, Validators } from "svelte-use-form";
+  import { useForm, minLength } from "svelte-use-form";
 
-  const form = useForm({ title: { validators: [Validators.minLength(5)] } });
+  const form = useForm({ title: { validators: [minLength(5)] } });
 </script>
 
 <form use:form>
@@ -51,10 +51,10 @@ or you can also print the error message like this:
 
 ```html
 <script>
-  import { useForm, Validators } from "svelte-use-form";
+  import { useForm, email, required } from "svelte-use-form";
   const form = useForm({
-    email: { validators: [Validators.email, Validators.required] },
-    password: { validators: [Validators.required] },
+    email: { validators: [email, required] },
+    password: { validators: [required] },
   });
 </script>
 
@@ -85,7 +85,7 @@ useForm() returns a svelte `store` (Observable) that is also an `action`. (That'
 - { [name_of_input: string]: {initial?: string, validators: Validator[] }
   - initial = the initial value for the input
   - validators
-    e.g. useForm({ firstname: { initial: "John", validators: [Validators.required] } })
+    e.g. useForm({ firstname: { initial: "John", validators: [required] } })
 
 #### newForm
 
@@ -133,8 +133,6 @@ You can omit the Hint "name" prop when wrapping it with a HintGroup.
 
 ### Validators
 
-Use the Validators class which exposes the following validation functions:
-
 - required
 - minLength(n)
 - maxLength(n)
@@ -146,7 +144,7 @@ Use the Validators class which exposes the following validation functions:
 A validator needs to be a function that returns null if valid else an object with the key being the name of the error when invalid. The value of the object will be accessible through the error. e.g. $form.title.errors.name_of_error -> 'info'.
 
 ```typescript
-function validateBelow5(value): ValidationErrors {
+function validateBelow5(value): null | ValidationErrors {
 	return value < 5 ? null : { validateBelow5: `${value} is lower than 5` }
 }
 
