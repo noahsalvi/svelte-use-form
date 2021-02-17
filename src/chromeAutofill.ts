@@ -1,4 +1,5 @@
 import type { FormControl } from "./formControl";
+import type { TextElement } from "./useForm";
 const isChrome = () =>
   /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 const animationName = "svelte-use-form-webkit-autofill";
@@ -20,7 +21,7 @@ function startAnimationWhenAutofilled() {
 }
 
 export function handleChromeAutofill(
-  input: HTMLInputElement,
+  textElement: TextElement,
   control: FormControl,
   callback: Function
 ) {
@@ -28,7 +29,7 @@ export function handleChromeAutofill(
 
   function handleAnimationStart(event: AnimationEvent) {
     if (event.animationName.includes(animationName)) {
-      const currentValue = input.value;
+      const currentValue = textElement.value;
       // If chrome did not actually fill the value of the input
       if (!currentValue) {
         control.valid = true;
@@ -37,6 +38,6 @@ export function handleChromeAutofill(
     }
   }
 
-  input.addEventListener("animationstart", handleAnimationStart);
+  textElement.addEventListener("animationstart", handleAnimationStart);
   startAnimationWhenAutofilled();
 }
