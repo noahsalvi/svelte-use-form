@@ -33,10 +33,17 @@
     "typescript": "^4.0.3"
   },
   "keywords": [
-    "svelte", "action", "use", "form", "reactive", "reactiveform", "lightweight", "compact"
+    "svelte",
+    "action",
+    "use",
+    "form",
+    "reactive",
+    "reactiveform",
+    "lightweight",
+    "compact"
   ],
   "description": "The most svelte form library! 🥷",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/noahsalvi/svelte-use-form.git"
