@@ -163,7 +163,6 @@ export function useForm(properties?: FormProperties) {
     for (const { node, event, listener } of eventListeners) {
       node.removeEventListener(event, listener);
     }
-    console.log("unmounted");
   }
 
   function notifyListeners() {

@@ -2,6 +2,14 @@
 
 A svelte form library that is easy to use and has 0 boilerplate. It helps you control and validate forms and their inputs and check on the state of them.
 
+Features:
+
+- Supports: Inputs, TextAreas, Selects, Radio Buttons, Checkboxes...
+- Uses single object to represent the state, instead of splitting it up (errors, values, controls...)
+- Requires no special binding on the Form Input Elements, only the name attribute
+- OTB and custom validators
+- No requirement to use custom components
+
 ## Installation
 
 ```bash
