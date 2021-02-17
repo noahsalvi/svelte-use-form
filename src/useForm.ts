@@ -7,14 +7,23 @@ import type { Validator } from "./validators";
 export interface FormProperties {
   [control: string]: {
     initial?: string;
-    validators: Validator[];
+    validators?: Validator[];
   };
 }
+
+interface EventListener {
+  node: HTMLElement;
+  event: string;
+  listener: EventListenerOrEventListenerObject;
+}
+
+export type TextElement = HTMLInputElement | HTMLTextAreaElement;
+type FormMember = TextElement | HTMLSelectElement;
 
 export function useForm(properties?: FormProperties) {
   let state: Form = new Form(properties ?? {});
 
-  let inputs: HTMLElement[] = [];
+  const eventListeners: EventListener[] = [];
   const subscribers = [];
 
   function action(node: HTMLFormElement) {
@@ -22,52 +31,84 @@ export function useForm(properties?: FormProperties) {
 
     return {
       update: () => {},
-      detroy: () => {
-        removeEventListenersFromInputElements();
-      },
+      destroy: () => unmountEventListeners(),
     };
   }
 
   function setupForm(node: HTMLFormElement) {
-    const inputElements = node.getElementsByTagName("input");
-    if (!inputElements) return;
-    setupInputElements(inputElements as any);
-    inputs.push(...inputElements);
+    const inputElements = [...node.getElementsByTagName("input")];
+    const textareaElements = [...node.getElementsByTagName("textarea")];
+    const textElements = [...inputElements, ...textareaElements];
+
+    const selects = [...node.getElementsByTagName("select")];
+
+    setupTextElements(textElements);
+    setupSelectElements(selects);
 
     notifyListeners();
   }
 
-  function setupInputElements(inputElements: HTMLInputElement[]) {
-    for (const inputElement of inputElements) {
-      const name = inputElement["name"];
+  function setupTextElements(textElements: TextElement[]) {
+    for (const textElement of textElements) {
+      const name = textElement["name"];
 
       if (!state[name]) {
         state[name] = new FormControl("", []);
       }
 
-      setInitialValue(inputElement, state[name]);
-      handleAutofill(inputElement, state[name]);
+      switch (textElement.type) {
+        case "checkbox":
+        case "radio":
+          mountEventListener(textElement, "click", handleBlurOrClick);
+          break;
+        default:
+          setInitialValue(textElement, state[name]);
+          handleAutofill(textElement, state[name]);
+          mountEventListener(textElement, "blur", handleBlurOrClick);
+      }
 
-      inputElement.addEventListener("input", handleInput);
-      inputElement.addEventListener("blur", handleBlur);
+      mountEventListener(textElement, "input", handleInput);
     }
   }
 
-  function setInitialValue(input: HTMLInputElement, formControl: FormControl) {
-    if (formControl.initial) input.value = formControl.initial;
+  function setupSelectElements(selectElements: HTMLSelectElement[]) {
+    for (const selectElement of selectElements) {
+      const name = selectElement["name"];
+
+      if (!state[name]) {
+        const initial = selectElement.value;
+        state[name] = new FormControl(initial, []);
+      } else {
+        setInitialValue(selectElement, state[name]);
+      }
+
+      mountEventListener(selectElement, "input", handleInput);
+      mountEventListener(selectElement, "input", handleBlurOrClick);
+      mountEventListener(selectElement, "blur", handleBlurOrClick);
+    }
   }
 
-  function handleAutofill(
-    inputElement: HTMLInputElement,
-    formControl: FormControl
+  function mountEventListener(
+    node: HTMLElement,
+    event: string,
+    listener: EventListenerOrEventListenerObject
   ) {
-    // Chrome sometimes fills the input without actually writing a value to it, this combats it
-    handleChromeAutofill(inputElement, formControl, notifyListeners);
+    node.addEventListener(event, listener);
+    eventListeners.push({ node, event, listener });
+  }
+
+  function setInitialValue(formMember: FormMember, formControl: FormControl) {
+    if (formControl.initial) formMember.value = formControl.initial;
+  }
+
+  function handleAutofill(textElement: TextElement, formControl: FormControl) {
+    // Chrome sometimes fills the input visually without actually writing a value to it, this combats it
+    handleChromeAutofill(textElement, formControl, notifyListeners);
 
     // If the browser writes a value without triggering an event
     function handleNoEventAutofilling() {
-      if (inputElement.value !== formControl.initial) {
-        handleBlur({ target: inputElement } as any);
+      if (textElement.value !== formControl.initial) {
+        handleBlurOrClick({ target: textElement } as any);
         return true;
       }
       return false;
@@ -81,9 +122,13 @@ export function useForm(properties?: FormProperties) {
   }
 
   function handleInput({ target: node }: Event) {
-    if (node instanceof HTMLInputElement) {
+    if (
+      node instanceof HTMLInputElement ||
+      node instanceof HTMLTextAreaElement ||
+      node instanceof HTMLSelectElement
+    ) {
       const name = node["name"];
-      const value = node["value"];
+      const value = node[node.type === "checkbox" ? "checked" : "value"];
       state[name].value = value;
       const valid = state[name].valid;
 
@@ -97,8 +142,12 @@ export function useForm(properties?: FormProperties) {
     }
   }
 
-  function handleBlur({ target: node }: Event) {
-    if (node instanceof HTMLInputElement) {
+  function handleBlurOrClick({ target: node }: Event) {
+    if (
+      node instanceof HTMLInputElement ||
+      node instanceof HTMLTextAreaElement ||
+      node instanceof HTMLSelectElement
+    ) {
       const control = state[node.name];
 
       if (!control.touched) handleInput({ target: node } as any);
@@ -110,11 +159,15 @@ export function useForm(properties?: FormProperties) {
     }
   }
 
-  function removeEventListenersFromInputElements() {
-    for (const inputElement of inputs) {
-      inputElement.removeEventListener("input", handleInput);
-      inputElement.removeEventListener("blur", handleBlur);
+  function unmountEventListeners() {
+    for (const { node, event, listener } of eventListeners) {
+      node.removeEventListener(event, listener);
     }
+    console.log("unmounted");
+  }
+
+  function notifyListeners() {
+    for (const callback of subscribers) callback(state);
   }
 
   function subscribe(callback: (form: Form) => void) {
@@ -133,10 +186,6 @@ export function useForm(properties?: FormProperties) {
     state = value;
 
     notifyListeners();
-  }
-
-  function notifyListeners() {
-    for (const callback of subscribers) callback(state);
   }
 
   action.subscribe = subscribe;

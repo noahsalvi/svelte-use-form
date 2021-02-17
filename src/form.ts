@@ -34,7 +34,7 @@ export class Form {
 
   constructor(initialData: FormProperties) {
     for (const [k, v] of Object.entries(initialData ?? {})) {
-      this[k] = new FormControl(v.initial ?? "", v.validators);
+      this[k] = new FormControl(v.initial ?? "", v.validators ?? []);
     }
   }
 
