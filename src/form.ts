@@ -23,7 +23,7 @@ export class Form {
   }
 
   // @ts-expect-error - Due to index signature
-  get values(): { [formControlName: string]: String } {
+  get values(): { [formControlName: string]: string } {
     let values = {};
     this.forEachFormControl((formControl, key) => {
       values[key] = formControl.value;
