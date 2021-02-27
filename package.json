@@ -43,7 +43,7 @@
     "compact"
   ],
   "description": "The most svelte form library! 🥷",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/noahsalvi/svelte-use-form.git"
