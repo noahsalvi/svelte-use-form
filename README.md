@@ -9,6 +9,7 @@ Features:
 - Requires no special binding on the Form Input Elements, only the name attribute
 - OTB and custom validators
 - No requirement to use custom components
+- Dynamic Inputs => Show / Hide Inputs at runtime.
 
 ## Installation
 

@@ -21,17 +21,21 @@ export type TextElement = HTMLInputElement | HTMLTextAreaElement;
 type FormMember = TextElement | HTMLSelectElement;
 
 export function useForm(properties?: FormProperties) {
-  let state: Form = new Form(properties ?? {});
-
   const eventListeners: EventListener[] = [];
   const subscribers = [];
+
+  let state: Form = new Form(properties ?? {});
+  let observer: MutationObserver;
 
   function action(node: HTMLFormElement) {
     setupForm(node);
 
     return {
       update: () => {},
-      destroy: () => unmountEventListeners(),
+      destroy: () => {
+        unmountEventListeners();
+        observer.disconnect();
+      },
     };
   }
 
@@ -44,6 +48,8 @@ export function useForm(properties?: FormProperties) {
 
     setupTextElements(textElements);
     setupSelectElements(selects);
+    setupFormObserver(node);
+    hideNotRepresentedFormControls([...textElements, ...selects]);
 
     notifyListeners();
   }
@@ -86,6 +92,53 @@ export function useForm(properties?: FormProperties) {
       mountEventListener(selectElement, "input", handleBlurOrClick);
       mountEventListener(selectElement, "blur", handleBlurOrClick);
     }
+  }
+
+  function setupFormObserver(form: HTMLFormElement) {
+    observer = new MutationObserver(observeForm);
+    observer.observe(form, { childList: true });
+  }
+
+  function observeForm(mutations: MutationRecord[]) {
+    for (const mutation of mutations) {
+      if (mutation.type === "childList") {
+        for (const element of mutation.removedNodes) {
+          for (const elementEventListener of eventListeners) {
+            if (elementEventListener.node === element) {
+              delete state[element["name"]];
+
+              element.removeEventListener(
+                elementEventListener.event,
+                elementEventListener.listener
+              );
+            }
+          }
+        }
+
+        for (const element of mutation.addedNodes) {
+          const name = element["name"];
+          const initialFormControl = properties[name];
+
+          if (!state[name] && initialFormControl) {
+            state[name] = new FormControl(
+              initialFormControl.initial ?? "",
+              initialFormControl.validators ?? []
+            );
+          }
+
+          if (
+            element instanceof HTMLInputElement ||
+            element instanceof HTMLTextAreaElement
+          ) {
+            setupTextElements([element]);
+          } else if (element instanceof HTMLSelectElement) {
+            setupSelectElements([element]);
+          }
+        }
+      }
+    }
+
+    notifyListeners();
   }
 
   function mountEventListener(
@@ -156,6 +209,18 @@ export function useForm(properties?: FormProperties) {
       node.classList.add("touched");
 
       notifyListeners();
+    }
+  }
+
+  function hideNotRepresentedFormControls(nodes: HTMLElement[]) {
+    for (const key of Object.keys(properties)) {
+      let isFormControlRepresentedInDom = false;
+
+      for (const node of nodes) {
+        if (key === node["name"]) isFormControlRepresentedInDom = true;
+      }
+
+      if (!isFormControlRepresentedInDom) delete state[key];
     }
   }
 
