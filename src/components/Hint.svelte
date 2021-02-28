@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import type { Form } from "./form";
+  import type { Form } from "../models/form";
 
   export let name = "";
   export let on = "";

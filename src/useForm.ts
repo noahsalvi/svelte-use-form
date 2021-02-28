@@ -1,24 +1,20 @@
 import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
-import { Form } from "./form";
-import { FormControl } from "./formControl";
-import type { Validator } from "./validators";
-
-export interface FormProperties {
-  [control: string]: {
-    initial?: string;
-    validators?: Validator[];
-  };
-}
+import { Form } from "./models/form";
+import { FormControl } from "./models/formControl";
+import {
+  FormMember,
+  isFormMember,
+  isTextElement,
+  TextElement,
+} from "./models/formMembers";
+import type { FormProperties } from "./models/formProperties";
 
 interface EventListener {
   node: HTMLElement;
   event: string;
   listener: EventListenerOrEventListenerObject;
 }
-
-export type TextElement = HTMLInputElement | HTMLTextAreaElement;
-type FormMember = TextElement | HTMLSelectElement;
 
 export function useForm(properties?: FormProperties) {
   const eventListeners: EventListener[] = [];
@@ -43,13 +39,12 @@ export function useForm(properties?: FormProperties) {
     const inputElements = [...node.getElementsByTagName("input")];
     const textareaElements = [...node.getElementsByTagName("textarea")];
     const textElements = [...inputElements, ...textareaElements];
-
-    const selects = [...node.getElementsByTagName("select")];
+    const selectElements = [...node.getElementsByTagName("select")];
 
     setupTextElements(textElements);
-    setupSelectElements(selects);
+    setupSelectElements(selectElements);
+    hideNotRepresentedFormControls([...textElements, ...selectElements]);
     setupFormObserver(node);
-    hideNotRepresentedFormControls([...textElements, ...selects]);
 
     notifyListeners();
   }
@@ -102,37 +97,57 @@ export function useForm(properties?: FormProperties) {
   function observeForm(mutations: MutationRecord[]) {
     for (const mutation of mutations) {
       if (mutation.type === "childList") {
-        for (const element of mutation.removedNodes) {
-          for (const elementEventListener of eventListeners) {
-            if (elementEventListener.node === element) {
-              delete state[element["name"]];
+        for (const node of mutation.removedNodes) {
+          if (node instanceof HTMLElement) {
+            const inputElements = [...node.getElementsByTagName("input")];
+            const textareaElements = [...node.getElementsByTagName("textarea")];
+            const selects = [...node.getElementsByTagName("select")];
+            const elements = [
+              ...inputElements,
+              ...textareaElements,
+              ...selects,
+            ];
+            if (isFormMember(node)) elements.push(node);
 
-              element.removeEventListener(
-                elementEventListener.event,
-                elementEventListener.listener
-              );
+            for (const element of elements) {
+              for (const eventListener of eventListeners) {
+                if (element === eventListener.node) {
+                  delete state[element["name"]];
+
+                  element.removeEventListener(
+                    eventListener.event,
+                    eventListener.listener
+                  );
+                }
+              }
             }
           }
         }
 
-        for (const element of mutation.addedNodes) {
-          const name = element["name"];
-          const initialFormControl = properties[name];
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) {
+            const inputElements = [...node.getElementsByTagName("input")];
+            const textareaElements = [...node.getElementsByTagName("textarea")];
+            const textElements = [...inputElements, ...textareaElements];
 
-          if (!state[name] && initialFormControl) {
-            state[name] = new FormControl(
-              initialFormControl.initial ?? "",
-              initialFormControl.validators ?? []
-            );
-          }
+            const selectElements = [...node.getElementsByTagName("select")];
 
-          if (
-            element instanceof HTMLInputElement ||
-            element instanceof HTMLTextAreaElement
-          ) {
-            setupTextElements([element]);
-          } else if (element instanceof HTMLSelectElement) {
-            setupSelectElements([element]);
+            if (isTextElement(node)) textElements.push(node);
+            else if (node instanceof HTMLSelectElement)
+              selectElements.push(node);
+
+            for (const element of [...textElements, ...selectElements]) {
+              const initialFormControlProperty = properties[element.name];
+              if (!state[element.name] && initialFormControlProperty) {
+                state[element.name] = new FormControl(
+                  initialFormControlProperty.initial ?? "",
+                  initialFormControlProperty.validators ?? []
+                );
+              }
+            }
+
+            setupTextElements(textElements);
+            setupSelectElements(selectElements);
           }
         }
       }
@@ -175,11 +190,7 @@ export function useForm(properties?: FormProperties) {
   }
 
   function handleInput({ target: node }: Event) {
-    if (
-      node instanceof HTMLInputElement ||
-      node instanceof HTMLTextAreaElement ||
-      node instanceof HTMLSelectElement
-    ) {
+    if (isFormMember(node)) {
       const name = node["name"];
       const value = node[node.type === "checkbox" ? "checked" : "value"];
       state[name].value = value;
@@ -196,11 +207,7 @@ export function useForm(properties?: FormProperties) {
   }
 
   function handleBlurOrClick({ target: node }: Event) {
-    if (
-      node instanceof HTMLInputElement ||
-      node instanceof HTMLTextAreaElement ||
-      node instanceof HTMLSelectElement
-    ) {
+    if (isFormMember(node)) {
       const control = state[node.name];
 
       if (!control.touched) handleInput({ target: node } as any);

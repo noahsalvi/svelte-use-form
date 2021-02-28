@@ -1,5 +1,6 @@
-import type { FormControl } from "./formControl";
-import type { TextElement } from "./useForm";
+import type { FormControl } from "./models/formControl";
+import type { TextElement } from "./models/formMembers";
+
 const isChrome = () =>
   /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 const animationName = "svelte-use-form-webkit-autofill";

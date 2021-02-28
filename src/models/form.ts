@@ -1,5 +1,5 @@
 import { FormControl } from "./formControl";
-import type { FormProperties } from "./useForm";
+import type { FormProperties } from "./formProperties";
 
 export class Form {
   [formControlName: string]: FormControl;

@@ -1,4 +1,5 @@
-import type { ValidationErrors, Validator } from "./validators";
+import type { ValidationErrors, Validator } from "../validators";
+import type { Form } from "./form";
 
 /** A FormControl represents the state of a form member like (input, textarea...) */
 export class FormControl {
@@ -27,6 +28,8 @@ export class FormControl {
 
   private _value: string;
 
+  private readonly form;
+
   get value() {
     return this._value;
   }
@@ -43,6 +46,7 @@ export class FormControl {
 
     for (const validator of this.validators) {
       const error = validator(this._value);
+
       if (error) {
         valid = false;
         for (const [k, v] of Object.entries(error)) {
