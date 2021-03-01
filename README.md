@@ -7,7 +7,7 @@ Features:
 - Supports: Inputs, TextAreas, Selects, Radio Buttons, Checkboxes...
 - Uses single object to represent the state, instead of splitting it up (errors, values, controls...)
 - Requires no special binding on the Form Input Elements, only the name attribute
-- OTB and custom validators
+- OOTB validators and custom validator support
 - No requirement to use custom components
 - Dynamic Inputs => Show / Hide Inputs at runtime.
 
