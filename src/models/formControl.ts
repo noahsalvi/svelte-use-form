@@ -26,9 +26,9 @@ export class FormControl {
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
   readonly initial: string;
 
-  private _value: string;
+  private readonly formRef: () => Form;
 
-  private readonly form;
+  private _value: string;
 
   get value() {
     return this._value;
@@ -45,7 +45,7 @@ export class FormControl {
     this.errors = {};
 
     for (const validator of this.validators) {
-      const error = validator(this._value);
+      const error = validator(this._value, this.formRef());
 
       if (error) {
         valid = false;
@@ -59,7 +59,8 @@ export class FormControl {
     return valid;
   }
 
-  constructor(value: string, validators: Validator[]) {
+  constructor(value: string, validators: Validator[], formRef: () => Form) {
+    this.formRef = formRef;
     this.validators = validators;
     this.initial = value;
     this.value = value;

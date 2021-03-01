@@ -1,7 +1,8 @@
 import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
 import { Form } from "./models/form";
-import { FormControl } from "./models/formControl";
+import type { FormControl } from "./models/formControl";
+
 import {
   FormMember,
   isFormMember,
@@ -54,7 +55,7 @@ export function useForm(properties?: FormProperties) {
       const name = textElement["name"];
 
       if (!state[name]) {
-        state[name] = new FormControl("", []);
+        state.addFormControl(name, "", []);
       }
 
       switch (textElement.type) {
@@ -78,7 +79,7 @@ export function useForm(properties?: FormProperties) {
 
       if (!state[name]) {
         const initial = selectElement.value;
-        state[name] = new FormControl(initial, []);
+        state.addFormControl(name, initial, []);
       } else {
         setInitialValue(selectElement, state[name]);
       }
@@ -139,7 +140,8 @@ export function useForm(properties?: FormProperties) {
             for (const element of [...textElements, ...selectElements]) {
               const initialFormControlProperty = properties[element.name];
               if (!state[element.name] && initialFormControlProperty) {
-                state[element.name] = new FormControl(
+                state.addFormControl(
+                  element.name,
                   initialFormControlProperty.initial ?? "",
                   initialFormControlProperty.validators ?? []
                 );

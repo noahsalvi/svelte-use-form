@@ -150,16 +150,16 @@ You can omit the Hint "name" prop when wrapping it with a HintGroup.
 
 #### Custom Validator
 
-A validator needs to be a function that returns null if valid else an object with the key being the name of the error when invalid. The value of the object will be accessible through the error. e.g. $form.title.errors.name_of_error -> 'info'.
+A validator needs to be a function that returns null if valid else an object with the key being the name of the error. The value of the object will be accessible through the error. e.g. $form.title.errors.name_of_error -> 'info'.
 
 ```typescript
-function validateBelow5(value): null | ValidationErrors {
-	return value < 5 ? null : { validateBelow5: `${value} is lower than 5` }
+function passwordMatch(value: string, form: Form): null | ValidationErrors {
+	return value !== form.password.value ? null : { passwordMatch: "Passwords are not matching" }
 }
 
-... validators: [validateBelow5]
+... passwordConfirmation: { validators: [passwordMatch] } }
 
-... $form.title.errors.validateBelow5
+... $form.title.errors.passwordMatch
 ```
 
 ## Note
