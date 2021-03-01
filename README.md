@@ -26,6 +26,11 @@ yarn add -D svelte-use-form
 It's pretty self-explanatory, just check out the examples below 😉<br>
 Just make sure to prefix the form with `$` , when accessing its state.
 
+#### REPLs:
+
+- [Registration](https://svelte.dev/repl/a6665267d7d0435ebc7921a250552a25?version=3.34.0)
+- [Testing the limits](https://svelte.dev/repl/d4fc021f688d4ad0b3ceb9a1c44c9be9?version=3.34.0)
+
 ### Minimal Example
 
 ```html

@@ -15,8 +15,8 @@
     subscribe: (callback: (form: Form) => any) => void;
   } = getContext("svelte-use-form_form");
 
-  $: touched = $form[name].touched;
-  $: errors = $form[name].errors;
+  $: touched = $form[name]?.touched ?? {};
+  $: errors = $form[name]?.errors ?? {};
   $: hideWhenError = hideWhen ? errors[hideWhen] : "";
   $: requiredError = errors["required"];
   $: value = errors[on];
