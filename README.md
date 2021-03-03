@@ -10,7 +10,7 @@ A svelte form library that is easy to use and has no boilerplate. It helps you c
 npm i -D svelte-use-form
 ```
 
-Features:
+#### Features:
 
 - Supports: Inputs, TextAreas, Selects, Radio Buttons, Checkboxes...
 - Uses single object to represent the state, instead of splitting it up (errors, values, controls...)
@@ -29,7 +29,7 @@ Just make sure to prefix the form with `$`, when accessing its state.
 - [Registration](https://svelte.dev/repl/a6665267d7d0435ebc7921a250552a25?version=3.34.0)
 - [Testing the limits](https://svelte.dev/repl/d4fc021f688d4ad0b3ceb9a1c44c9be9?version=3.34.0)
 
-### Minimal Example
+### Minimal Example [REPL](https://svelte.dev/repl/faf5a9ab763640ed830028c970421f72?version=3.35.0)
 
 ```svelte
 <script>
@@ -59,7 +59,7 @@ or you can also print the error message like this:
 
 ```
 
-### Login Example (Styling omitted)
+### Login Example (Styling omitted) [REPL](https://svelte.dev/repl/ca967b45a5aa47b2bb2f9118eb79eefe?version=3)
 
 ```svelte
 <script>
