@@ -1,10 +1,10 @@
 # Svelte Use Form
 
+A svelte form library that is easy to use and has no boilerplate. It helps you control and validate forms and their fields and check on the state of them.
+
 ```bash
 npm i -D svelte-use-form
 ```
-
-A svelte form library that is easy to use and has no boilerplate. It helps you control and validate forms and their fields and check on the state of them.
 
 Features:
 
@@ -88,10 +88,14 @@ useForm() returns a svelte `store` (Observable) that is also an `action`. (That'
 
 #### properties
 
-- { [name_of_input: string]: {initial?: string, validators: Validator[] }
-  - initial = the initial value for the input
-  - validators
-    e.g. useForm({ firstname: { initial: "John", validators: [required] } })
+``` typescript
+interface FormProperties {
+  [control: string]: {
+    initial?: string;
+    validators?: Validator[];
+  };
+}
+```
 
 #### form
 
@@ -102,7 +106,16 @@ Contains an `action` that can be used on a form. It binds the form state to the 
 Subscribe to the form with `$` prefix to access the state of the form. It returns a `Form` instance.
 
 ### Form
-
+``` typescript
+class Form {
+    [formControlName: string]: FormControl;
+    get valid(): boolean;
+    get touched(): boolean;
+    get values(): {
+        [formControlName: string]: string;
+    };
+}
+```
 - valid: boolean
 - touched: boolean
 - values: { [formControlName]: value } > Returns an object with the keys and the values being the name of the FormControl and its value.
@@ -111,13 +124,36 @@ Subscribe to the form with `$` prefix to access the state of the form. It return
 Every input in the form will be accessible through the form directly. e.g. `<input name="email" />` === $form.email
 
 ### FormControl
+```typescript
+/** A FormControl represents the state of a form member like (input, textarea...) */
+export declare class FormControl {
+    validators: Validator[];
+    /**
+     * Returns an object containing possible ValidationErrors
+     * ### Example (All validators are throwing an error)
+     * `{ required: true, minLength: 4, maxLength: 20 }`
+     * ### Example 2 (Only required is not valid)
+     * `{ required: true }`
+     */
+    errors: {
+        [errorName: string]: ValidationErrors;
+    };
+    /** If the FormControl passed all given validators. */
+    valid: boolean;
+    /**
+     * If the FormControl has been interacted with.
+     * (triggered by blur event)
+     */
+    touched: boolean;
+    /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
+    readonly initial: string;
+    get value(): string;
+    set value(value: string);
+    /** Validate the FormControl by querying through the given validators. */
+    validate(): boolean;
+}
 
-- value: string
-- valid: boolean
-- validate: function
-- touched: boolean
-- errors: {[errorName: string]: any}
-
+```
 ### validators (Action)
 
 Takes in the validators that should be used on the form control.
