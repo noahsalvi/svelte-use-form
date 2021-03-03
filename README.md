@@ -1,4 +1,8 @@
-# Svelte Use Form
+  <h1>
+    <img align="left" height=50 src="svelte-use-form.svg" />
+    Svelte Use Form 
+  </h1>
+
 
 A svelte form library that is easy to use and has no boilerplate. It helps you control and validate forms and their fields and check on the state of them.
 
