@@ -35,7 +35,7 @@ Just make sure to prefix the form with `$`, when accessing its state.
 
 ```svelte
 <script>
-  import { useForm, validators, minLength } from "svelte-use-form";
+  import { useForm, Hint, validators, minLength } from "svelte-use-form";
 
   const form = useForm();
 </script>
@@ -65,7 +65,7 @@ or you can also print the error message like this:
 
 ```svelte
 <script>
-  import { useForm, validators, email, required } from "svelte-use-form";
+  import { useForm, HintGroup, Hint, validators, email, required } from "svelte-use-form";
 
   const form = useForm();
 </script>
