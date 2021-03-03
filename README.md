@@ -1,7 +1,7 @@
-  <div>
-    <img align="left" height=50 src="svelte-use-form.svg" />
+<div>
+  <img align="left" height=60 src="svelte-use-form.svg" />
   
-   <h1 align="left">
+  <h1 align="left">
     Svelte Use Form 
   </h1>
 </div>
