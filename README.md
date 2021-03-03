@@ -1,6 +1,7 @@
   <p>
-   <h1 align="left">
     <img align="left" height=50 src="svelte-use-form.svg" />
+  
+   <h1 align="left">
     Svelte Use Form 
   </h1>
 </p>
