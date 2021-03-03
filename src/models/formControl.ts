@@ -1,5 +1,6 @@
-import type { ValidationErrors, Validator } from "../validators";
 import type { Form } from "./form";
+import type { ValidationErrors } from "./validationErrors";
+import type { Validator } from "./validator";
 
 /** A FormControl represents the state of a form member like (input, textarea...) */
 export class FormControl {

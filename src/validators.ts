@@ -1,10 +1,4 @@
-import type { Form } from "./models/form";
-
-/** An object that contains errors thrown by the validator. */
-export type ValidationErrors = { [errorName: string]: any };
-
-/** A function that either returns null when the value is valid and else an `ValidationErrors` object. */
-export type Validator = (value: string, form?: Form) => null | ValidationErrors;
+import type { ValidationErrors } from "./models/validationErrors";
 
 export function required(value: string): null | ValidationErrors {
   return value.trim() ? null : { required: true };

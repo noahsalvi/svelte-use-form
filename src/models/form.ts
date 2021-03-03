@@ -1,6 +1,6 @@
-import type { Validator } from "../validators";
 import { FormControl } from "./formControl";
 import type { FormProperties } from "./formProperties";
+import type { Validator } from "./validator";
 
 export class Form {
   [formControlName: string]: FormControl;

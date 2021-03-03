@@ -1,4 +1,4 @@
-import type { Validator } from "../validators";
+import type { Validator } from "./validator";
 
 export interface FormProperties {
   [control: string]: {
