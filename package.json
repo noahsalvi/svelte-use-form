@@ -1,6 +1,6 @@
 {
   "name": "svelte-use-form",
-  "version": "1.1.10",
+  "version": "2.0.0",
   "description": "The most svelte form library! 🥷",
   "author": "Noah Versace Salvi",
   "homepage": "https://github.com/noahsalvi/svelte-use-form#readme",
@@ -14,13 +14,11 @@
   },
   "keywords": [
     "svelte",
-    "action",
-    "use",
     "form",
-    "reactive",
-    "reactiveform",
-    "lightweight",
-    "compact"
+    "validator",
+    "validation",
+    "hint",
+    "action"
   ],
   "svelte": "dist/index.js",
   "module": "dist/index.mjs",

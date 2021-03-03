@@ -10,22 +10,63 @@ import {
   TextElement,
 } from "./models/formMembers";
 import type { FormProperties } from "./models/formProperties";
+import { formReferences } from "./stores/formReferences";
 
 interface EventListener {
   node: HTMLElement;
   event: string;
   listener: EventListenerOrEventListenerObject;
 }
-
+/** Create a new form.
+ *
+ * You can either pass a default configuration for the form.
+ *
+ * ----
+ * ``` svelte
+ * <script>
+ *   const form = useForm({
+ *     firstName: { initial: "CACHED_NAME", validators: [required, maxLength(10)] }
+ *   })
+ * </script>
+ *
+ * <input name="firstName />
+ * ```
+ * ----
+ * or handle everything directly in the form control
+ *
+ * ----
+ *
+ * ```svelte
+ * <script>
+ *   const form = useForm();
+ * </script>
+ *
+ * <input name="firstName" value="CACHED_NAME" use:validators={[required, maxLength(10)]} />
+ * ```
+ */
 export function useForm(properties?: FormProperties) {
+  properties = properties ?? {};
+
   const eventListeners: EventListener[] = [];
   const subscribers = [];
 
-  let state: Form = new Form(properties ?? {});
+  let state: Form = new Form(properties);
   let observer: MutationObserver;
 
+  /**
+   * ### The store and action of a form.
+   *
+   * Use the `$` prefix to access the state of the form;
+   */
   function action(node: HTMLFormElement) {
+    // Bootstrap form
     setupForm(node);
+
+    // Add form reference to global internal store
+    formReferences.update((values) => [
+      ...values,
+      { node, form: state, notifyListeners },
+    ]);
 
     return {
       update: () => {},
@@ -55,7 +96,8 @@ export function useForm(properties?: FormProperties) {
       const name = textElement["name"];
 
       if (!state[name]) {
-        state.addFormControl(name, "", []);
+        const initial = textElement.value;
+        state.addFormControl(name, initial, []);
       }
 
       switch (textElement.type) {
@@ -167,10 +209,6 @@ export function useForm(properties?: FormProperties) {
     eventListeners.push({ node, event, listener });
   }
 
-  function setInitialValue(formMember: FormMember, formControl: FormControl) {
-    if (formControl.initial) formMember.value = formControl.initial;
-  }
-
   function handleAutofill(textElement: TextElement, formControl: FormControl) {
     // Chrome sometimes fills the input visually without actually writing a value to it, this combats it
     handleChromeAutofill(textElement, formControl, notifyListeners);
@@ -231,6 +269,10 @@ export function useForm(properties?: FormProperties) {
 
       if (!isFormControlRepresentedInDom) delete state[key];
     }
+  }
+
+  function setInitialValue(formMember: FormMember, formControl: FormControl) {
+    if (formControl.initial) formMember.value = formControl.initial;
   }
 
   function unmountEventListeners() {

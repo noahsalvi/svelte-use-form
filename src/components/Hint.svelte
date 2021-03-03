@@ -2,11 +2,34 @@
   import { getContext } from "svelte";
   import type { Form } from "../models/form";
 
-  export let name = "";
+  /**
+   * The name of the form control.
+   *
+   * Can be omitted when using a wrapping HintGroup setting the `for` property.
+   * ``` svelte
+   * <input name="nameOfFormControl" use:validators={[required]} />
+   * <Hint for="nameOfFormControl" on="required">HINT</Hint>
+   * ```
+   * OR
+   * ``` svelte
+   * <input name="nameOfFormControl" use:validators={[required]} />
+   * <HintGroup for="nameOfFormControl">
+   *   <Hint on="required">HINT</Hint>
+   * </HintGroup>
+   * ```
+   */
+  export { name as for };
+
+  /** The name of the error that should show this hint */
   export let on = "";
+  /** Hides this hint when the given validator is triggered */
   export let hideWhen = "";
+  /** Does the same thing as `hideWhen="required"` */
   export let hideWhenRequired = false;
-  export let untouched = false;
+  /** Show the hint even when the field is untouched */
+  export let showWhenUntouched = false;
+
+  let name = "";
 
   // Tries to get the name from the parent HintGroup
   if (!name) name = getContext("svelte-use-form_hint-group-name");
@@ -23,7 +46,7 @@
 </script>
 
 {#if !(hideWhenRequired && requiredError) && !hideWhenError}
-  {#if (touched || untouched) && value}
+  {#if (touched || showWhenUntouched) && value}
     <div class="svelte-use-form-hint">
       <slot {value} />
     </div>
