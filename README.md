@@ -57,8 +57,6 @@ or you can also print the error message like this:
   {#if $form.title?.touched && $form.title?.errors.minLength}
     The title requires at least {$form.title.errors.minLength} characters.
   {/if}
-</form>
-
 ```
 
 ### Login Example (Styling omitted) [REPL](https://svelte.dev/repl/ca967b45a5aa47b2bb2f9118eb79eefe?version=3)
