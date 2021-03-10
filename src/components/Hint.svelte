@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getContext } from "svelte";
+  import { compute_rest_props } from "svelte/internal";
   import type { Form } from "../models/form";
 
   /**
@@ -31,6 +32,8 @@
 
   let name = "";
 
+  let internalClass = $$props.class;
+
   // Tries to get the name from the parent HintGroup
   if (!name) name = getContext("svelte-use-form_hint-group-name");
 
@@ -47,14 +50,8 @@
 
 {#if !(hideWhenRequired && requiredError) && !hideWhenError}
   {#if (touched || showWhenUntouched) && value}
-    <div class="svelte-use-form-hint">
+    <div class="svelte-use-form-hint {internalClass}">
       <slot {value} />
     </div>
   {/if}
 {/if}
-
-<style>
-  .svelte-use-form-hint {
-    color: red;
-  }
-</style>

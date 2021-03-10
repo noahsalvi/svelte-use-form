@@ -1,3 +1,4 @@
+import type { ErrorMap } from "./errorMap";
 import type { Form } from "./form";
 import type { ValidationErrors } from "./validationErrors";
 import type { Validator } from "./validator";
@@ -13,7 +14,13 @@ export class FormControl {
    * ### Example 2 (Only required is not valid)
    * `{ required: true }`
    */
-  errors: { [errorName: string]: ValidationErrors } = {};
+  errors: ValidationErrors = {};
+
+  /**
+   * Contains a map of values, that will be shown
+   * in place of the original validation error.
+   */
+  errorMap: ErrorMap = {};
 
   /** If the FormControl passed all given validators. */
   valid = true;
@@ -46,12 +53,20 @@ export class FormControl {
     this.errors = {};
 
     for (const validator of this.validators) {
-      const error = validator(this._value, this.formRef());
+      const errors = validator(this._value, this.formRef());
 
-      if (error) {
+      if (errors) {
         valid = false;
-        for (const [k, v] of Object.entries(error)) {
-          this.errors[k] = v;
+        for (const error of Object.entries(errors)) {
+          let [key, value] = error;
+
+          // If there is a map for the error, use it
+          const errorMap = this.errorMap[key];
+          if (errorMap) {
+            value = typeof errorMap === "function" ? errorMap(value) : errorMap;
+          }
+
+          this.errors[key] = value;
         }
       }
     }
@@ -60,9 +75,15 @@ export class FormControl {
     return valid;
   }
 
-  constructor(value: string, validators: Validator[], formRef: () => Form) {
+  constructor(
+    value: string,
+    validators: Validator[],
+    errorMap: ErrorMap,
+    formRef: () => Form
+  ) {
     this.formRef = formRef;
     this.validators = validators;
+    this.errorMap = errorMap;
     this.initial = value;
     this.value = value;
   }

@@ -1,3 +1,4 @@
+import type { ErrorMap } from "./errorMap";
 import { FormControl } from "./formControl";
 import type { FormProperties } from "./formProperties";
 import type { Validator } from "./validator";
@@ -35,13 +36,23 @@ export class Form {
 
   constructor(initialData: FormProperties) {
     for (const [k, v] of Object.entries(initialData ?? {})) {
-      this.addFormControl(k, v.initial, v.validators);
+      this.addFormControl(k, v.initial, v.validators, v.errorMap);
     }
   }
 
   // @ts-expect-error - Due to index signature
-  addFormControl(name: string, initial: string, validators: Validator[]) {
-    this[name] = new FormControl(initial ?? "", validators ?? [], () => this);
+  addFormControl(
+    name: string,
+    initial: string,
+    validators: Validator[],
+    errorMap: ErrorMap
+  ) {
+    this[name] = new FormControl(
+      initial ?? "",
+      validators ?? [],
+      errorMap ?? {},
+      () => this
+    );
   }
 
   // @ts-expect-error - Due to index signature

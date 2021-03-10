@@ -97,7 +97,7 @@ export function useForm(properties?: FormProperties) {
 
       if (!state[name]) {
         const initial = textElement.value;
-        state.addFormControl(name, initial, []);
+        state.addFormControl(name, initial, [], {});
       }
 
       switch (textElement.type) {
@@ -121,7 +121,7 @@ export function useForm(properties?: FormProperties) {
 
       if (!state[name]) {
         const initial = selectElement.value;
-        state.addFormControl(name, initial, []);
+        state.addFormControl(name, initial, [], {});
       } else {
         setInitialValue(selectElement, state[name]);
       }
@@ -184,8 +184,9 @@ export function useForm(properties?: FormProperties) {
               if (!state[element.name] && initialFormControlProperty) {
                 state.addFormControl(
                   element.name,
-                  initialFormControlProperty.initial ?? "",
-                  initialFormControlProperty.validators ?? []
+                  initialFormControlProperty.initial,
+                  initialFormControlProperty.validators,
+                  initialFormControlProperty.errorMap
                 );
               }
             }

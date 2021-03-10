@@ -4,6 +4,13 @@ export { useForm } from "./useForm";
 export { validators } from "./validatorsAction";
 export { Form } from "./models/form";
 export { FormControl } from "./models/formControl";
-export { required, minLength, maxLength, email, number } from "./validators";
+export {
+  required,
+  minLength,
+  maxLength,
+  email,
+  url,
+  number,
+} from "./validators";
 export type { Validator } from "./models/validator";
 export type { ValidationErrors } from "./models/validationErrors";

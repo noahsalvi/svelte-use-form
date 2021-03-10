@@ -1,5 +1,3 @@
-
-  
   <h1>
     <img align="left" height=40 src="svelte-use-form.svg" />
     &nbsp;
@@ -92,11 +90,19 @@ useForm() returns a svelte `store` (Observable) that is also an `action`. (That'
 
 #### properties
 
-``` typescript
+```typescript
 interface FormProperties {
   [control: string]: {
+    /** Initial value of the form control */
     initial?: string;
+    /** The validators that will be checked when the input changes */
     validators?: Validator[];
+    /**
+     * The map through which validation errors will be passed.
+     *
+     * You can either pass a string or a function returning a new error value
+     */
+    errorMap?: ErrorMap;
   };
 }
 ```
@@ -110,50 +116,57 @@ Contains an `action` that can be used on a form. It binds the form state to the 
 Subscribe to the form with `$` prefix to access the state of the form. It returns a `Form` instance.
 
 ### Form
-``` typescript
+
+```typescript
 class Form {
-    [formControlName: string]: FormControl;
-    get valid(): boolean;
-    get touched(): boolean;
-    get values(): {
-        [formControlName: string]: string;
-    };
+  [formControlName: string]: FormControl;
+  get valid(): boolean;
+  get touched(): boolean;
+  get values(): {
+    [formControlName: string]: string;
+  };
 }
 ```
 
 Every input in the form will be accessible through $form directly. e.g. `<input name="email" />` === $form.email
 
 ### FormControl
+
 ```typescript
 /** A FormControl represents the state of a form member like (input, textarea...) */
 export declare class FormControl {
-    validators: Validator[];
-    /**
-     * Returns an object containing possible ValidationErrors
-     * ### Example (All validators are throwing an error)
-     * `{ required: true, minLength: 4, maxLength: 20 }`
-     * ### Example 2 (Only required is not valid)
-     * `{ required: true }`
-     */
-    errors: {
-        [errorName: string]: ValidationErrors;
-    };
-    /** If the FormControl passed all given validators. */
-    valid: boolean;
-    /**
-     * If the FormControl has been interacted with.
-     * (triggered by blur event)
-     */
-    touched: boolean;
-    /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
-    readonly initial: string;
-    get value(): string;
-    set value(value: string);
-    /** Validate the FormControl by querying through the given validators. */
-    validate(): boolean;
+  validators: Validator[];
+  /**
+   * Returns an object containing possible ValidationErrors
+   * ### Example (All validators are throwing an error)
+   * `{ required: true, minLength: 4, maxLength: 20 }`
+   * ### Example 2 (Only required is not valid)
+   * `{ required: true }`
+   */
+  errors: {
+    [errorName: string]: ValidationErrors;
+  };
+  /**
+   * Contains a map of values, that will be shown
+   * in place of the original validation error.
+   */
+  errorMap: ErrorMap = {};
+  /** If the FormControl passed all given validators. */
+  valid: boolean;
+  /**
+   * If the FormControl has been interacted with.
+   * (triggered by blur event)
+   */
+  touched: boolean;
+  /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
+  readonly initial: string;
+  get value(): string;
+  set value(value: string);
+  /** Validate the FormControl by querying through the given validators. */
+  validate(): boolean;
 }
-
 ```
+
 ### validators (Action)
 
 Takes in the validators that should be used on the form control.
@@ -172,6 +185,7 @@ Properties:
 - hideWhen="different_error" > hides the hint if the different error is throwing
 - hideWhenRequired > shortcut for hideWhen="required"
 - showWhenUntouched > hint will get displayed even if the field hasn't been touched yet.
+- class="classes"
 - let:value > returns the value of the error
 
 ### HintGroup
@@ -189,6 +203,7 @@ You can omit the Hint "name" prop when wrapping it with a HintGroup.
 - maxLength(n)
 - number
 - email
+- url
 
 #### Custom Validator
 
@@ -209,6 +224,8 @@ function passwordMatch(value: string, form: Form): null | ValidationErrors {
 
 ... $form.title.errors.passwordMatch
 ```
+
+An example with [validator.js](https://www.npmjs.com/package/validator) [REPL](https://svelte.dev/repl/21fc7637645d4917994ad4140b54b871?version=3.35.0)
 
 ## Note
 

@@ -27,6 +27,23 @@ export function email(value: string): null | ValidationErrors {
   return { email: {} };
 }
 
+export function url(value: string): null | ValidationErrors {
+  // https://stackoverflow.com/a/5717133/13475809
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$", // fragment locator
+    "i"
+  );
+  if (pattern.test(value)) {
+    return null;
+  }
+  return { url: "URL is not valid" };
+}
+
 export function number(value: string): null | ValidationErrors {
   if (/^[0-9]+$/.test(value)) {
     return null;
