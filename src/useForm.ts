@@ -53,6 +53,13 @@ export function useForm(properties?: FormProperties) {
   let state: Form = new Form(properties);
   let observer: MutationObserver;
 
+  action.subscribe = subscribe;
+  action.set = set;
+
+  console.log("test");
+  // Passing state via context to subcomponents like Hint
+  setContext("svelte-use-form_form", action);
+
   /**
    * ### The store and action of a form.
    *
@@ -303,12 +310,6 @@ export function useForm(properties?: FormProperties) {
 
     notifyListeners();
   }
-
-  action.subscribe = subscribe;
-  action.set = set;
-
-  // Passing state via context to subcomponents like Hint
-  setContext("svelte-use-form_form", action);
 
   return action;
 }
