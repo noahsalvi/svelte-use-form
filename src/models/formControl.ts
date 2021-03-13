@@ -1,5 +1,6 @@
 import type { ErrorMap } from "./errorMap";
 import type { Form } from "./form";
+import type { FormMember } from "./formMembers";
 import type { ValidationErrors } from "./validationErrors";
 import type { Validator } from "./validator";
 
@@ -22,6 +23,11 @@ export class FormControl {
    */
   errorMap: ErrorMap = {};
 
+  /**
+   * The DOM elements representing this control
+   */
+  elements: FormMember[] = [];
+
   /** If the FormControl passed all given validators. */
   valid = true;
 
@@ -29,7 +35,7 @@ export class FormControl {
    * If the FormControl has been interacted with.
    * (triggered by blur event)
    */
-  touched = false;
+  _touched = false;
 
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
   readonly initial: string;
@@ -42,9 +48,36 @@ export class FormControl {
     return this._value;
   }
 
+  get touched() {
+    return this._touched;
+  }
+
   set value(value: string) {
     this._value = value;
     this.validate();
+  }
+
+  set touched(value: boolean) {
+    this._touched = value;
+    this.elements.forEach((element) => {
+      if (value) element.classList.add("touched");
+      else element.classList.remove("touched");
+    });
+  }
+
+  constructor(formControl: {
+    value: string;
+    validators: Validator[];
+    errorMap: ErrorMap;
+    elements: FormMember[];
+    formRef: () => Form;
+  }) {
+    this.formRef = formControl.formRef;
+    this.validators = formControl.validators;
+    this.errorMap = formControl.errorMap;
+    this.initial = formControl.value;
+    this.elements = formControl.elements;
+    this.value = formControl.value;
   }
 
   /** Validate the FormControl by querying through the given validators. */
@@ -72,19 +105,10 @@ export class FormControl {
     }
 
     this.valid = valid;
-    return valid;
-  }
+    this.elements.forEach((element) =>
+      element.setCustomValidity(valid ? "" : "Field is invalid")
+    );
 
-  constructor(
-    value: string,
-    validators: Validator[],
-    errorMap: ErrorMap,
-    formRef: () => Form
-  ) {
-    this.formRef = formRef;
-    this.validators = validators;
-    this.errorMap = errorMap;
-    this.initial = value;
-    this.value = value;
+    return valid;
   }
 }

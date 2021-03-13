@@ -50,13 +50,12 @@ export function useForm(properties?: FormProperties) {
   const eventListeners: EventListener[] = [];
   const subscribers = [];
 
-  let state: Form = new Form(properties);
+  let state: Form = new Form(properties, notifyListeners);
   let observer: MutationObserver;
 
   action.subscribe = subscribe;
   action.set = set;
 
-  console.log("test");
   // Passing state via context to subcomponents like Hint
   setContext("svelte-use-form_form", action);
 
@@ -104,7 +103,10 @@ export function useForm(properties?: FormProperties) {
 
       if (!state[name]) {
         const initial = textElement.value;
-        state.addFormControl(name, initial, [], {});
+        state._addFormControl(name, initial, [], [textElement], {});
+        console.log(state);
+      } else {
+        state[name].elements.push(textElement);
       }
 
       switch (textElement.type) {
@@ -128,8 +130,9 @@ export function useForm(properties?: FormProperties) {
 
       if (!state[name]) {
         const initial = selectElement.value;
-        state.addFormControl(name, initial, [], {});
+        state._addFormControl(name, initial, [], [selectElement], {});
       } else {
+        state[name].elements.push(selectElement);
         setInitialValue(selectElement, state[name]);
       }
 
@@ -147,6 +150,7 @@ export function useForm(properties?: FormProperties) {
   function observeForm(mutations: MutationRecord[]) {
     for (const mutation of mutations) {
       if (mutation.type === "childList") {
+        // If node gets removed
         for (const node of mutation.removedNodes) {
           if (node instanceof HTMLElement) {
             const inputElements = [...node.getElementsByTagName("input")];
@@ -174,6 +178,7 @@ export function useForm(properties?: FormProperties) {
           }
         }
 
+        // If node gets added
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
             const inputElements = [...node.getElementsByTagName("input")];
@@ -189,10 +194,11 @@ export function useForm(properties?: FormProperties) {
             for (const element of [...textElements, ...selectElements]) {
               const initialFormControlProperty = properties[element.name];
               if (!state[element.name] && initialFormControlProperty) {
-                state.addFormControl(
+                state._addFormControl(
                   element.name,
                   initialFormControlProperty.initial,
                   initialFormControlProperty.validators,
+                  [element],
                   initialFormControlProperty.errorMap
                 );
               }
@@ -242,13 +248,6 @@ export function useForm(properties?: FormProperties) {
       const name = node["name"];
       const value = node[node.type === "checkbox" ? "checked" : "value"];
       state[name].value = value;
-      const valid = state[name].valid;
-
-      if (valid) {
-        node.setCustomValidity("");
-      } else {
-        node.setCustomValidity("Field is invalid");
-      }
 
       notifyListeners();
     }

@@ -1,10 +1,14 @@
 import type { ErrorMap } from "./errorMap";
 import { FormControl } from "./formControl";
+import type { FormMember } from "./formMembers";
 import type { FormProperties } from "./formProperties";
 import type { Validator } from "./validator";
 
 export class Form {
   [formControlName: string]: FormControl;
+
+  // @ts-expect-error - Due to index signature
+  private readonly _notifyListeners: Function;
 
   // @ts-expect-error - Due to index signature
   get valid(): boolean {
@@ -34,25 +38,38 @@ export class Form {
     return values;
   }
 
-  constructor(initialData: FormProperties) {
+  // @ts-expect-error - Due to index signature
+  set touched(value: boolean): void {
+    this.forEachFormControl((formControl) => {
+      formControl.touched = value;
+    });
+
+    this._notifyListeners();
+  }
+
+  constructor(initialData: FormProperties, notifyListeners: Function) {
     for (const [k, v] of Object.entries(initialData ?? {})) {
-      this.addFormControl(k, v.initial, v.validators, v.errorMap);
+      this._addFormControl(k, v.initial, v.validators, [], v.errorMap);
     }
+
+    this._notifyListeners = notifyListeners;
   }
 
   // @ts-expect-error - Due to index signature
-  addFormControl(
+  _addFormControl(
     name: string,
     initial: string,
     validators: Validator[],
+    elements: FormMember[],
     errorMap: ErrorMap
   ) {
-    this[name] = new FormControl(
-      initial ?? "",
-      validators ?? [],
-      errorMap ?? {},
-      () => this
-    );
+    this[name] = new FormControl({
+      value: initial ?? "",
+      validators: validators ?? [],
+      errorMap: errorMap ?? {},
+      elements: elements ?? [],
+      formRef: () => this,
+    });
   }
 
   // @ts-expect-error - Due to index signature
