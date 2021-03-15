@@ -104,7 +104,6 @@ export function useForm(properties?: FormProperties) {
       if (!state[name]) {
         const initial = textElement.value;
         state._addFormControl(name, initial, [], [textElement], {});
-        console.log(state);
       } else {
         state[name].elements.push(textElement);
       }
