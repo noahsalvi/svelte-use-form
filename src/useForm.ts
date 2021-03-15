@@ -102,10 +102,33 @@ export function useForm(properties?: FormProperties) {
       const name = textElement["name"];
 
       if (!state[name]) {
-        const initial = textElement.value;
+        let initial: string;
+
+        // Handle Radio button initial values
+        if (
+          textElement.type === "radio" &&
+          textElement instanceof HTMLInputElement
+        ) {
+          initial = textElement.checked ? textElement.value : "";
+        } else if (
+          textElement.type === "checkbox" &&
+          textElement instanceof HTMLInputElement
+        ) {
+          initial = textElement.checked ? "checked" : "";
+        } else {
+          initial = textElement.value;
+        }
+
         state._addFormControl(name, initial, [], [textElement], {});
       } else {
         state[name].elements.push(textElement);
+        if (
+          textElement.type === "radio" &&
+          textElement instanceof HTMLInputElement &&
+          textElement.checked
+        ) {
+          state[name].initial = textElement.value;
+        }
       }
 
       switch (textElement.type) {
@@ -245,7 +268,14 @@ export function useForm(properties?: FormProperties) {
   function handleInput({ target: node }: Event) {
     if (isFormMember(node)) {
       const name = node["name"];
-      const value = node[node.type === "checkbox" ? "checked" : "value"];
+
+      let value: string;
+      if (node.type === "checkbox" && node instanceof HTMLInputElement) {
+        value = node.checked ? "checked" : "";
+      } else {
+        value = node.value;
+      }
+
       state[name].value = value;
 
       notifyListeners();

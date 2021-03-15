@@ -1,7 +1,7 @@
 import type { ValidationErrors } from "./models/validationErrors";
 
 export function required(value: string): null | ValidationErrors {
-  return value.trim() ? null : { required: true };
+  return value.trim() ? null : { required: "Required" };
 }
 
 export function maxLength(length: number) {

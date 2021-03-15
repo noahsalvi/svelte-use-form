@@ -38,7 +38,7 @@ export class FormControl {
   _touched = false;
 
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
-  readonly initial: string;
+  initial: string;
 
   private readonly formRef: () => Form;
 
@@ -87,7 +87,6 @@ export class FormControl {
 
     for (const validator of this.validators) {
       const errors = validator(this._value, this.formRef());
-
       if (errors) {
         valid = false;
         for (const error of Object.entries(errors)) {
