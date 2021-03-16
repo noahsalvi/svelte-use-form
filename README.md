@@ -162,6 +162,25 @@ export declare class FormControl {
   readonly initial: string;
   get value(): string;
   set value(value: string);
+/**
+   * Set an error manually.
+   *
+   * The error will be removed after changes to the value or on validate()
+   *
+   * Used for setting an error that would be difficult to implement with a validator.
+   * e.g. Backend Response returning Login failed
+   * ``` typescript
+   * function submit() {
+   *    apiLogin($form.values).then(response => {})
+   *    .catch(error => {
+   *        if (error.status === 403) {
+   *            $form.password.error({ login: "Password or username is incorrect" });
+   *        }
+   *    })
+   * }
+   * ```
+   */
+  error(errors: ValidationErrors): void
   /** Validate the FormControl by querying through the given validators. */
   validate(): boolean;
 }
