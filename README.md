@@ -8,8 +8,10 @@ A svelte form library that is easy to use and has no boilerplate. It helps you c
 ```bash
 npm i -D svelte-use-form
 ```
-<a href="https://github.com/noahsalvi/svelte-use-form">![GitHub package.json version](https://img.shields.io/github/package-json/v/noahsalvi/svelte-use-form?style=for-the-badge)</a>
+<a href="https://npmjs.com/package/svelte-use-form">![GitHub package.json version](https://img.shields.io/github/package-json/v/noahsalvi/svelte-use-form?style=for-the-badge)</a>
 <a href="https://npmjs.com/package/svelte-use-form">![npm](https://img.shields.io/npm/dw/svelte-use-form?style=for-the-badge)</a>
+
+
 
 
   
