@@ -10,13 +10,8 @@
   } from "$lib";
 
   const form = useForm();
-  let emailValue: string;
 
-  const resetForm = () => {
-    $form.reset();
-    // $form.value2.reset({ value: "rjeijfiewjfiejifejifjiejfijfej" });
-    // $form.value2.reset();
-  };
+  const resetForm = $form.reset;
 
   const resetFoo = () => {
     $form.value1.reset({ value: "Foo" });
@@ -27,7 +22,6 @@
 <form use:form>
   <!-- Email -->
   <input
-    bind:value={emailValue}
     type="text"
     name="value1"
     placeholder="Value 1"
