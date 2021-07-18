@@ -1,6 +1,6 @@
 {
   "name": "svelte-use-form",
-  "version": "2.3.2",
+  "version": "2.3.5",
   "description": "The most svelte form library! 🥷",
   "author": "Noah Versace Salvi",
   "homepage": "https://github.com/noahsalvi/svelte-use-form#readme",
@@ -20,36 +20,23 @@
     "hint",
     "action"
   ],
-  "svelte": "dist/index.js",
-  "module": "dist/index.mjs",
-  "main": "dist/index.umd.js",
-  "types": "dist/ts/index.d.ts",
-  "files": [
-    "src",
-    "dist"
-  ],
+  "svelte": "./index.js",
   "scripts": {
-    "prebuild": "rm -rf ./dist",
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "validate": "svelte-check",
-    "prepublishOnly": "npm run build"
+    "dev": "svelte-kit dev",
+    "build": "svelte-kit build",
+    "preview": "svelte-kit preview",
+    "package": "svelte-kit package",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "@rollup/plugin-typescript": "^6.0.0",
-    "@tsconfig/svelte": "^1.0.10",
-    "fs-extra": "^9.0.1",
-    "glob": "^7.1.6",
-    "rollup": "^2.32.0",
-    "rollup-plugin-execute": "^1.1.1",
-    "rollup-plugin-filesize": "^9.0.2",
-    "rollup-plugin-svelte": "^6.0.1",
-    "rollup-plugin-terser": "^7.0.2",
-    "svelte": "^3.24.0",
-    "svelte-check": "^1.0.60",
-    "svelte-preprocess": "^4.5.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.3"
-  }
+    "@sveltejs/kit": "next",
+    "svelte": "^3.34.0",
+    "svelte-check": "^2.0.0",
+    "svelte-preprocess": "^4.0.0",
+    "svelte2tsx": "^0.4.2",
+    "tslib": "^2.0.0",
+    "typescript": "^4.0.0"
+  },
+  "type": "module"
 }
