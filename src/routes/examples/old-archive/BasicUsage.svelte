@@ -1,5 +1,5 @@
 <script>
-  import { useForm } from "svelte-use-form";
+  import { useForm } from "$lib";
 
   const form = useForm({ title: { validators: [minLength(5)] } });
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useForm, required } from "svelte-use-form";
+  import { useForm, required } from "$lib";
 
   const form = useForm({ email: { validators: [required] } });
 

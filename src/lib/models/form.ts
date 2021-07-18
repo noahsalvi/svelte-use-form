@@ -55,6 +55,12 @@ export class Form {
     this._notifyListeners = notifyListeners;
   }
 
+  /** Reset the whole form */
+  // @ts-expect-error - Due to index signature
+  reset() {
+    this.forEachFormControl((formControl) => formControl.reset());
+  }
+
   // @ts-expect-error - Due to index signature
   _addFormControl(
     name: string,

@@ -6,7 +6,7 @@
     HintGroup,
     required,
     minLength,
-  } from "svelte-use-form";
+  } from "$lib";
 
   const form = useForm({ name: { validators: [minLength(5)] } });
 

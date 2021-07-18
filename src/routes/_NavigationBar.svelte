@@ -1,8 +1,22 @@
+<script lang="ts">
+  const examplePaths = ["login", "reset-form"];
+
+  const getTitle = (path: string) => {
+    const words = path.split("-");
+    const wordsUppercased = words.map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    );
+    return wordsUppercased.join(" ");
+  };
+</script>
+
 <nav>
   <h1>Svelte Use Form</h1>
   Examples:
   <ul>
-    <li><a href="/examples/login">Login</a></li>
+    {#each examplePaths as examplePath}
+      <li><a href="/examples/{examplePath}">{getTitle(examplePath)}</a></li>
+    {/each}
   </ul>
 </nav>
 
@@ -15,10 +29,17 @@
     background: rgb(0, 0, 0);
     color: white;
   }
-  li,
+
+  ul {
+    display: flex;
+  }
+
+  li {
+    margin-right: 30px;
+    list-style: none;
+  }
   a {
     color: white;
-    list-style: none;
   }
 
   h1 {

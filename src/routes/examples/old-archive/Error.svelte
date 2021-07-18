@@ -1,12 +1,5 @@
 <script lang="ts">
-  import {
-    useForm,
-    Hint,
-    email,
-    required,
-    maxLength,
-    minLength,
-  } from "svelte-use-form";
+  import { useForm, Hint, email, required, maxLength, minLength } from "$lib";
   const form = useForm({
     email: { validators: [email, required] },
     password: {

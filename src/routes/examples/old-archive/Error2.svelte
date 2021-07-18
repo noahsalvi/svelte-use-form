@@ -8,7 +8,7 @@
     minLength,
     maxLength,
     email,
-  } from "svelte-use-form";
+  } from "$lib";
   const form = useForm({
     email: { validators: [email, required] },
     password: {

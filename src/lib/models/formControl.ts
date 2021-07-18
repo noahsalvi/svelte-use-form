@@ -101,7 +101,7 @@ export class FormControl {
   error(errors: ValidationErrors) {
     this.errors = { ...errors, ...this.errors };
 
-    // Updating the form
+    // Updating the $form
     this.formRef()["_notifyListeners"]();
   }
 
@@ -134,5 +134,16 @@ export class FormControl {
     );
 
     return valid;
+  }
+
+  /** Reset the form control value to its initial value and untouch it */
+  reset({ value = null } = {}) {
+    const resetValue = value !== null ? value : this.initial;
+    this.elements.forEach((element) => (element.value = resetValue));
+    this.value = resetValue;
+    this.touched = false;
+
+    // Updating the $form
+    this.formRef()["_notifyListeners"]();
   }
 }

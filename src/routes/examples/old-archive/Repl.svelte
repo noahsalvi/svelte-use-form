@@ -6,7 +6,7 @@
     validators,
     required,
     minLength,
-  } from "svelte-use-form";
+  } from "$lib";
 
   const form = useForm({ status: { validators: [required] } });
 
