@@ -100,6 +100,7 @@ export class FormControl {
    */
   error(errors: ValidationErrors) {
     this.errors = { ...errors, ...this.errors };
+    this.valid = false;
 
     // Updating the $form
     this.formRef()["_notifyListeners"]();
