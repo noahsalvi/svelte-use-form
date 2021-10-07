@@ -236,7 +236,7 @@ A validator needs to be a function that returns null if valid else an object wit
 
 ```typescript
 function passwordMatch(value: string, form: Form): null | ValidationErrors {
-  return value !== form.password.value
+  return value === form.password.value
     ? null
     : { passwordMatch: "Passwords are not matching" };
 }
