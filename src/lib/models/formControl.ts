@@ -52,6 +52,11 @@ export class FormControl {
     return this._touched;
   }
 
+  /**
+   * This will only change the internal value of the control, not the one displayed in the actual HTML-Element
+   *
+   * See `change(value: String)` for doing both
+   */
   set value(value: string) {
     this._value = value;
     this.validate();
@@ -104,6 +109,12 @@ export class FormControl {
 
     // Updating the $form
     this.formRef()["_notifyListeners"]();
+  }
+
+  /** Change the internal value and the value of all HTML-Elements associated with this control */
+  change(value: any) {
+    this.value = value;
+    this.elements.forEach((element) => (element.value = value));
   }
 
   /** Validate the FormControl by querying through the given validators. */
