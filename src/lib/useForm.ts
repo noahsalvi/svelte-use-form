@@ -166,7 +166,7 @@ export function useForm(properties?: FormProperties) {
 
   function setupFormObserver(form: HTMLFormElement) {
     observer = new MutationObserver(observeForm);
-    observer.observe(form, { childList: true });
+    observer.observe(form, { childList: true, subtree: true });
   }
 
   function observeForm(mutations: MutationRecord[]) {
