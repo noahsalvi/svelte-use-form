@@ -13,12 +13,13 @@
     email: { initial: "Test" },
     password: { initial: "test" },
   });
+  $form.name?.value;
   $form.email.value; // ✅
-  $form.notSpecified.value; // ⚠️ Unsure
+  $form.notSpecified?.value; // ⚠️ Unsure
 
   const form2 = useForm<"this" | "is" | "possible">();
-  $form2.possible.value; // ✅
-  $form2.notSpecified.value; // ⚠️ Unsure
+  $form2.possible?.value; // ✅
+  $form2.notSpecified?.value; // ⚠️ Unsure
   $form2.values.name;
 </script>
 
@@ -46,7 +47,6 @@
     placeholder="Message"
     use:validators={[minLength(6), maxLength(12)]}
   />
-  {$form.values.message}
   <HintGroup for="password">
     <Hint on="minLength" let:value>
       The password is too short, min = {value}
@@ -58,3 +58,7 @@
 
   <button on:click|preventDefault disabled={!$form.valid}>Login</button>
 </form>
+<pre>
+  {JSON.stringify($form, null, "\t")}
+  {console.log(JSON.stringify($form, null, " "))}
+</pre>

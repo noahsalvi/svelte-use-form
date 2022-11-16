@@ -1,13 +1,13 @@
 export type TextElement = HTMLInputElement | HTMLTextAreaElement;
-export type FormMember = TextElement | HTMLSelectElement;
+export type FormElement = TextElement | HTMLSelectElement;
 
-export function isTextElement(node): node is TextElement {
+export function isTextElement(node: any): node is TextElement {
   return (
     node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement
   );
 }
 
-export function isFormMember(node): node is FormMember {
+export function isFormElement(node: any): node is FormElement {
   return (
     node instanceof HTMLInputElement ||
     node instanceof HTMLTextAreaElement ||

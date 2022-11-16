@@ -1,19 +1,8 @@
 import type { ErrorMap } from "./errorMap";
 import { FormControl } from "./formControl";
-import type { FormMember } from "./formMembers";
+import type { FormElement } from "./formElements";
 import type { FormProperties } from "./formProperties";
 import type { Validator } from "./validator";
-
-export type FormControlsUnspecified = Partial<Record<string, FormControl>>;
-
-export type FormControlsSpecified<Keys extends keyof any> = {
-  [K in Keys]: FormControl;
-};
-
-export type FormValues<Keys extends keyof any> = Partial<
-  Record<string, string | null>
-> &
-  Record<Keys, string>;
 
 export class Form<Keys extends keyof any> {
   static create<Keys extends keyof any>(
@@ -74,22 +63,22 @@ export class Form<Keys extends keyof any> {
 
   _addFormControl(
     name: string,
-    initial: string,
-    validators: Validator[],
-    elements: FormMember[],
-    errorMap: ErrorMap
+    initial: string = "",
+    validators: Validator[] = [],
+    elements: FormElement[] = [],
+    errorMap: ErrorMap = {}
   ) {
     this[name] = new FormControl({
-      value: initial ?? "",
-      validators: validators ?? [],
-      errorMap: errorMap ?? {},
-      elements: elements ?? [],
+      value: initial,
+      validators: validators,
+      elements: elements,
+      errorMap: errorMap,
       formRef: () => this,
     });
   }
 
   private forEachFormControl(
-    callback: (formControl: FormControl, key?: string) => void
+    callback: (formControl: FormControl, key: string) => void
   ) {
     for (const [key, value] of Object.entries(this)) {
       if (value instanceof FormControl) {
@@ -98,3 +87,14 @@ export class Form<Keys extends keyof any> {
     }
   }
 }
+
+export class FormFormControlMissingError extends Error {}
+
+export type FormControlsUnspecified = Partial<Record<string, FormControl>>;
+export type FormControlsSpecified<Keys extends keyof any> = {
+  [K in Keys]: FormControl;
+};
+export type FormValues<Keys extends keyof any> = Partial<
+  Record<string, string>
+> &
+  Record<Keys, string>;

@@ -13,7 +13,7 @@
   let showNameField = false;
 
   function cantBeBrown(value) {
-    if (value === "brown") return { cantBeBrown: true };
+    if (value === "brown") return { cantBeBrown: true }
   }
 </script>
 
