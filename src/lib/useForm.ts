@@ -45,7 +45,7 @@ interface EventListener {
  * ```
  */
 export function useForm<Keys extends keyof T, T extends FormProperties = any>(
-  properties: T = Object.create(null)
+  properties: T | FormProperties = Object.create(null)
 ) {
   const eventListeners: EventListener[] = [];
   const subscribers: Function[] = [];
