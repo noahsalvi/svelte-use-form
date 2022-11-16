@@ -44,13 +44,13 @@ interface EventListener {
  * <input name="firstName" value="CACHED_NAME" use:validators={[required, maxLength(10)]} />
  * ```
  */
-export function useForm(properties?: FormProperties) {
-  properties = properties ?? {};
-
+export function useForm<Keys extends keyof T, T extends FormProperties = any>(
+  properties: T = Object.create(null)
+) {
   const eventListeners: EventListener[] = [];
   const subscribers = [];
 
-  let state: Form = new Form(properties, notifyListeners);
+  let state = Form.create<Keys>(properties, notifyListeners);
   let observer: MutationObserver;
 
   action.subscribe = subscribe;
@@ -321,7 +321,7 @@ export function useForm(properties?: FormProperties) {
     for (const callback of subscribers) callback(state);
   }
 
-  function subscribe(callback: (form: Form) => void) {
+  function subscribe(callback: (form: typeof state) => void) {
     subscribers.push(callback);
     callback(state);
 
@@ -334,6 +334,7 @@ export function useForm(properties?: FormProperties) {
   }
 
   function set(value) {
+    // TODO investigage what happens when different Keys are passed
     state = value;
 
     notifyListeners();

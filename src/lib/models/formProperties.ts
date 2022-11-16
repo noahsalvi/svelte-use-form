@@ -1,8 +1,8 @@
 import type { ErrorMap } from "./errorMap";
 import type { Validator } from "./validator";
 
-export interface FormProperties {
-  [control: string]: {
+export type FormProperties = {
+  [key: string]: {
     /** Initial value of the form control */
     initial?: string;
     /** The validators that will be checked when the input changes */
@@ -14,4 +14,4 @@ export interface FormProperties {
      */
     errorMap?: ErrorMap;
   };
-}
+};

@@ -4,13 +4,28 @@ import type { FormMember } from "./formMembers";
 import type { FormProperties } from "./formProperties";
 import type { Validator } from "./validator";
 
-export class Form {
-  [formControlName: string]: FormControl;
+export type FormControlsUnspecified = Partial<Record<string, FormControl>>;
 
-  // @ts-expect-error - Due to index signature
+export type FormControlsSpecified<Keys extends keyof any> = {
+  [K in Keys]: FormControl;
+};
+
+export type FormValues<Keys extends keyof any> = Partial<
+  Record<string, string | null>
+> &
+  Record<Keys, string>;
+
+export class Form<Keys extends keyof any> {
+  static create<Keys extends keyof any>(
+    initialData: FormProperties,
+    notifyListeners: Function
+  ) {
+    return new Form<Keys>(initialData, notifyListeners) as Form<Keys> &
+      FormControlsSpecified<Keys> &
+      FormControlsUnspecified;
+  }
   private readonly _notifyListeners: Function;
 
-  // @ts-expect-error - Due to index signature
   get valid(): boolean {
     let valid = true;
     this.forEachFormControl((formControl) => {
@@ -19,7 +34,6 @@ export class Form {
     return valid;
   }
 
-  // @ts-expect-error - Due to index signature
   get touched(): boolean {
     let touched = true;
     this.forEachFormControl((formControl) => {
@@ -28,9 +42,8 @@ export class Form {
     return touched;
   }
 
-  // @ts-expect-error - Due to index signature
-  get values(): { [formControlName: string]: string } {
-    let values = {};
+  get values(): FormValues<Keys> {
+    let values = {} as any;
     this.forEachFormControl((formControl, key) => {
       values[key] = formControl.value;
     });
@@ -38,8 +51,7 @@ export class Form {
     return values;
   }
 
-  // @ts-expect-error - Due to index signature
-  set touched(value: boolean): void {
+  set touched(value: boolean) {
     this.forEachFormControl((formControl) => {
       formControl.touched = value;
     });
@@ -47,8 +59,8 @@ export class Form {
     this._notifyListeners();
   }
 
-  constructor(initialData: FormProperties, notifyListeners: Function) {
-    for (const [k, v] of Object.entries(initialData ?? {})) {
+  private constructor(initialData: FormProperties, notifyListeners: Function) {
+    for (const [k, v] of Object.entries(initialData)) {
       this._addFormControl(k, v.initial, v.validators, [], v.errorMap);
     }
 
@@ -56,12 +68,10 @@ export class Form {
   }
 
   /** Reset the whole form */
-  // @ts-expect-error - Due to index signature
   reset() {
     this.forEachFormControl((formControl) => formControl.reset());
   }
 
-  // @ts-expect-error - Due to index signature
   _addFormControl(
     name: string,
     initial: string,
@@ -78,7 +88,6 @@ export class Form {
     });
   }
 
-  // @ts-expect-error - Due to index signature
   private forEachFormControl(
     callback: (formControl: FormControl, key?: string) => void
   ) {
