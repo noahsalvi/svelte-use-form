@@ -13,14 +13,15 @@
     email: { initial: "Test" },
     password: { initial: "test" },
   });
-  $form.name?.value;
+  $form.name?.value; // ✅
   $form.email.value; // ✅
   $form.notSpecified?.value; // ⚠️ Unsure
 
+  // Specifying controls this way, does not initialize them like it would when given as arguemnts
+  // Still, the advantage is that you have better intellisense
   const form2 = useForm<"this" | "is" | "possible">();
-  $form2.possible?.value; // ✅
-  $form2.notSpecified?.value; // ⚠️ Unsure
-  $form2.values.name;
+  $form2.possible?.value; 
+  $form2.notSpecified?.value; // ✅
 
   $: console.log($form);
 </script>

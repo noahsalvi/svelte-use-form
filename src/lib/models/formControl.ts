@@ -151,7 +151,7 @@ export class FormControl {
   }
 
   /** Reset the form control value to its initial value or `{ value }` and untouch it */
-  reset({ value }: { value: string | null }) {
+  reset({ value = this.initial }: { value?: string } = {}) {
     const resetValue = value !== null ? value : this.initial;
     this.elements.forEach((element) => (element.value = resetValue));
     this.value = resetValue;

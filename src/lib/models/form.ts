@@ -90,7 +90,7 @@ export class Form<Keys extends keyof any> {
 
 export class FormFormControlMissingError extends Error {}
 
-export type FormControlsUnspecified = Partial<Record<string, FormControl>>;
+export type FormControlsUnspecified = { [key: string]: FormControl | undefined };
 export type FormControlsSpecified<Keys extends keyof any> = {
   [K in Keys]: FormControl;
 };
