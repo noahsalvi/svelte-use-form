@@ -21,6 +21,8 @@
   $form2.possible?.value; // ✅
   $form2.notSpecified?.value; // ⚠️ Unsure
   $form2.values.name;
+
+  $: console.log($form);
 </script>
 
 <form use:form>
@@ -60,5 +62,5 @@
 </form>
 <pre>
   {JSON.stringify($form, null, "\t")}
-  {console.log(JSON.stringify($form, null, " "))}
+
 </pre>

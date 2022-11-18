@@ -10,9 +10,10 @@ export class FormControl {
 
   /**
    * Returns an object containing possible ValidationErrors
-   * ### Example (All validators are throwing an error)
+   * @example
+   * (All validators are throwing an error)
    * `{ required: true, minLength: 4, maxLength: 20 }`
-   * ### Example 2 (Only required is not valid)
+   * (Only required is not valid)
    * `{ required: true }`
    */
   errors: ValidationErrors = {};
@@ -28,7 +29,7 @@ export class FormControl {
    */
   elements: FormElement[] = [];
 
-  /** If the FormControl passed all given validators. */
+  /** Does the FormControl pass all given validators? */
   valid = true;
 
   /**
@@ -92,7 +93,7 @@ export class FormControl {
    * The error will be removed after changes to the value or on validate()
    *
    * Used for setting an error that would be difficult to implement with a validator.
-   * e.g. Backend Response returning Login failed
+   * @example Backend Response returning Login failed
    * ``` typescript
    * function submit() {
    *    apiLogin($form.values).then(response => {})
@@ -108,11 +109,11 @@ export class FormControl {
     this.errors = { ...errors, ...this.errors };
     this.valid = false;
 
-    // Updating the $form
+    // Update the $form
     this.formRef()["_notifyListeners"]();
   }
 
-  /** Change the internal value and the value of all HTML-Elements associated with this control */
+  /** Change the value and the value of all HTML-Elements associated with this control */
   change(value: any) {
     this.value = value;
     this.elements.forEach((element) => (element.value = value));
@@ -149,8 +150,8 @@ export class FormControl {
     return valid;
   }
 
-  /** Reset the form control value to its initial value and untouch it */
-  reset({ value = null } = {}) {
+  /** Reset the form control value to its initial value or `{ value }` and untouch it */
+  reset({ value }: { value: string | null }) {
     const resetValue = value !== null ? value : this.initial;
     this.elements.forEach((element) => (element.value = resetValue));
     this.value = resetValue;
