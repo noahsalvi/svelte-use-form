@@ -1,6 +1,6 @@
 import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
-import { Form, FormFormControlMissingError } from "./models/form";
+import { Form, FormControlMissingError } from "./models/form";
 import {
   FormControlElement,
   isFormControlElement,
@@ -104,7 +104,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
       // TextElement doesn't have FormControl yet (TextElement wasn't statically provided)
       if (!formControl) {
         const initial = getInitialValueFromTextElement(textElement);
-        state._addFormControl(name, initial, [], [textElement], {});
+        state._addControl(name, initial, [], [textElement], {});
         formControl = state[name]!;
       } else {
         formControl.elements.push(textElement);
@@ -139,7 +139,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
 
       if (!formControl) {
         const initial = selectElement.value;
-        state._addFormControl(name, initial, [], [selectElement], {});
+        state._addControl(name, initial, [], [selectElement], {});
       } else {
         formControl.elements.push(selectElement);
         setInitialValue(selectElement, formControl);
@@ -203,7 +203,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
             for (const element of [...textElements, ...selectElements]) {
               const initialFormControlProperty = properties[element.name];
               if (!state[element.name] && initialFormControlProperty) {
-                state._addFormControl(
+                state._addControl(
                   element.name,
                   initialFormControlProperty.initial,
                   initialFormControlProperty.validators,
@@ -262,7 +262,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
     if (isFormControlElement(node)) {
       const name = node.name;
       const formControl = state[name];
-      if (!formControl) throw new FormFormControlMissingError();
+      if (!formControl) throw new FormControlMissingError();
 
       let value: string;
       if (node.type === "checkbox" && node instanceof HTMLInputElement) {
@@ -280,7 +280,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
   function handleBlurOrClick({ target: node }: Event) {
     if (isFormControlElement(node)) {
       const formControl = state[node.name];
-      if (!formControl) throw new FormFormControlMissingError();
+      if (!formControl) throw new FormControlMissingError();
 
       if (!formControl.touched) handleInput({ target: node } as any);
 

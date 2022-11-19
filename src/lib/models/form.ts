@@ -20,7 +20,7 @@ export class Form<Keys extends keyof any> {
 
   get valid(): boolean {
     let valid = true;
-    this.forEachFormControl((formControl) => {
+    this.forEachControl((formControl) => {
       if (!formControl.valid) valid = false;
     });
     return valid;
@@ -28,7 +28,7 @@ export class Form<Keys extends keyof any> {
 
   get touched(): boolean {
     let touched = true;
-    this.forEachFormControl((formControl) => {
+    this.forEachControl((formControl) => {
       if (!formControl.touched) touched = false;
     });
     return touched;
@@ -36,7 +36,7 @@ export class Form<Keys extends keyof any> {
 
   get values(): FormValues<Keys> {
     let values = {} as any;
-    this.forEachFormControl((formControl, key) => {
+    this.forEachControl((formControl, key) => {
       values[key] = formControl.value;
     });
 
@@ -44,7 +44,7 @@ export class Form<Keys extends keyof any> {
   }
 
   set touched(value: boolean) {
-    this.forEachFormControl((formControl) => {
+    this.forEachControl((formControl) => {
       formControl.touched = value;
     });
 
@@ -53,7 +53,7 @@ export class Form<Keys extends keyof any> {
 
   private constructor(initialData: FormProperties, notifyListeners: Function) {
     for (const [k, v] of Object.entries(initialData)) {
-      this._addFormControl(k, v.initial, v.validators, [], v.errorMap);
+      this._addControl(k, v.initial, v.validators, [], v.errorMap);
     }
 
     this._notifyListeners = notifyListeners;
@@ -61,11 +61,11 @@ export class Form<Keys extends keyof any> {
 
   /** Reset the whole form */
   reset() {
-    this.forEachFormControl((formControl) => formControl.reset());
+    this.forEachControl((formControl) => formControl.reset());
   }
 
-  /** @internal */
-  _addFormControl(
+  /** @internal Add a form conrol to the Form */
+  _addControl(
     name: string,
     initial: string = "",
     validators: Validator[] = [],
@@ -81,7 +81,7 @@ export class Form<Keys extends keyof any> {
     });
   }
 
-  private forEachFormControl(
+  private forEachControl(
     callback: (formControl: FormControl, key: string) => void
   ) {
     for (const [key, value] of Object.entries(this)) {
@@ -92,7 +92,7 @@ export class Form<Keys extends keyof any> {
   }
 }
 
-export class FormFormControlMissingError extends Error {}
+export class FormControlMissingError extends Error {}
 
 // We do not use utility types here, since they would hide the name of the type
 export type FormControlsUnspecified = {
