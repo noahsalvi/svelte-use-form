@@ -43,7 +43,7 @@ interface EventListener {
  * <input name="firstName" value="CACHED_NAME" use:validators={[required, maxLength(10)]} />
  * ```
  */
-export function useForm<Keys extends keyof T, T extends FormProperties = any>(
+export function useForm<Keys extends keyof T = "", T extends FormProperties = any>(
   properties: T | FormProperties = {} as FormProperties
 ) {
   const eventListeners: EventListener[] = [];
