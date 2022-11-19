@@ -1,7 +1,7 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { FormControl } from "./models/formControl";
-import type { FormElement } from "./models/formElements";
+import type { FormControlElement } from "./models/formControlElement";
 import type { Validator } from "./models/validator";
 import { formReferences } from "./stores/formReferences";
 
@@ -12,7 +12,7 @@ import { formReferences } from "./stores/formReferences";
  * <input name="nameOfInput" use:validators={[required, minLength(5), maxLength(20)]} />
  * ```
  */
-export function validators(node: FormElement, validators: Validator[]) {
+export function validators(node: FormControlElement, validators: Validator[]) {
   setupValidation();
 
   async function setupValidation() {

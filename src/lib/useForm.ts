@@ -1,16 +1,15 @@
 import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
 import { Form, FormFormControlMissingError } from "./models/form";
-import type { FormControl } from "./models/formControl";
-
 import {
-  FormElement,
-  isFormElement,
+  FormControlElement,
+  isFormControlElement,
   isTextElement,
   TextElement,
-} from "./models/formElements";
-import type { FormProperties } from "./models/formProperties";
+} from "./models/formControlElement";
 import { formReferences } from "./stores/formReferences";
+import type { FormControl } from "./models/formControl";
+import type { FormProperties } from "./models/formProperties";
 
 interface EventListener {
   node: HTMLElement;
@@ -171,7 +170,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
               ...textareaElements,
               ...selects,
             ];
-            if (isFormElement(node)) elements.push(node);
+            if (isFormControlElement(node)) elements.push(node);
 
             for (const element of elements) {
               for (const eventListener of eventListeners) {
@@ -260,7 +259,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
   }
 
   function handleInput({ target: node }: Event) {
-    if (isFormElement(node)) {
+    if (isFormControlElement(node)) {
       const name = node.name;
       const formControl = state[name];
       if (!formControl) throw new FormFormControlMissingError();
@@ -279,7 +278,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
   }
 
   function handleBlurOrClick({ target: node }: Event) {
-    if (isFormElement(node)) {
+    if (isFormControlElement(node)) {
       const formControl = state[node.name];
       if (!formControl) throw new FormFormControlMissingError();
 
@@ -292,7 +291,7 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
     }
   }
 
-  function hideNotRepresentedFormControls(nodes: FormElement[]) {
+  function hideNotRepresentedFormControls(nodes: FormControlElement[]) {
     for (const key of Object.keys(properties)) {
       let isFormControlRepresentedInDom = false;
 
@@ -304,7 +303,10 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
     }
   }
 
-  function setInitialValue(formElement: FormElement, formControl: FormControl) {
+  function setInitialValue(
+    formElement: FormControlElement,
+    formControl: FormControl
+  ) {
     if (formControl.initial) formElement.value = formControl.initial;
   }
 

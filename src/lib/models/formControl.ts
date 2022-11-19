@@ -1,5 +1,5 @@
 import type { Form } from "./form";
-import type { FormElement } from "./formElements";
+import type { FormControlElement } from "./formControlElement";
 import type { Validator, ValidationErrors, ErrorMap } from "./validator";
 
 /** A FormControl represents the state of a form member like (input, textarea...) */
@@ -25,7 +25,7 @@ export class FormControl {
   /**
    * The DOM elements representing this control
    */
-  elements: FormElement[] = [];
+  elements: FormControlElement[] = [];
 
   /** Does the FormControl pass all given validators? */
   valid = true;
@@ -39,7 +39,7 @@ export class FormControl {
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
   initial: string;
 
-  // Todo can we get the Form via Svelte context?
+  // TODO can we get the Form via Svelte context?
   private readonly formRef: () => Form<any>;
 
   private _value: string;
@@ -74,7 +74,7 @@ export class FormControl {
     value: string;
     validators: Validator[];
     errorMap: ErrorMap;
-    elements: FormElement[];
+    elements: FormControlElement[];
     formRef: () => Form<any>;
   }) {
     this.formRef = formControl.formRef;

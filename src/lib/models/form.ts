@@ -1,9 +1,13 @@
 import { FormControl } from "./formControl";
-import type { FormElement } from "./formElements";
+import type { FormControlElement } from "./formControlElement";
 import type { FormProperties } from "./formProperties";
 import type { ErrorMap, Validator } from "./validator";
 
 export class Form<Keys extends keyof any> {
+  /**
+   * Function for creating a Form
+   * @remarks This allows us to specify the index signatures in the class
+   */
   static create<Keys extends keyof any>(
     initialData: FormProperties,
     notifyListeners: Function
@@ -57,7 +61,6 @@ export class Form<Keys extends keyof any> {
 
   /** Reset the whole form */
   reset() {
-    console.log(this);
     this.forEachFormControl((formControl) => formControl.reset());
   }
 
@@ -66,7 +69,7 @@ export class Form<Keys extends keyof any> {
     name: string,
     initial: string = "",
     validators: Validator[] = [],
-    elements: FormElement[] = [],
+    elements: FormControlElement[] = [],
     errorMap: ErrorMap = {}
   ) {
     this[name] = new FormControl({

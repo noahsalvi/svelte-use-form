@@ -1,5 +1,5 @@
 import type { FormControl } from "./models/formControl";
-import type { TextElement } from "./models/formElements";
+import type { TextElement } from "./models/formControlElement";
 
 const isChrome = () =>
   /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);

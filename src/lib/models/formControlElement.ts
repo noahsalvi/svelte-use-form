@@ -4,7 +4,7 @@ export function isTextElement(node: any): node is TextElement {
   );
 }
 
-export function isFormElement(node: any): node is FormElement {
+export function isFormControlElement(node: any): node is FormControlElement {
   return (
     node instanceof HTMLInputElement ||
     node instanceof HTMLTextAreaElement ||
@@ -13,4 +13,4 @@ export function isFormElement(node: any): node is FormElement {
 }
 
 export type TextElement = HTMLInputElement | HTMLTextAreaElement;
-export type FormElement = TextElement | HTMLSelectElement;
+export type FormControlElement = TextElement | HTMLSelectElement;
