@@ -12,11 +12,11 @@ import { formReferences } from "./stores/formReferences";
  * <input name="nameOfInput" use:validators={[required, minLength(5), maxLength(20)]} />
  * ```
  */
-export function validators(node: FormControlElement, validators: Validator[]) {
+export function validators(element: FormControlElement, validators: Validator[]) {
   setupValidation();
 
   async function setupValidation() {
-    const formElement = node.form;
+    const formElement = element.form;
     if (!formElement)
       throw new ValidatorsActionError(
         "HTML element doesn't have an ancestral form"
@@ -31,10 +31,10 @@ export function validators(node: FormControlElement, validators: Validator[]) {
         "HTML form doesn't have a svelte-use-form binded. (use:form)"
       );
 
-    const formControl = formReference.form[node.name];
+    const formControl = formReference.form[element.name];
     if (!(formControl instanceof FormControl))
       throw new ValidatorsActionError(
-        `Form Control [${node.name}] doesn't exist.`
+        `Form Control [${element.name}] doesn't exist.`
       );
     formControl.validators.push(...validators);
     formControl.validate();
