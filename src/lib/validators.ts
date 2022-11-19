@@ -50,3 +50,19 @@ export function number(value: string): null | ValidationErrors {
   }
   return { number: {} };
 }
+
+
+
+
+function isString(x) {
+  return Object.prototype.toString.call(x) === "[object String]"
+} 
+
+export function pattern(regexp: string | RegExp){
+  const r = isString(regexp)? new RegExp(regexp) : regexp
+  return (value:string): null | ValidationErrors => {
+    return  (r as RegExp).test(value)
+      ? null
+      : { pattern: "Pattern error" };
+  }
+} 
