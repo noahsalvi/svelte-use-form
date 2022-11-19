@@ -16,5 +16,4 @@ export {
   url,
   number,
 } from "./validators";
-export type { Validator } from "./models/validator";
-export type { ValidationErrors } from "./models/validationErrors";
+export type { Validator, ValidationErrors, ErrorMap } from "./models/validator";

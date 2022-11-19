@@ -7,6 +7,7 @@ import { formReferences } from "./stores/formReferences";
 
 /**
  * Add validators to form control
+ * @example
  * ``` svelte
  * <input name="nameOfInput" use:validators={[required, minLength(5), maxLength(20)]} />
  * ```

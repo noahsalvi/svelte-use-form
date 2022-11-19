@@ -1,8 +1,6 @@
-import type { ErrorMap } from "./errorMap";
 import type { Form } from "./form";
 import type { FormElement } from "./formElements";
-import type { ValidationErrors } from "./validationErrors";
-import type { Validator } from "./validator";
+import type { Validator, ValidationErrors, ErrorMap } from "./validator";
 
 /** A FormControl represents the state of a form member like (input, textarea...) */
 export class FormControl {
@@ -126,19 +124,22 @@ export class FormControl {
 
     for (const validator of this.validators) {
       const errors = validator(this._value, this.formRef());
-      if (errors) {
-        valid = false;
-        for (const error of Object.entries(errors)) {
-          let [key, value] = error;
+      if (!errors) continue;
 
-          // If there is a map for the error, use it
-          const errorMap = this.errorMap[key];
-          if (errorMap) {
-            value = typeof errorMap === "function" ? errorMap(value) : errorMap;
-          }
+      valid = false;
+      for (const error of Object.entries(errors)) {
+        let [key, value] = error;
 
-          this.errors[key] = value;
-        }
+        // If there is a map for the error, use it
+        const errorMapping = this.errorMap[key];
+        if (!errorMapping) continue;
+
+        value =
+          typeof errorMapping === "function"
+            ? errorMapping(value)
+            : errorMapping;
+
+        this.errors[key] = value;
       }
     }
 

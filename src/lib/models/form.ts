@@ -1,8 +1,7 @@
-import type { ErrorMap } from "./errorMap";
 import { FormControl } from "./formControl";
 import type { FormElement } from "./formElements";
 import type { FormProperties } from "./formProperties";
-import type { Validator } from "./validator";
+import type { ErrorMap, Validator } from "./validator";
 
 export class Form<Keys extends keyof any> {
   static create<Keys extends keyof any>(
@@ -62,6 +61,7 @@ export class Form<Keys extends keyof any> {
     this.forEachFormControl((formControl) => formControl.reset());
   }
 
+  /** @internal */
   _addFormControl(
     name: string,
     initial: string = "",
@@ -91,8 +91,9 @@ export class Form<Keys extends keyof any> {
 
 export class FormFormControlMissingError extends Error {}
 
+// We do not use utility types here, since they would hide the name of the type
 export type FormControlsUnspecified = {
-  [key: string]: FormControl | undefined;
+  [key: string]: FormControl | undefined;
 };
 export type FormControlsSpecified<Keys extends keyof any> = {
   [K in Keys]: FormControl;

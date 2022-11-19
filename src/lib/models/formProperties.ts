@@ -1,5 +1,4 @@
-import type { ErrorMap } from "./errorMap";
-import type { Validator } from "./validator";
+import type { ErrorMap, Validator } from "./validator";
 
 export type FormProperties = {
   [key: string]: {
@@ -8,9 +7,10 @@ export type FormProperties = {
     /** The validators that will be checked when the input changes */
     validators?: Validator[];
     /**
-     * The map through which validation errors will be passed.
-     *
+     * The map through which validation errors will be mapped.
      * You can either pass a string or a function returning a new error value
+     *
+     * **Think of it as a translation map. 😆**
      */
     errorMap?: ErrorMap;
   };
