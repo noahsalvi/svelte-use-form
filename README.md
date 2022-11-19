@@ -5,37 +5,29 @@
   </h1>
 
 A svelte form library that is easy to use and has no boilerplate. It helps you control and validate forms and their fields and check on the state of them.
+
 ```bash
 npm i -D svelte-use-form
 ```
+
 <a href="https://npmjs.com/package/svelte-use-form">![GitHub package.json version](https://img.shields.io/github/package-json/v/noahsalvi/svelte-use-form?style=for-the-badge)</a>
 <a href="https://npmjs.com/package/svelte-use-form">![npm](https://img.shields.io/npm/dw/svelte-use-form?style=for-the-badge)</a>
 
-
-
-
-  
-
-#### Features:
+**Features:**
 
 - Supports: Inputs, TextAreas, Selects, Radio Buttons, Checkboxes...
 - Uses single object to represent the state, instead of splitting it up (errors, values, controls...)
 - Requires no special binding on the Form Input Elements, only the name attribute
 - OOTB validators and custom validator support
 - No requirement to use custom components
-- Dynamic Inputs => Show / Hide Inputs at runtime.
+- Works with dynamic inputs => Show / Hide Inputs at runtime.
 
-## Usage
+# Usage
 
 It's pretty self-explanatory, just check out the examples below 😉<br>
 Just make sure to prefix the form with `$`, when accessing its state.
 
-#### REPLs:
-
-- [Registration](https://svelte.dev/repl/a6665267d7d0435ebc7921a250552a25?version=3.34.0)
-- [Testing the limits](https://svelte.dev/repl/d4fc021f688d4ad0b3ceb9a1c44c9be9?version=3.34.0)
-
-### Minimal Example [REPL](https://svelte.dev/repl/faf5a9ab763640ed830028c970421f72?version=3.35.0)
+**Minimal Example** [REPL](https://svelte.dev/repl/faf5a9ab763640ed830028c970421f72?version=3.35.0)
 
 ```svelte
 <script>
@@ -54,7 +46,7 @@ Just make sure to prefix the form with `$`, when accessing its state.
 </form>
 ```
 
-or you can also print the error message like this:
+or you could also print the error message like this:
 
 ```svelte
 ...
@@ -63,7 +55,7 @@ or you can also print the error message like this:
   {/if}
 ```
 
-### Login Example (Styling omitted) [REPL](https://svelte.dev/repl/ca967b45a5aa47b2bb2f9118eb79eefe?version=3)
+**Login Example (Styling omitted)** [REPL](https://svelte.dev/repl/ca967b45a5aa47b2bb2f9118eb79eefe?version=3)
 
 ```svelte
 <script>
@@ -88,93 +80,123 @@ or you can also print the error message like this:
 </form>
 ```
 
-## API
+## More Examples
 
-### const form = useForm(properties)
+**REPLs:**
+
+- [Registration](https://svelte.dev/repl/a6665267d7d0435ebc7921a250552a25?version=3.34.0)
+- [Testing the limits](https://svelte.dev/repl/d4fc021f688d4ad0b3ceb9a1c44c9be9?version=3.34.0)
+
+# API
+
+## `const form = useForm(FormProperties)`
 
 useForm() returns a svelte `store` (Observable) that is also an `action`. (That's what I call [svelte](https://www.dictionary.com/browse/svelte) 😆)<br>
 
-#### properties
+### FormProperties
 
 ```typescript
-interface FormProperties {
-  [control: string]: {
+export type FormProperties = {
+  [key: string]: {
     /** Initial value of the form control */
     initial?: string;
     /** The validators that will be checked when the input changes */
     validators?: Validator[];
     /**
-     * The map through which validation errors will be passed.
-     *
+     * The map through which validation errors will be mapped.
      * You can either pass a string or a function returning a new error value
+     *
+     * **Think of it as a translation map. 😆**
      */
     errorMap?: ErrorMap;
   };
-}
+};
 ```
 
-#### form
+### form
 
-Contains an `action` that can be used on a form. It binds the form state to the form element.
+Contains an `action` that can be used on a `<form>`. It binds the form state to the form element.
 
-#### $form
+### $form
 
 Subscribe to the form with `$` prefix to access the state of the form. It returns a `Form` instance.
 
-### Form
+### `Form`
+
+Remark: The "Form" is an union of multiple types and its self.
 
 ```typescript
 class Form {
-  [formControlName: string]: FormControl;
-  get valid(): boolean;
-  get touched(): boolean;
-  get values(): {
+  valid: boolean;
+  touched: boolean;
+  values: {
     [formControlName: string]: string;
   };
+  reset(): void;
+  [formControlName: string]: FormControl;
 }
 ```
 
-Every input in the form will be accessible through $form directly. e.g. `<input name="email" />` === $form.email
+Every form control in the form will be accessible through $form directly via the name attribute. e.g. `<input name="email" />` === $form.email
 
-### FormControl
+## `FormControl`
 
-```typescript
-/** A FormControl represents the state of a form member like (input, textarea...) */
+````typescript
+/** A FormControl represents the state of a {@link FormControlElement} like (input, textarea...) */
 export declare class FormControl {
   validators: Validator[];
   /**
-   * Returns an object containing possible ValidationErrors
-   * ### Example (All validators are throwing an error)
+   * Returns an object containing possible validation errors
+   * @example
+   * (All validators are throwing an error)
    * `{ required: true, minLength: 4, maxLength: 20 }`
-   * ### Example 2 (Only required is not valid)
+   * (Only required is invalid)
    * `{ required: true }`
    */
-  errors: {
-    [errorName: string]: ValidationErrors;
-  };
+  errors: ValidationErrors;
   /**
    * Contains a map of values, that will be shown
    * in place of the original validation error.
    */
-  errorMap: ErrorMap = {};
-  /** If the FormControl passed all given validators. */
+  errorMap: ErrorMap;
+  /**
+   * The DOM elements representing this control
+   */
+  elements: FormControlElement[];
+  /** Does the FormControl pass all given validators? */
   valid: boolean;
   /**
    * If the FormControl has been interacted with.
    * (triggered by blur event)
    */
-  touched: boolean;
+  _touched: boolean;
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
-  readonly initial: string;
+  initial: string;
+  private readonly formRef;
+  private _value;
   get value(): string;
+  get touched(): boolean;
+  /**
+   * This will only change the internal value of the control, not the one displayed in the actual HTML-Element
+   *
+   * See `change(value: String)` for doing both
+   */
   set value(value: string);
-/**
+  set touched(value: boolean);
+  constructor(formControl: {
+    value: string;
+    validators: Validator[];
+    errorMap: ErrorMap;
+    elements: FormControlElement[];
+    formRef: () => Form<any>;
+  });
+  /**
    * Set an error manually.
    *
    * The error will be removed after changes to the value or on validate()
    *
    * Used for setting an error that would be difficult to implement with a validator.
-   * e.g. Backend Response returning Login failed
+   * @example Backend Response returning Login failed
    * ``` typescript
    * function submit() {
    *    apiLogin($form.values).then(response => {})
@@ -186,13 +208,17 @@ export declare class FormControl {
    * }
    * ```
    */
-  error(errors: ValidationErrors): void
+  error(errors: ValidationErrors): void;
+  /** Change the value and the value of all HTML-Elements associated with this control */
+  change(value: any): void;
   /** Validate the FormControl by querying through the given validators. */
   validate(): boolean;
+  /** Reset the form control value to its initial value or `{ value }` and untouch it */
+  reset({ value }?: { value?: string | null }): void;
 }
-```
+````
 
-### validators (Action)
+## `use:validators` (Action)
 
 Takes in the validators that should be used on the form control.
 e.g.
@@ -201,27 +227,26 @@ e.g.
 <input name="email" use:validators={[required, email]}>
 ```
 
-### Hint
+## Hint
 
 Properties:
 
-- for="name_of_input"
-- on="error" > the error which should trigger it
-- hideWhen="different_error" > hides the hint if the different error is throwing
-- hideWhenRequired > shortcut for hideWhen="required"
-- showWhenUntouched > hint will get displayed even if the field hasn't been touched yet.
-- class="classes"
-- let:value > returns the value of the error
+- `for="name_of_input"`
+- `on="error"` the error which should trigger it
+- `hideWhen="different_error"` hides the hint if the different error is throwing
+- `hideWhenRequired` shortcut for hideWhen="required"
+- `showWhenUntouched` hint will get displayed even if the field hasn't been touched yet.
+- `let:value` returns the value of the error
 
-### HintGroup
+## HintGroup
 
 Properties:
 
-- for="name_of_input"
+- `for="name_of_input"`
 
-You can omit the Hint "name" prop when wrapping it with a HintGroup.
+You can omit the Hint `name` prop when wrapping it with a HintGroup.
 
-### Validators
+## Validators
 
 - required
 - minLength(n)
@@ -230,7 +255,7 @@ You can omit the Hint "name" prop when wrapping it with a HintGroup.
 - email
 - url
 
-#### Custom Validator
+### Custom Validator
 
 A validator needs to be a function that returns null if valid else an object with the key being the name of the error. The value of the object will be accessible through the error. e.g. $form.title.errors.name_of_error -> 'info'.
 
@@ -252,8 +277,8 @@ function passwordMatch(value: string, form: Form): null | ValidationErrors {
 
 An example with [validator.js](https://www.npmjs.com/package/validator) [REPL](https://svelte.dev/repl/21fc7637645d4917994ad4140b54b871?version=3.35.0)
 
-## Note
+# Remarks
 
-### Chrome Autofill
+## Chrome Autofill
 
 When Chrome autofills the form on page load, it will register all inputs as valid. After clicking anywhere on the site, pressing a key or pressing the submit button it will validate all fields and set the correct state of the form. Note that when the user triggers a submit event, it will not fire if the fields are invalid. This solution was needed due to Chromes way of autofilling forms without really filling the inputs with values, until the page gets a click or key event.
