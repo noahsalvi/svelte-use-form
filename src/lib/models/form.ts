@@ -58,6 +58,7 @@ export class Form<Keys extends keyof any> {
 
   /** Reset the whole form */
   reset() {
+    console.log(this);
     this.forEachFormControl((formControl) => formControl.reset());
   }
 
@@ -90,7 +91,9 @@ export class Form<Keys extends keyof any> {
 
 export class FormFormControlMissingError extends Error {}
 
-export type FormControlsUnspecified = { [key: string]: FormControl | undefined };
+export type FormControlsUnspecified = {
+  [key: string]: FormControl | undefined;
+};
 export type FormControlsSpecified<Keys extends keyof any> = {
   [K in Keys]: FormControl;
 };
