@@ -5,6 +5,7 @@
     "async",
     "reuse-form",
     "dynamic-typing",
+    "dates-numbers"
   ];
 
   const getTitle = (path: string) => {

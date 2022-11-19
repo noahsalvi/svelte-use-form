@@ -48,6 +48,18 @@ export class FormControl {
     return this._value;
   }
 
+  get valueAsDate() {
+    return new Date(this.value);
+  }
+
+  get valueAsNumber() {
+    return parseFloat(this.value) 
+  }
+
+  get valueAsBoolean() {
+    return !!this.value;
+  }
+
   get touched() {
     return this._touched;
   }
