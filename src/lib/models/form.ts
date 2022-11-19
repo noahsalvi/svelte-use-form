@@ -1,86 +1,88 @@
-import type { ErrorMap } from "./errorMap";
 import { FormControl } from "./formControl";
-import type { FormMember } from "./formMembers";
+import type { FormControlElement } from "./formControlElement";
 import type { FormProperties } from "./formProperties";
-import type { Validator } from "./validator";
+import type { ErrorMap, Validator } from "./validator";
 
-export class Form {
-  [formControlName: string]: FormControl;
-
-  // @ts-expect-error - Due to index signature
+export class Form<Keys extends keyof any> {
+  /**
+   * Function for creating a Form
+   * @remarks This allows us to specify the index signatures in the class
+   */
+  static create<Keys extends keyof any>(
+    initialData: FormProperties,
+    notifyListeners: Function
+  ) {
+    return new Form<Keys>(initialData, notifyListeners) as Form<Keys> &
+      FormControlsSpecified<Keys> &
+      FormControlsUnspecified;
+  }
   private readonly _notifyListeners: Function;
 
-  // @ts-expect-error - Due to index signature
   get valid(): boolean {
     let valid = true;
-    this.forEachFormControl((formControl) => {
+    this.forEachControl((formControl) => {
       if (!formControl.valid) valid = false;
     });
     return valid;
   }
 
-  // @ts-expect-error - Due to index signature
   get touched(): boolean {
     let touched = true;
-    this.forEachFormControl((formControl) => {
+    this.forEachControl((formControl) => {
       if (!formControl.touched) touched = false;
     });
     return touched;
   }
 
-  // @ts-expect-error - Due to index signature
-  get values(): { [formControlName: string]: string } {
-    let values = {};
-    this.forEachFormControl((formControl, key) => {
+  get values(): FormValues<Keys> {
+    let values = {} as any;
+    this.forEachControl((formControl, key) => {
       values[key] = formControl.value;
     });
 
     return values;
   }
 
-  // @ts-expect-error - Due to index signature
-  set touched(value: boolean): void {
-    this.forEachFormControl((formControl) => {
+  set touched(value: boolean) {
+    this.forEachControl((formControl) => {
       formControl.touched = value;
     });
 
     this._notifyListeners();
   }
 
-  constructor(initialData: FormProperties, notifyListeners: Function) {
-    for (const [k, v] of Object.entries(initialData ?? {})) {
-      this._addFormControl(k, v.initial, v.validators, [], v.errorMap);
+  private constructor(initialData: FormProperties, notifyListeners: Function) {
+    for (const [k, v] of Object.entries(initialData)) {
+      this._addControl(k, v.initial, v.validators, [], v.errorMap);
     }
 
     this._notifyListeners = notifyListeners;
   }
 
   /** Reset the whole form */
-  // @ts-expect-error - Due to index signature
   reset() {
-    this.forEachFormControl((formControl) => formControl.reset());
+    this.forEachControl((formControl) => formControl.reset());
   }
 
-  // @ts-expect-error - Due to index signature
-  _addFormControl(
+  /** @internal Add a form conrol to the Form */
+  _addControl(
     name: string,
-    initial: string,
-    validators: Validator[],
-    elements: FormMember[],
-    errorMap: ErrorMap
+    initial: string = "",
+    validators: Validator[] = [],
+    elements: FormControlElement[] = [],
+    errorMap: ErrorMap = {}
   ) {
     this[name] = new FormControl({
-      value: initial ?? "",
-      validators: validators ?? [],
-      errorMap: errorMap ?? {},
-      elements: elements ?? [],
+      value: initial,
+      validators: validators,
+      elements: elements,
+      errorMap: errorMap,
       formRef: () => this,
     });
   }
 
-  // @ts-expect-error - Due to index signature
-  private forEachFormControl(
-    callback: (formControl: FormControl, key?: string) => void
+  private forEachControl(
+    callback: (formControl: FormControl, key: string) => void
   ) {
     for (const [key, value] of Object.entries(this)) {
       if (value instanceof FormControl) {
@@ -89,3 +91,17 @@ export class Form {
     }
   }
 }
+
+export class FormControlMissingError extends Error {}
+
+// We do not use utility types here, since they would hide the name of the type
+export type FormControlsUnspecified = {
+  [key: string]: FormControl | undefined;
+};
+export type FormControlsSpecified<Keys extends keyof any> = {
+  [K in Keys]: FormControl;
+};
+export type FormValues<Keys extends keyof any> = Partial<
+  Record<string, string>
+> &
+  Record<Keys, string>;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useForm, validators, required } from "$lib";
-  import validator from "validator";
+  let validator: any;
 
   const form = useForm();
 

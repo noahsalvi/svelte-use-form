@@ -1,18 +1,17 @@
-import type { ErrorMap } from "./errorMap";
 import type { Form } from "./form";
-import type { FormMember } from "./formMembers";
-import type { ValidationErrors } from "./validationErrors";
-import type { Validator } from "./validator";
+import type { FormControlElement } from "./formControlElement";
+import type { Validator, ValidationErrors, ErrorMap } from "./validator";
 
-/** A FormControl represents the state of a form member like (input, textarea...) */
+/** A FormControl represents the state of a {@link FormControlElement} like (input, textarea...) */
 export class FormControl {
   validators: Validator[];
 
   /**
-   * Returns an object containing possible ValidationErrors
-   * ### Example (All validators are throwing an error)
+   * Returns an object containing possible validation errors
+   * @example
+   * (All validators are throwing an error)
    * `{ required: true, minLength: 4, maxLength: 20 }`
-   * ### Example 2 (Only required is not valid)
+   * (Only required is invalid)
    * `{ required: true }`
    */
   errors: ValidationErrors = {};
@@ -26,9 +25,9 @@ export class FormControl {
   /**
    * The DOM elements representing this control
    */
-  elements: FormMember[] = [];
+  elements: FormControlElement[] = [];
 
-  /** If the FormControl passed all given validators. */
+  /** Does the FormControl pass all given validators? */
   valid = true;
 
   /**
@@ -40,7 +39,8 @@ export class FormControl {
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
   initial: string;
 
-  private readonly formRef: () => Form;
+  // TODO can we get the Form via Svelte context?
+  private readonly formRef: () => Form<any>;
 
   private _value: string;
 
@@ -74,8 +74,8 @@ export class FormControl {
     value: string;
     validators: Validator[];
     errorMap: ErrorMap;
-    elements: FormMember[];
-    formRef: () => Form;
+    elements: FormControlElement[];
+    formRef: () => Form<any>;
   }) {
     this.formRef = formControl.formRef;
     this.validators = formControl.validators;
@@ -91,7 +91,7 @@ export class FormControl {
    * The error will be removed after changes to the value or on validate()
    *
    * Used for setting an error that would be difficult to implement with a validator.
-   * e.g. Backend Response returning Login failed
+   * @example Backend Response returning Login failed
    * ``` typescript
    * function submit() {
    *    apiLogin($form.values).then(response => {})
@@ -107,11 +107,11 @@ export class FormControl {
     this.errors = { ...errors, ...this.errors };
     this.valid = false;
 
-    // Updating the $form
+    // Update the $form
     this.formRef()["_notifyListeners"]();
   }
 
-  /** Change the internal value and the value of all HTML-Elements associated with this control */
+  /** Change the value and the value of all HTML-Elements associated with this control */
   change(value: any) {
     this.value = value;
     this.elements.forEach((element) => (element.value = value));
@@ -124,19 +124,22 @@ export class FormControl {
 
     for (const validator of this.validators) {
       const errors = validator(this._value, this.formRef());
-      if (errors) {
-        valid = false;
-        for (const error of Object.entries(errors)) {
-          let [key, value] = error;
+      if (!errors) continue;
 
-          // If there is a map for the error, use it
-          const errorMap = this.errorMap[key];
-          if (errorMap) {
-            value = typeof errorMap === "function" ? errorMap(value) : errorMap;
-          }
+      valid = false;
+      for (const error of Object.entries(errors)) {
+        let [key, value] = error;
 
-          this.errors[key] = value;
-        }
+        // If there is a map for the error, use it
+        const errorMapping = this.errorMap[key];
+        if (!errorMapping) continue;
+
+        value =
+          typeof errorMapping === "function"
+            ? errorMapping(value)
+            : errorMapping;
+
+        this.errors[key] = value;
       }
     }
 
@@ -148,9 +151,9 @@ export class FormControl {
     return valid;
   }
 
-  /** Reset the form control value to its initial value and untouch it */
-  reset({ value = null } = {}) {
-    const resetValue = value !== null ? value : this.initial;
+  /** Reset the form control value to its initial value or `{ value }` and untouch it */
+  reset({ value }: { value?: string | null } = {}) {
+    const resetValue = value == null ? this.initial : value;
     this.elements.forEach((element) => (element.value = resetValue));
     this.value = resetValue;
     this.touched = false;

@@ -1,4 +1,4 @@
-import type { ValidationErrors } from "./models/validationErrors";
+import type { ValidationErrors } from "./models/validator";
 
 export function required(value: string): null | ValidationErrors {
   return value.trim() ? null : { required: "Required" };

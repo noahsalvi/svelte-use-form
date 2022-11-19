@@ -1,5 +1,11 @@
 <script lang="ts">
-  const examplePaths = ["login", "reset-form", "async", "reuse-form"];
+  const examplePaths = [
+    "login",
+    "reset-form",
+    "async",
+    "reuse-form",
+    "dynamic-typing",
+  ];
 
   const getTitle = (path: string) => {
     const words = path.split("-");

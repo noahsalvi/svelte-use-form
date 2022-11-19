@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 import type { Form } from "../models/form";
 
 type FormReference = {
-  form: Form;
+  form: Form<any>;
   node: HTMLFormElement;
   notifyListeners: Function;
 };

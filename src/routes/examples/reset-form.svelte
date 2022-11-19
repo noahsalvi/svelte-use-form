@@ -11,11 +11,11 @@
 
   const form = useForm();
 
-  const resetForm = $form.reset;
+  const resetForm = () => $form.reset();
 
   const resetFoo = () => {
-    $form.value1.reset({ value: "Foo" });
-    $form.value2.reset({ value: "Bar" });
+    $form.value1?.reset({ value: "Foo" });
+    $form.value2?.reset({ value: "Bar" });
   };
 </script>
 

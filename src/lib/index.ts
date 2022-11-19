@@ -1,9 +1,13 @@
 export { default as Hint } from "./components/Hint.svelte";
 export { default as HintGroup } from "./components/HintGroup.svelte";
 export { useForm } from "./useForm";
-export { validators } from "./validatorsAction";
-export { Form } from "./models/form";
+export { validators, ValidatorsActionError } from "./validatorsAction";
+export { Form, FormControlMissingError } from "./models/form";
 export { FormControl } from "./models/formControl";
+export type {
+  FormControlsSpecified,
+  FormControlsUnspecified,
+} from "./models/form";
 export {
   required,
   minLength,
@@ -12,5 +16,4 @@ export {
   url,
   number,
 } from "./validators";
-export type { Validator } from "./models/validator";
-export type { ValidationErrors } from "./models/validationErrors";
+export type { Validator, ValidationErrors, ErrorMap } from "./models/validator";

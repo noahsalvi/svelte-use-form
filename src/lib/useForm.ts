@@ -1,16 +1,15 @@
 import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
-import { Form } from "./models/form";
-import type { FormControl } from "./models/formControl";
-
+import { Form, FormControlMissingError } from "./models/form";
 import {
-  FormMember,
-  isFormMember,
+  FormControlElement,
+  isFormControlElement,
   isTextElement,
   TextElement,
-} from "./models/formMembers";
-import type { FormProperties } from "./models/formProperties";
+} from "./models/formControlElement";
 import { formReferences } from "./stores/formReferences";
+import type { FormControl } from "./models/formControl";
+import type { FormProperties } from "./models/formProperties";
 
 interface EventListener {
   node: HTMLElement;
@@ -44,13 +43,14 @@ interface EventListener {
  * <input name="firstName" value="CACHED_NAME" use:validators={[required, maxLength(10)]} />
  * ```
  */
-export function useForm(properties?: FormProperties) {
-  properties = properties ?? {};
-
+export function useForm<Keys extends keyof T, T extends FormProperties = any>(
+  properties: T | FormProperties = {} as FormProperties
+) {
   const eventListeners: EventListener[] = [];
-  const subscribers = [];
+  const subscribers: Function[] = [];
 
-  let state: Form = new Form(properties, notifyListeners);
+  let state = Form.create<Keys>(properties, notifyListeners);
+
   let observer: MutationObserver;
 
   action.subscribe = subscribe;
@@ -99,35 +99,21 @@ export function useForm(properties?: FormProperties) {
 
   function setupTextElements(textElements: TextElement[]) {
     for (const textElement of textElements) {
-      const name = textElement["name"];
-
-      if (!state[name]) {
-        let initial: string;
-
-        // Handle Radio button initial values
-        if (
-          textElement.type === "radio" &&
-          textElement instanceof HTMLInputElement
-        ) {
-          initial = textElement.checked ? textElement.value : "";
-        } else if (
-          textElement.type === "checkbox" &&
-          textElement instanceof HTMLInputElement
-        ) {
-          initial = textElement.checked ? "checked" : "";
-        } else {
-          initial = textElement.value;
-        }
-
-        state._addFormControl(name, initial, [], [textElement], {});
+      const name = textElement.name;
+      let formControl = state[name];
+      // TextElement doesn't have FormControl yet (TextElement wasn't statically provided)
+      if (!formControl) {
+        const initial = getInitialValueFromTextElement(textElement);
+        state._addControl(name, initial, [], [textElement], {});
+        formControl = state[name]!;
       } else {
-        state[name].elements.push(textElement);
+        formControl.elements.push(textElement);
         if (
           textElement.type === "radio" &&
           textElement instanceof HTMLInputElement &&
           textElement.checked
         ) {
-          state[name].initial = textElement.value;
+          formControl.initial = textElement.value;
         }
       }
 
@@ -137,8 +123,8 @@ export function useForm(properties?: FormProperties) {
           mountEventListener(textElement, "click", handleBlurOrClick);
           break;
         default:
-          setInitialValue(textElement, state[name]);
-          handleAutofill(textElement, state[name]);
+          setInitialValue(textElement, formControl!);
+          handleAutofill(textElement, formControl!);
           mountEventListener(textElement, "blur", handleBlurOrClick);
       }
 
@@ -148,14 +134,15 @@ export function useForm(properties?: FormProperties) {
 
   function setupSelectElements(selectElements: HTMLSelectElement[]) {
     for (const selectElement of selectElements) {
-      const name = selectElement["name"];
+      const name = selectElement.name;
+      const formControl = state[name];
 
-      if (!state[name]) {
+      if (!formControl) {
         const initial = selectElement.value;
-        state._addFormControl(name, initial, [], [selectElement], {});
+        state._addControl(name, initial, [], [selectElement], {});
       } else {
-        state[name].elements.push(selectElement);
-        setInitialValue(selectElement, state[name]);
+        formControl.elements.push(selectElement);
+        setInitialValue(selectElement, formControl);
       }
 
       mountEventListener(selectElement, "input", handleInput);
@@ -183,7 +170,7 @@ export function useForm(properties?: FormProperties) {
               ...textareaElements,
               ...selects,
             ];
-            if (isFormMember(node)) elements.push(node);
+            if (isFormControlElement(node)) elements.push(node);
 
             for (const element of elements) {
               for (const eventListener of eventListeners) {
@@ -216,7 +203,7 @@ export function useForm(properties?: FormProperties) {
             for (const element of [...textElements, ...selectElements]) {
               const initialFormControlProperty = properties[element.name];
               if (!state[element.name] && initialFormControlProperty) {
-                state._addFormControl(
+                state._addControl(
                   element.name,
                   initialFormControlProperty.initial,
                   initialFormControlProperty.validators,
@@ -245,6 +232,12 @@ export function useForm(properties?: FormProperties) {
     eventListeners.push({ node, event, listener });
   }
 
+  function unmountEventListeners() {
+    for (const { node, event, listener } of eventListeners) {
+      node.removeEventListener(event, listener);
+    }
+  }
+
   function handleAutofill(textElement: TextElement, formControl: FormControl) {
     // Chrome sometimes fills the input visually without actually writing a value to it, this combats it
     handleChromeAutofill(textElement, formControl, notifyListeners);
@@ -266,8 +259,10 @@ export function useForm(properties?: FormProperties) {
   }
 
   function handleInput({ target: node }: Event) {
-    if (isFormMember(node)) {
-      const name = node["name"];
+    if (isFormControlElement(node)) {
+      const name = node.name;
+      const formControl = state[name];
+      if (!formControl) throw new FormControlMissingError();
 
       let value: string;
       if (node.type === "checkbox" && node instanceof HTMLInputElement) {
@@ -276,52 +271,50 @@ export function useForm(properties?: FormProperties) {
         value = node.value;
       }
 
-      state[name].value = value;
+      formControl.value = value;
 
       notifyListeners();
     }
   }
 
   function handleBlurOrClick({ target: node }: Event) {
-    if (isFormMember(node)) {
-      const control = state[node.name];
+    if (isFormControlElement(node)) {
+      const formControl = state[node.name];
+      if (!formControl) throw new FormControlMissingError();
 
-      if (!control.touched) handleInput({ target: node } as any);
+      if (!formControl.touched) handleInput({ target: node } as any);
 
-      control.touched = true;
+      formControl.touched = true;
       node.classList.add("touched");
 
       notifyListeners();
     }
   }
 
-  function hideNotRepresentedFormControls(nodes: HTMLElement[]) {
+  function hideNotRepresentedFormControls(nodes: FormControlElement[]) {
     for (const key of Object.keys(properties)) {
       let isFormControlRepresentedInDom = false;
 
       for (const node of nodes) {
-        if (key === node["name"]) isFormControlRepresentedInDom = true;
+        if (key === node.name) isFormControlRepresentedInDom = true;
       }
 
       if (!isFormControlRepresentedInDom) delete state[key];
     }
   }
 
-  function setInitialValue(formMember: FormMember, formControl: FormControl) {
-    if (formControl.initial) formMember.value = formControl.initial;
-  }
-
-  function unmountEventListeners() {
-    for (const { node, event, listener } of eventListeners) {
-      node.removeEventListener(event, listener);
-    }
+  function setInitialValue(
+    element: FormControlElement,
+    formControl: FormControl
+  ) {
+    if (formControl.initial) element.value = formControl.initial;
   }
 
   function notifyListeners() {
     for (const callback of subscribers) callback(state);
   }
 
-  function subscribe(callback: (form: Form) => void) {
+  function subscribe(callback: (form: typeof state) => void) {
     subscribers.push(callback);
     callback(state);
 
@@ -334,10 +327,28 @@ export function useForm(properties?: FormProperties) {
   }
 
   function set(value) {
+    // TODO investigage what happens when different Keys are passed
     state = value;
 
     notifyListeners();
   }
 
   return action;
+}
+
+function getInitialValueFromTextElement(textElement: TextElement) {
+  let initial: string;
+
+  // Handle Radio button initial values
+  if (textElement.type === "radio" && textElement instanceof HTMLInputElement) {
+    initial = textElement.checked ? textElement.value : "";
+  } else if (
+    textElement.type === "checkbox" &&
+    textElement instanceof HTMLInputElement
+  ) {
+    initial = textElement.checked ? "checked" : "";
+  } else {
+    initial = textElement.value;
+  }
+  return initial;
 }

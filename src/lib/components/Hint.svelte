@@ -1,12 +1,12 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import { compute_rest_props } from "svelte/internal";
   import type { Form } from "../models/form";
 
   /**
    * The name of the form control.
    *
-   * Can be omitted when using a wrapping HintGroup setting the `for` property.
+   * @remarks Can be omitted when using a wrapping HintGroup setting the `for` property.
+   * @exmaple
    * ``` svelte
    * <input name="nameOfFormControl" use:validators={[required]} />
    * <Hint for="nameOfFormControl" on="required">HINT</Hint>
@@ -38,7 +38,7 @@
   if (!name) name = getContext("svelte-use-form_hint-group-name");
 
   const form: {
-    subscribe: (callback: (form: Form) => any) => void;
+    subscribe: (callback: (form: Form<any>) => any) => void;
   } = getContext("svelte-use-form_form");
 
   $: touched = $form[name]?.touched ?? {};
