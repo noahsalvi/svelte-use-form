@@ -2,16 +2,16 @@ import type { Form } from "./form";
 import type { FormControlElement } from "./formControlElement";
 import type { Validator, ValidationErrors, ErrorMap } from "./validator";
 
-/** A FormControl represents the state of a form member like (input, textarea...) */
+/** A FormControl represents the state of a {@link FormControlElement} like (input, textarea...) */
 export class FormControl {
   validators: Validator[];
 
   /**
-   * Returns an object containing possible ValidationErrors
+   * Returns an object containing possible validation errors
    * @example
    * (All validators are throwing an error)
    * `{ required: true, minLength: 4, maxLength: 20 }`
-   * (Only required is not valid)
+   * (Only required is invalid)
    * `{ required: true }`
    */
   errors: ValidationErrors = {};

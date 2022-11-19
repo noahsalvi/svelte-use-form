@@ -44,7 +44,7 @@ interface EventListener {
  * ```
  */
 export function useForm<Keys extends keyof T, T extends FormProperties = any>(
-  properties: T | FormProperties = Object.create(null)
+  properties: T | FormProperties = {} as FormProperties
 ) {
   const eventListeners: EventListener[] = [];
   const subscribers: Function[] = [];
@@ -304,10 +304,10 @@ export function useForm<Keys extends keyof T, T extends FormProperties = any>(
   }
 
   function setInitialValue(
-    formElement: FormControlElement,
+    element: FormControlElement,
     formControl: FormControl
   ) {
-    if (formControl.initial) formElement.value = formControl.initial;
+    if (formControl.initial) element.value = formControl.initial;
   }
 
   function notifyListeners() {
