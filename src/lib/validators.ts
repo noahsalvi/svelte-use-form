@@ -50,3 +50,10 @@ export function number(value: string): null | ValidationErrors {
   }
   return { number: {} };
 }
+
+export function pattern(regExp: string | RegExp) {
+  const r = typeof regExp === "string" ? new RegExp(regExp) : regExp;
+  return (value: string): null | ValidationErrors => {
+    return r.test(value) ? null : { pattern: "Pattern error" };
+  };
+}

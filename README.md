@@ -266,6 +266,7 @@ Properties:
 - `number`
 - `email`
 - `url`
+- `pattern(regExp)`
 
 ### Custom Validator
 
@@ -293,7 +294,6 @@ An example with [validator.js](https://www.npmjs.com/package/validator) [REPL](h
 
 ## Chrome Autofill Solution
 
-When Chrome autofills the form on page load, it will always register all inputs as valid. After clicking anywhere on the site, pressing a key or pressing the submit button it will then reevaluate all fields and update the state of the form. 
+When Chrome autofills the form on page load, it will always register all inputs as valid. After clicking anywhere on the site, pressing a key or pressing the submit button it will then reevaluate all fields and update the state of the form.
 
 This solution was needed due to Chrome's way of autofilling forms without actually setting the value of the inputs until the page gets a click or key event.
-

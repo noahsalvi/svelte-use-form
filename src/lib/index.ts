@@ -15,5 +15,6 @@ export {
   email,
   url,
   number,
+  pattern,
 } from "./validators";
 export type { Validator, ValidationErrors, ErrorMap } from "./models/validator";
