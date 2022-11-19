@@ -4,7 +4,7 @@
     <span align="left">Svelte Use Form</span>
   </h1>
 
-A svelte form library that is easy to use and has no boilerplate. It helps you control and validate forms and their fields and check on the state of them.
+A svelte form library that is easy to use and has no boilerplate. It lets you create and control complicated forms with ease. Like svelte, the focus is **DX** 💻‍✨
 
 ```bash
 npm i -D svelte-use-form
@@ -15,16 +15,16 @@ npm i -D svelte-use-form
 
 **Features:**
 
-- Supports: Inputs, TextAreas, Selects, Radio Buttons, Checkboxes...
-- Uses single object to represent the state, instead of splitting it up (errors, values, controls...)
-- Requires no special binding on the Form Input Elements, only the name attribute
-- OOTB validators and custom validator support
-- No requirement to use custom components
-- Works with dynamic inputs => Show / Hide Inputs at runtime.
+- Minimalistic approach. Don't write more than necessary. 😘
+- No new components, bindings or callbacks required! ✅
+- OOTB validators and custom validator support ✅
+- Works with dynamic inputs => Show / Hide Inputs at runtime. ✅
+- Type inference [TS] ✅
 
 # Usage
 
-It's pretty self-explanatory, just check out the examples below 😉<br>
+It's pretty self-explanatory… check out the examples below 😉
+
 Just make sure to prefix the form with `$`, when accessing its state.
 
 **Minimal Example** [REPL](https://svelte.dev/repl/faf5a9ab763640ed830028c970421f72?version=3.35.0)
@@ -89,11 +89,41 @@ or you could also print the error message like this:
 
 # API
 
-## `const form = useForm(FormProperties)`
+## `useForm(FormProperties | null)`
 
-useForm() returns a svelte `store` (Observable) that is also an `action`. (That's what I call [svelte](https://www.dictionary.com/browse/svelte) 😆)<br>
+useForm() returns a svelte `store` (Observable) that is also an `action`. (That's what I call [svelte](https://www.dictionary.com/browse/svelte) 😆)
 
-### FormProperties
+### Why specify `FormProperties`?
+
+Providing the names of the properties as arguments allows us to initialize all form controls in the form before the site is actually rendered. Thus you won't need to null-check them when accessing them.
+
+```svelte
+const form = useForm({ firstName: {} });
+$form.firstName // Works as expected
+$form?.lastName // lastName would be null on page load
+```
+
+### `$form`
+
+Subscribe to the form with `$`-prefix to access the state of the form. It returns a `Form` instance.
+
+### `Form`
+
+**Remark**: In reality the "Form" is an union of multiple types and its self.
+
+```typescript
+class Form {
+  valid: boolean;
+  touched: boolean;
+  values: {
+    [controlName: string]: string;
+  };
+  reset(): void;
+  [controlName: string]: FormControl | undefined;
+}
+```
+
+### `FormProperties` (Optional)
 
 ```typescript
 export type FormProperties = {
@@ -113,36 +143,16 @@ export type FormProperties = {
 };
 ```
 
-### form
-
-Contains an `action` that can be used on a `<form>`. It binds the form state to the form element.
-
-### $form
-
-Subscribe to the form with `$` prefix to access the state of the form. It returns a `Form` instance.
-
-### `Form`
-
-Remark: The "Form" is an union of multiple types and its self.
-
-```typescript
-class Form {
-  valid: boolean;
-  touched: boolean;
-  values: {
-    [formControlName: string]: string;
-  };
-  reset(): void;
-  [formControlName: string]: FormControl;
-}
-```
-
-Every form control in the form will be accessible through $form directly via the name attribute. e.g. `<input name="email" />` === $form.email
-
 ## `FormControl`
 
+A FormControl represents an input of the form. (input, textarea, radio, select...)
+
+**Important**:
+Every control in the form will be accessible through $form directly via the name attribute.
+
+e.g. `<input name="email" />` --> `$form.email`
+
 ````typescript
-/** A FormControl represents the state of a {@link FormControlElement} like (input, textarea...) */
 export declare class FormControl {
   validators: Validator[];
   /**
@@ -227,7 +237,9 @@ e.g.
 <input name="email" use:validators={[required, email]}>
 ```
 
-## Hint
+## `<Hint></Hint>`
+
+Helper component for displaying information based on errors in an input.
 
 Properties:
 
@@ -238,22 +250,22 @@ Properties:
 - `showWhenUntouched` hint will get displayed even if the field hasn't been touched yet.
 - `let:value` returns the value of the error
 
-## HintGroup
+## `<HintGroup><Hint></Hint></HintGroup>`
+
+You can omit the Hint `name` prop when wrapping it with a HintGroup.
 
 Properties:
 
 - `for="name_of_input"`
 
-You can omit the Hint `name` prop when wrapping it with a HintGroup.
-
 ## Validators
 
-- required
-- minLength(n)
-- maxLength(n)
-- number
-- email
-- url
+- `required`
+- `minLength(n)`
+- `maxLength(n)`
+- `number`
+- `email`
+- `url`
 
 ### Custom Validator
 
@@ -279,6 +291,9 @@ An example with [validator.js](https://www.npmjs.com/package/validator) [REPL](h
 
 # Remarks
 
-## Chrome Autofill
+## Chrome Autofill Solution
 
-When Chrome autofills the form on page load, it will register all inputs as valid. After clicking anywhere on the site, pressing a key or pressing the submit button it will validate all fields and set the correct state of the form. Note that when the user triggers a submit event, it will not fire if the fields are invalid. This solution was needed due to Chromes way of autofilling forms without really filling the inputs with values, until the page gets a click or key event.
+When Chrome autofills the form on page load, it will always register all inputs as valid. After clicking anywhere on the site, pressing a key or pressing the submit button it will then reevaluate all fields and update the state of the form. 
+
+This solution was needed due to Chrome's way of autofilling forms without actually setting the value of the inputs until the page gets a click or key event.
+
