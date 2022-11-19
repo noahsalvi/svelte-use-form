@@ -153,71 +153,25 @@ Every control in the form will be accessible through $form directly via the name
 e.g. `<input name="email" />` --> `$form.email`
 
 ````typescript
-export declare class FormControl {
+class FormControl {
+  value: string;
+  touched: boolean;
   validators: Validator[];
-  /**
-   * Returns an object containing possible validation errors
-   * @example
-   * (All validators are throwing an error)
-   * `{ required: true, minLength: 4, maxLength: 20 }`
-   * (Only required is invalid)
-   * `{ required: true }`
-   */
+  /** Does the FormControl pass all given validators? */
+  valid: boolean;
+  /** The initial value of the FormControl. */
+  initial: string;
+  /** The DOM elements representing this control*/
+  elements: FormControlElement[];
+  
+  /** Returns an object containing possible validation errors */ 
   errors: ValidationErrors;
   /**
    * Contains a map of values, that will be shown
    * in place of the original validation error.
    */
   errorMap: ErrorMap;
-  /**
-   * The DOM elements representing this control
-   */
-  elements: FormControlElement[];
-  /** Does the FormControl pass all given validators? */
-  valid: boolean;
-  /**
-   * If the FormControl has been interacted with.
-   * (triggered by blur event)
-   */
-  _touched: boolean;
-  /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
-  initial: string;
-  private readonly formRef;
-  private _value;
-  get value(): string;
-  get touched(): boolean;
-  /**
-   * This will only change the internal value of the control, not the one displayed in the actual HTML-Element
-   *
-   * See `change(value: String)` for doing both
-   */
-  set value(value: string);
-  set touched(value: boolean);
-  constructor(formControl: {
-    value: string;
-    validators: Validator[];
-    errorMap: ErrorMap;
-    elements: FormControlElement[];
-    formRef: () => Form<any>;
-  });
-  /**
-   * Set an error manually.
-   *
-   * The error will be removed after changes to the value or on validate()
-   *
-   * Used for setting an error that would be difficult to implement with a validator.
-   * @example Backend Response returning Login failed
-   * ``` typescript
-   * function submit() {
-   *    apiLogin($form.values).then(response => {})
-   *    .catch(error => {
-   *        if (error.status === 403) {
-   *            $form.password.error({ login: "Password or username is incorrect" });
-   *        }
-   *    })
-   * }
-   * ```
-   */
+  
   error(errors: ValidationErrors): void;
   /** Change the value and the value of all HTML-Elements associated with this control */
   change(value: any): void;
