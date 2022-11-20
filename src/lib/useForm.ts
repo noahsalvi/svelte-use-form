@@ -2,7 +2,7 @@ import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
 import { Form, FormControlMissingError } from "./models/form";
 import {
-  ignoreElement,
+  isIgnoredElement,
   isFormControlElement,
   isTextElement,
 } from "./models/formControlElement";
@@ -50,8 +50,9 @@ export function useForm<
   Keys extends keyof T = "",
   T extends FormProperties = any
 >(properties: T | FormProperties = {} as FormProperties) {
-  const eventListeners: EventListener[] = [];
   const subscribers: Function[] = [];
+
+  let eventListeners: EventListener[] = [];
 
   let state = Form.create<Keys>(properties, notifyListeners);
 
@@ -168,82 +169,40 @@ export function useForm<
 
   function observeForm(mutations: MutationRecord[]) {
     for (const mutation of mutations) {
-      if (mutation.type === "childList") {
-        // If node gets removed
-        for (const node of mutation.removedNodes) {
-          if (node instanceof HTMLElement) {
-            const inputElements = [
-              ...getNodeElementsByTagName<HTMLInputElement>(node, "input"),
-            ];
-            const textareaElements = [
-              ...getNodeElementsByTagName<HTMLTextAreaElement>(
-                node,
-                "textarea"
-              ),
-            ];
-            const selects = [
-              ...getNodeElementsByTagName<HTMLSelectElement>(node, "select"),
-            ];
-            const elements = [
-              ...inputElements,
-              ...textareaElements,
-              ...selects,
-            ];
-            if (isFormControlElement(node)) elements.push(node);
+      if (mutation.type !== "childList") continue;
 
-            for (const element of elements) {
-              for (const eventListener of eventListeners) {
-                if (element === eventListener.node) {
-                  delete state[element["name"]];
-
-                  element.removeEventListener(
-                    eventListener.event,
-                    eventListener.listener
-                  );
-                }
-              }
-            }
-          }
+      // If node gets added
+      for (const node of mutation.addedNodes) {
+        if (!(isFormControlElement(node) && !isIgnoredElement(node))) continue;
+        const initialFormControlProperty = properties[node.name];
+        if (!state[node.name] && initialFormControlProperty) {
+          state._addControl(
+            node.name,
+            initialFormControlProperty.initial,
+            initialFormControlProperty.validators,
+            [], // The setup function will add this node to the form control
+            initialFormControlProperty.errorMap
+          );
         }
+        if (isTextElement(node)) setupTextElements([node]);
+        else if (node instanceof HTMLSelectElement) setupSelectElements([node]);
+      }
 
-        // If node gets added
-        for (const node of mutation.addedNodes) {
-          if (node instanceof HTMLElement) {
-            const inputElements = [
-              ...getNodeElementsByTagName<HTMLInputElement>(node, "input"),
-            ];
-            const textareaElements = [
-              ...getNodeElementsByTagName<HTMLTextAreaElement>(
-                node,
-                "textarea"
-              ),
-            ];
-            const selectElements = [
-              ...getNodeElementsByTagName<HTMLSelectElement>(node, "select"),
-            ];
-            const textElements = [...inputElements, ...textareaElements];
+      // If node gets removed
+      for (const node of mutation.removedNodes) {
+        if (!(node instanceof HTMLElement)) continue; // We only handle HTML elements
 
-            if (isTextElement(node)) textElements.push(node);
-            else if (node instanceof HTMLSelectElement)
-              selectElements.push(node);
+        // The observer will only return the direct elements that were removed, and not for example a nested input
+        const elements = isFormControlElement(node)
+          ? [node]
+          : getAllFormControlElements(node);
 
-            for (const element of [...textElements, ...selectElements]) {
-              const initialFormControlProperty = properties[element.name];
-              if (!state[element.name] && initialFormControlProperty) {
-                state._addControl(
-                  element.name,
-                  initialFormControlProperty.initial,
-                  initialFormControlProperty.validators,
-                  [element],
-                  initialFormControlProperty.errorMap
-                );
-              }
-            }
-
-            setupTextElements(textElements);
-            setupSelectElements(selectElements);
-          }
-        }
+        elements.forEach((element) => {
+          delete state[element.name];
+          eventListeners = eventListeners.filter(
+            (eventListener) => eventListener.node !== element
+          );
+        });
       }
     }
 
@@ -318,6 +277,7 @@ export function useForm<
     }
   }
 
+  // TODO do we still need this?
   function hideNotRepresentedFormControls(nodes: FormControlElement[]) {
     for (const key of Object.keys(properties)) {
       let isFormControlRepresentedInDom = false;
@@ -389,6 +349,16 @@ function getNodeElementsByTagName<T>(
   tagName: string
 ): T[] {
   return Array.from(node.getElementsByTagName(tagName)).filter(
-    (element) => !ignoreElement(element)
+    (element) => !isIgnoredElement(element)
   ) as T[];
+}
+
+function getAllFormControlElements(node: HTMLElement): FormControlElement[] {
+  const inputs = getNodeElementsByTagName<HTMLInputElement>(node, "input");
+  const textareas = getNodeElementsByTagName<HTMLTextAreaElement>(
+    node,
+    "textarea"
+  );
+  const selects = getNodeElementsByTagName<HTMLSelectElement>(node, "select");
+  return [...inputs, ...textareas, ...selects];
 }
