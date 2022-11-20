@@ -15,9 +15,11 @@ input:-webkit-autofill {
 `;
 
 function startAnimationWhenAutofilled() {
-  if (document.getElementById("svelte-use-form-chrome-autofill-styles") === null) {
+  if (
+    document.getElementById("svelte-use-form-chrome-autofill-styles") === null
+  ) {
     const style = document.createElement("style");
-    style.setAttribute("id", "svelte-use-form-chrome-autofill-styles")
+    style.setAttribute("id", "svelte-use-form-chrome-autofill-styles");
     style.setAttribute("type", "text/css");
     style.appendChild(document.createTextNode(css));
     document.head.appendChild(style);

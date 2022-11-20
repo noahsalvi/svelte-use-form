@@ -22,22 +22,28 @@
   ],
   "svelte": "./index.js",
   "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "preview": "svelte-kit preview",
+    "dev": "vite dev",
+    "build": "svelte-kit sync && svelte-package",
+    "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
     "package": "svelte-kit package",
-    "pub": "yarn publish package",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --plugin-search-dir . --check .",
+    "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
-    "@sveltejs/kit": "next",
-    "svelte": "^3.34.0",
-    "svelte-check": "^2.0.0",
-    "svelte-preprocess": "^4.0.0",
+    "@playwright/test": "^1.28.0",
+    "@sveltejs/adapter-auto": "^1.0.0-next.88",
+    "@sveltejs/kit": "^1.0.0-next.553",
+    "prettier": "^2.7.1",
+    "prettier-plugin-svelte": "^2.8.1",
+    "svelte": "^3.46.0",
+    "svelte-check": "^2.7.1",
+    "svelte-preprocess": "^4.10.6",
     "svelte2tsx": "^0.4.2",
-    "tslib": "^2.0.0",
-    "typescript": "^4.0.0"
+    "tslib": "^2.3.1",
+    "typescript": "^4.7.4",
+    "vite": "^3.1.0"
   },
   "type": "module"
 }

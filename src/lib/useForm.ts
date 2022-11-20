@@ -2,10 +2,12 @@ import { setContext } from "svelte";
 import { handleChromeAutofill } from "./chromeAutofill";
 import { Form, FormControlMissingError } from "./models/form";
 import {
-  FormControlElement,
   ignoreElement,
   isFormControlElement,
   isTextElement,
+} from "./models/formControlElement";
+import type {
+  FormControlElement,
   TextElement,
 } from "./models/formControlElement";
 import { formReferences } from "./stores/formReferences";
@@ -44,9 +46,10 @@ interface EventListener {
  * <input name="firstName" value="CACHED_NAME" use:validators={[required, maxLength(10)]} />
  * ```
  */
-export function useForm<Keys extends keyof T = "", T extends FormProperties = any>(
-  properties: T | FormProperties = {} as FormProperties
-) {
+export function useForm<
+  Keys extends keyof T = "",
+  T extends FormProperties = any
+>(properties: T | FormProperties = {} as FormProperties) {
   const eventListeners: EventListener[] = [];
   const subscribers: Function[] = [];
 
@@ -85,9 +88,15 @@ export function useForm<Keys extends keyof T = "", T extends FormProperties = an
   }
 
   function setupForm(node: HTMLFormElement) {
-    const inputElements = [...getNodeElementsByTagName<HTMLInputElement>(node, "input")];
-    const textareaElements = [...getNodeElementsByTagName<HTMLTextAreaElement>(node,"textarea")];
-    const selectElements = [...getNodeElementsByTagName<HTMLSelectElement>(node,"select")];
+    const inputElements = [
+      ...getNodeElementsByTagName<HTMLInputElement>(node, "input"),
+    ];
+    const textareaElements = [
+      ...getNodeElementsByTagName<HTMLTextAreaElement>(node, "textarea"),
+    ];
+    const selectElements = [
+      ...getNodeElementsByTagName<HTMLSelectElement>(node, "select"),
+    ];
     const textElements = [...inputElements, ...textareaElements];
 
     setupTextElements(textElements);
@@ -163,9 +172,18 @@ export function useForm<Keys extends keyof T = "", T extends FormProperties = an
         // If node gets removed
         for (const node of mutation.removedNodes) {
           if (node instanceof HTMLElement) {
-            const inputElements = [...getNodeElementsByTagName<HTMLInputElement>(node, "input")];
-            const textareaElements = [...getNodeElementsByTagName<HTMLTextAreaElement>(node,"textarea")];
-            const selects = [...getNodeElementsByTagName<HTMLSelectElement>(node,"select")];
+            const inputElements = [
+              ...getNodeElementsByTagName<HTMLInputElement>(node, "input"),
+            ];
+            const textareaElements = [
+              ...getNodeElementsByTagName<HTMLTextAreaElement>(
+                node,
+                "textarea"
+              ),
+            ];
+            const selects = [
+              ...getNodeElementsByTagName<HTMLSelectElement>(node, "select"),
+            ];
             const elements = [
               ...inputElements,
               ...textareaElements,
@@ -191,10 +209,19 @@ export function useForm<Keys extends keyof T = "", T extends FormProperties = an
         // If node gets added
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
-            const inputElements = [...getNodeElementsByTagName<HTMLInputElement>(node, "input")];
-            const textareaElements = [...getNodeElementsByTagName<HTMLTextAreaElement>(node,"textarea")];
-            const selectElements = [...getNodeElementsByTagName<HTMLSelectElement>(node,"select")];
-            const textElements = [...inputElements, ...textareaElements]
+            const inputElements = [
+              ...getNodeElementsByTagName<HTMLInputElement>(node, "input"),
+            ];
+            const textareaElements = [
+              ...getNodeElementsByTagName<HTMLTextAreaElement>(
+                node,
+                "textarea"
+              ),
+            ];
+            const selectElements = [
+              ...getNodeElementsByTagName<HTMLSelectElement>(node, "select"),
+            ];
+            const textElements = [...inputElements, ...textareaElements];
 
             if (isTextElement(node)) textElements.push(node);
             else if (node instanceof HTMLSelectElement)
@@ -326,7 +353,7 @@ export function useForm<Keys extends keyof T = "", T extends FormProperties = an
     subscribers.splice(index, 1);
   }
 
-  function set(value) {
+  function set(value: typeof state) {
     // TODO investigage what happens when different Keys are passed
     state = value;
 
@@ -357,7 +384,10 @@ function getInitialValueFromTextElement(textElement: TextElement) {
   Scan the DOM for a set of form elements by tag name and
   return the elements which are not ignored by `data-suf-ignore` attribute.
 */
-function getNodeElementsByTagName<T>(node: HTMLFormElement | HTMLElement, tagName: string): T[] {
+function getNodeElementsByTagName<T>(
+  node: HTMLFormElement | HTMLElement,
+  tagName: string
+): T[] {
   return Array.from(node.getElementsByTagName(tagName)).filter(
     (element) => !ignoreElement(element)
   ) as T[];

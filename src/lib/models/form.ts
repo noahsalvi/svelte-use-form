@@ -72,7 +72,7 @@ export class Form<Keys extends keyof any> {
     elements: FormControlElement[] = [],
     errorMap: ErrorMap = {}
   ) {
-    this[name] = new FormControl({
+    (this as any)[name] = new FormControl({
       value: initial,
       validators: validators,
       elements: elements,

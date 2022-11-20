@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
-import type { Form } from "../models/form";
+import type { Form, FormControlsUnspecified } from "../models/form";
 
 type FormReference = {
-  form: Form<any>;
+  form: Form<any> & FormControlsUnspecified;
   node: HTMLFormElement;
   notifyListeners: Function;
 };
