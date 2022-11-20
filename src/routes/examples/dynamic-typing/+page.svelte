@@ -19,9 +19,9 @@
 
   // Specifying controls this way, does not initialize them like it would when given as arguemnts
   // Still, the advantage is that you have better intellisense
-  const form2 = useForm<"this" | "is" | "possible">();
-  $form2.possible?.value;
-  $form2.notSpecified?.value; // ✅
+  // const form2 = useForm<"this" | "is" | "possible">();
+  // $form2.possible?.value;
+  // $form2.notSpecified?.value; // ✅
 
 </script>
 
@@ -43,12 +43,6 @@
     use:validators={[minLength(6), maxLength(12)]}
   />
 
-  <input
-    type="text"
-    name="message"
-    placeholder="Message"
-    use:validators={[minLength(6), maxLength(12)]}
-  />
   <HintGroup for="password">
     <Hint on="minLength" let:value>
       The password is too short, min = {value}
