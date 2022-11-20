@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     Hint,
     useForm,
@@ -11,12 +11,12 @@
   const form = useForm();
   let loading = false;
 
-  const checkUsernameAvailability = (value) => {
+  const checkUsernameAvailability = (value: any) => {
     loading = true;
 
     fetch("https://randomuser.me/api/?username=" + value).then((_) => {
       // If there are already some validation errors, stop.
-      if (!$form.username.valid) return;
+      if (!$form.username?.valid) return;
 
       // Check if the username is available
       const isUsernameAvailable = Math.floor(Math.random() * 2) === 0;
