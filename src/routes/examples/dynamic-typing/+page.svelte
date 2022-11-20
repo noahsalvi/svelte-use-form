@@ -23,7 +23,6 @@
   $form2.possible?.value;
   $form2.notSpecified?.value; // ✅
 
-  $: console.log($form);
 </script>
 
 <form use:form>
