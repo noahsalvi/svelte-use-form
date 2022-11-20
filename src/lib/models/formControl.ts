@@ -42,7 +42,7 @@ export class FormControl {
   // TODO can we get the Form via Svelte context?
   private readonly formRef: () => Form<any>;
 
-  private _value: string;
+  private _value: string = "";
 
   get value() {
     return this._value;
@@ -123,7 +123,7 @@ export class FormControl {
     this.errors = {};
 
     for (const validator of this.validators) {
-      const errors = validator(this._value, this.formRef());
+      const errors = validator(this.value, this.formRef());
       if (!errors) continue;
 
       valid = false;
@@ -132,12 +132,12 @@ export class FormControl {
 
         // If there is a map for the error, use it
         const errorMapping = this.errorMap[key];
-        if (!errorMapping) continue;
-
-        value =
-          typeof errorMapping === "function"
-            ? errorMapping(value)
-            : errorMapping;
+        if (errorMapping) {
+          value =
+            typeof errorMapping === "function"
+              ? errorMapping(value)
+              : errorMapping;
+        }
 
         this.errors[key] = value;
       }
