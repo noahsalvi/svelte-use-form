@@ -1,5 +1,5 @@
 <script lang="ts">
-import {
+  import {
     HintGroup,
     Hint,
     minLength,
@@ -29,7 +29,6 @@ import {
     placeholder="Password"
     use:validators={[minLength(6), maxLength(12)]}
   />
-  {console.log($form.password)}
   <HintGroup for="password">
     <Hint on="minLength" let:value>
       The password is too short, min = {value}
