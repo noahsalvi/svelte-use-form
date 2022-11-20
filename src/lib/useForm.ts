@@ -3,6 +3,7 @@ import { handleChromeAutofill } from "./chromeAutofill";
 import { Form, FormControlMissingError } from "./models/form";
 import {
   FormControlElement,
+  ignoreElement,
   isFormControlElement,
   isTextElement,
   TextElement,
@@ -84,10 +85,10 @@ export function useForm<Keys extends keyof T = "", T extends FormProperties = an
   }
 
   function setupForm(node: HTMLFormElement) {
-    const inputElements = [...node.getElementsByTagName("input")];
-    const textareaElements = [...node.getElementsByTagName("textarea")];
+    const inputElements = [...getNodeElementsByTagName<HTMLInputElement>(node, "input")];
+    const textareaElements = [...getNodeElementsByTagName<HTMLTextAreaElement>(node,"textarea")];
+    const selectElements = [...getNodeElementsByTagName<HTMLSelectElement>(node,"select")];
     const textElements = [...inputElements, ...textareaElements];
-    const selectElements = [...node.getElementsByTagName("select")];
 
     setupTextElements(textElements);
     setupSelectElements(selectElements);
@@ -162,9 +163,9 @@ export function useForm<Keys extends keyof T = "", T extends FormProperties = an
         // If node gets removed
         for (const node of mutation.removedNodes) {
           if (node instanceof HTMLElement) {
-            const inputElements = [...node.getElementsByTagName("input")];
-            const textareaElements = [...node.getElementsByTagName("textarea")];
-            const selects = [...node.getElementsByTagName("select")];
+            const inputElements = [...getNodeElementsByTagName<HTMLInputElement>(node, "input")];
+            const textareaElements = [...getNodeElementsByTagName<HTMLTextAreaElement>(node,"textarea")];
+            const selects = [...getNodeElementsByTagName<HTMLSelectElement>(node,"select")];
             const elements = [
               ...inputElements,
               ...textareaElements,
@@ -190,11 +191,10 @@ export function useForm<Keys extends keyof T = "", T extends FormProperties = an
         // If node gets added
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
-            const inputElements = [...node.getElementsByTagName("input")];
-            const textareaElements = [...node.getElementsByTagName("textarea")];
-            const textElements = [...inputElements, ...textareaElements];
-
-            const selectElements = [...node.getElementsByTagName("select")];
+            const inputElements = [...getNodeElementsByTagName<HTMLInputElement>(node, "input")];
+            const textareaElements = [...getNodeElementsByTagName<HTMLTextAreaElement>(node,"textarea")];
+            const selectElements = [...getNodeElementsByTagName<HTMLSelectElement>(node,"select")];
+            const textElements = [...inputElements, ...textareaElements]
 
             if (isTextElement(node)) textElements.push(node);
             else if (node instanceof HTMLSelectElement)
@@ -351,4 +351,14 @@ function getInitialValueFromTextElement(textElement: TextElement) {
     initial = textElement.value;
   }
   return initial;
+}
+
+/*
+  Scan the DOM for a set of form elements by tag name and
+  return the elements which are not ignored by `data-suf-ignore` attribute.
+*/
+function getNodeElementsByTagName<T>(node: HTMLFormElement | HTMLElement, tagName: string): T[] {
+  return Array.from(node.getElementsByTagName(tagName)).filter(
+    (element) => !ignoreElement(element)
+  ) as T[];
 }

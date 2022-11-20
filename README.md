@@ -212,6 +212,15 @@ Properties:
 
 - `for="name_of_input"`
 
+## Ignore a form control
+You can ignore a form control element by adding the `data-suf-ignore` attribute to it.
+
+```svelte
+<input name="email" data-suf-ignore />
+```
+This will prevent it from being added to the form elements.
+And thus it won't be validated or observed for changes.
+
 ## Validators
 
 - `required`
