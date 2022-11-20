@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import { tick } from "svelte";
 
   /*
 	 This REPL should reproduce problem problem reported at issue:
 	 https://github.com/noahsalvi/svelte-use-form/issues/23
 	 */
-  import SupposedDialog from "./_ReuseFormDialog.svelte";
+  import SupposedDialog from "../ReuseFormDialog.svelte";
 
   const persons = [
     { id: 1, nome: "John Doe", ativo: true },
@@ -16,13 +16,13 @@
   const addPerson = () => {
     editPerson(NEW_PERSON);
   };
-  const editPerson = async (person) => {
+  const editPerson = async (person: any) => {
     selectedPerson = { ...person };
     await tick();
     dialog.open();
   };
 
-  let dialog;
+  let dialog: any;
   let selectedPerson = { ...NEW_PERSON };
 </script>
 

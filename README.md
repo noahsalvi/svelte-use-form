@@ -50,16 +50,23 @@ or you could also print the error message like this:
 
 ```svelte
 ...
-  {#if $form.title?.touched && $form.title?.errors.minLength}
-    The title requires at least {$form.title.errors.minLength} characters.
-  {/if}
+{#if $form.title?.touched && $form.title?.errors.minLength}
+  The title requires at least {$form.title.errors.minLength} characters.
+{/if}
 ```
 
 **Login Example (Styling omitted)** [REPL](https://svelte.dev/repl/ca967b45a5aa47b2bb2f9118eb79eefe?version=3)
 
 ```svelte
 <script>
-  import { useForm, HintGroup, Hint, validators, email, required } from "svelte-use-form";
+  import {
+    useForm,
+    HintGroup,
+    Hint,
+    validators,
+    email,
+    required,
+  } from "svelte-use-form";
 
   const form = useForm();
 </script>
@@ -152,7 +159,7 @@ Every control in the form will be accessible through $form directly via the name
 
 e.g. `<input name="email" />` --> `$form.email`
 
-````typescript
+```typescript
 class FormControl {
   value: string;
   touched: boolean;
@@ -163,15 +170,15 @@ class FormControl {
   initial: string;
   /** The DOM elements representing this control*/
   elements: FormControlElement[];
-  
-  /** Returns an object containing possible validation errors */ 
+
+  /** Returns an object containing possible validation errors */
   errors: ValidationErrors;
   /**
    * Contains a map of values, that will be shown
    * in place of the original validation error.
    */
   errorMap: ErrorMap;
-  
+
   error(errors: ValidationErrors): void;
   /** Change the value and the value of all HTML-Elements associated with this control */
   change(value: any): void;
@@ -180,7 +187,7 @@ class FormControl {
   /** Reset the form control value to its initial value or `{ value }` and untouch it */
   reset({ value }?: { value?: string | null }): void;
 }
-````
+```
 
 ## `use:validators` (Action)
 
@@ -188,7 +195,7 @@ Takes in the validators that should be used on the form control.
 e.g.
 
 ```svelte
-<input name="email" use:validators={[required, email]}>
+<input name="email" use:validators={[required, email]} />
 ```
 
 ## `<Hint></Hint>`
@@ -213,11 +220,13 @@ Properties:
 - `for="name_of_input"`
 
 ## Ignore a form control
+
 You can ignore a form control element by adding the `data-suf-ignore` attribute to it.
 
 ```svelte
 <input name="email" data-suf-ignore />
 ```
+
 This will prevent it from being added to the form elements.
 And thus it won't be validated or observed for changes.
 

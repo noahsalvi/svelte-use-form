@@ -20,7 +20,7 @@
   // Specifying controls this way, does not initialize them like it would when given as arguemnts
   // Still, the advantage is that you have better intellisense
   const form2 = useForm<"this" | "is" | "possible">();
-  $form2.possible?.value; 
+  $form2.possible?.value;
   $form2.notSpecified?.value; // ✅
 
   $: console.log($form);

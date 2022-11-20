@@ -12,7 +12,10 @@ import { formReferences } from "./stores/formReferences";
  * <input name="nameOfInput" use:validators={[required, minLength(5), maxLength(20)]} />
  * ```
  */
-export function validators(element: FormControlElement, validators: Validator[]) {
+export function validators(
+  element: FormControlElement,
+  validators: Validator[]
+) {
   setupValidation();
 
   async function setupValidation() {
