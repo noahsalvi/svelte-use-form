@@ -21,6 +21,8 @@
    */
   export { name as for };
 
+  /** The name of useForm instance */
+  export let form: string = "svelte-use-form_form"
   /** The name of the error that should show this hint */
   export let on = "";
   /** Hides this hint when the given validator is triggered */
@@ -29,20 +31,20 @@
   export let hideWhenRequired = false;
   /** Show the hint even when the field is untouched */
   export let showWhenUntouched = false;
-
+  
   let name = "";
 
   let internalClass = $$props.class;
 
   // Tries to get the name from the parent HintGroup
-  if (!name) name = getContext("svelte-use-form_hint-group-name");
+  if (!name) name = getContext(`${form}_hint-group-name`);
 
-  const form: {
+  const formContext: {
     subscribe: (callback: (form: Form<any> & FormControlsUnspecified) => any) => void;
-  } = getContext("svelte-use-form_form");
+  } = getContext(form);
 
-  $: touched = $form[name]?.touched ?? {};
-  $: errors = $form[name]?.errors ?? {};
+  $: touched = $formContext[name]?.touched ?? {};
+  $: errors = $formContext[name]?.errors ?? {};
   $: hideWhenError = hideWhen ? errors[hideWhen] : "";
   $: requiredError = errors["required"];
   $: value = errors[on];
@@ -50,7 +52,7 @@
 
 {#if !(hideWhenRequired && requiredError) && !hideWhenError}
   {#if (touched || showWhenUntouched) && value}
-    <div class="svelte-use-form-hint {internalClass}">
+    <div class="{form}-hint {internalClass}">
       <slot {value} />
     </div>
   {/if}

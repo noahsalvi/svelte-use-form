@@ -16,10 +16,11 @@
    * ```
    */
   export { name as for };
+  export let form: string = "svelte-use-form_form";
 
   let name = "";
 
-  setContext("svelte-use-form_hint-group-name", name);
+  setContext(`${form}_hint-group-name`, name);
 </script>
 
-<slot />
+<slot form/>
