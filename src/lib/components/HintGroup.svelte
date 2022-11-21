@@ -23,4 +23,4 @@
   setContext(`${form}_hint-group-name`, name);
 </script>
 
-<slot form/>
+<slot form />

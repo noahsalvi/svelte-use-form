@@ -22,7 +22,7 @@
   export { name as for };
 
   /** The name of useForm instance */
-  export let form: string = "svelte-use-form_form"
+  export let form: string = "svelte-use-form_form";
   /** The name of the error that should show this hint */
   export let on = "";
   /** Hides this hint when the given validator is triggered */
@@ -31,7 +31,7 @@
   export let hideWhenRequired = false;
   /** Show the hint even when the field is untouched */
   export let showWhenUntouched = false;
-  
+
   let name = "";
 
   let internalClass = $$props.class;
@@ -40,7 +40,9 @@
   if (!name) name = getContext(`${form}_hint-group-name`);
 
   const formContext: {
-    subscribe: (callback: (form: Form<any> & FormControlsUnspecified) => any) => void;
+    subscribe: (
+      callback: (form: Form<any> & FormControlsUnspecified) => any
+    ) => void;
   } = getContext(form);
 
   $: touched = $formContext[name]?.touched ?? {};

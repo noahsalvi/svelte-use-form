@@ -48,7 +48,11 @@ interface EventListener {
  */
 export function useForm<
   Keys extends keyof T = "",
-  T extends FormProperties = any>(formName: string = "svelte-use-form_form",properties: T | FormProperties = {} as FormProperties) {
+  T extends FormProperties = any
+>(
+  formName: string = "svelte-use-form_form",
+  properties: T | FormProperties = {} as FormProperties
+) {
   const subscribers: Function[] = [];
 
   let eventListeners: EventListener[] = [];
