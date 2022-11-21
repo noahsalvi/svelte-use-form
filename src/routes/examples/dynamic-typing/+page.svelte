@@ -22,7 +22,6 @@
   // const form2 = useForm<"this" | "is" | "possible">();
   // $form2.possible?.value;
   // $form2.notSpecified?.value; // ✅
-
 </script>
 
 <form use:form>

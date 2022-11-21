@@ -1,8 +1,8 @@
 on:
   push:
     branches:
-    - master
-    
+      - master
+
 jobs:
   e2e:
     name: Run end-to-end tests
@@ -15,4 +15,4 @@ jobs:
       - name: Install playwright browsers
         run: npx playwright install --with-deps
       - name: Run tests
-        run: npx playwright test
+        run: npx playwright test --reporter github
