@@ -1,8 +1,8 @@
 on:
   push:
     branches:
-    - master
-    
+      - master
+
 jobs:
   e2e:
     name: Run end-to-end tests

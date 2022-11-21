@@ -38,7 +38,9 @@
   if (!name) name = getContext("svelte-use-form_hint-group-name");
 
   const form: {
-    subscribe: (callback: (form: Form<any> & FormControlsUnspecified) => any) => void;
+    subscribe: (
+      callback: (form: Form<any> & FormControlsUnspecified) => any
+    ) => void;
   } = getContext("svelte-use-form_form");
 
   $: touched = $form[name]?.touched ?? {};
