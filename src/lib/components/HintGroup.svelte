@@ -16,7 +16,7 @@
    * ```
    */
   export { name as for };
-  export let form: string = "svelte-use-form_form";
+  export let form: string = "svelte-use-form";
 
   let name = "";
 

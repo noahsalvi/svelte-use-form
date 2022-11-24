@@ -22,7 +22,7 @@
   export { name as for };
 
   /** The name of useForm instance */
-  export let form: string = "svelte-use-form_form";
+  export let form: string = "svelte-use-form";
   /** The name of the error that should show this hint */
   export let on = "";
   /** Hides this hint when the given validator is triggered */
