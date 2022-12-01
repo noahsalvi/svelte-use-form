@@ -17,8 +17,8 @@ export function isFormControlElement(node: any): node is FormControlElement {
 */
 export function isIgnoredElement(node: any): boolean {
   return (
-    node.hasAttribute("data-suf-ignore") &&
-    node.getAttribute("data-suf-ignore") === "true" || // <div data-suf-ignore="true">
+    (node.hasAttribute("data-suf-ignore") &&
+      node.getAttribute("data-suf-ignore") === "true") || // <div data-suf-ignore="true">
     node.getAttribute("data-suf-ignore") === true // <div data-suf-ignore> or <div data-suf-ignore={true}>
   );
 }

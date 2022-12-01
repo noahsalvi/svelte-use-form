@@ -7,7 +7,7 @@
     "dynamic-typing",
     "dynamic-form",
     "multi-forms",
-    "ignore-attribute"
+    "ignore-attribute",
   ];
 
   const getTitle = (path: string) => {
