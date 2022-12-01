@@ -42,9 +42,9 @@ test("multi-forms", async ({ page }) => {
   await expect(form1HintMin).toBeHidden();
   await expect(form1HintMax).toBeHidden();
   await expect(form1Submit).toBeEnabled();
-  
+
   // Form two tests:
-  await expect(form2Submit).toBeDisabled(); 
+  await expect(form2Submit).toBeDisabled();
   await expect(form2HintMin).toBeHidden();
   await expect(form2HintMax).toBeHidden();
   await form2Input.fill("12");
@@ -66,5 +66,4 @@ test("multi-forms", async ({ page }) => {
   await expect(form2HintMin).toBeHidden();
   await expect(form2HintMax).toBeHidden();
   await expect(form2Submit).toBeEnabled();
-
 });

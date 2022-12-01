@@ -6,7 +6,7 @@
     "reuse-form",
     "dynamic-typing",
     "dynamic-form",
-    "multi-forms"
+    "multi-forms",
   ];
 
   const getTitle = (path: string) => {

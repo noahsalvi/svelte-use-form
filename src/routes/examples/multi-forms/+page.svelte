@@ -24,14 +24,24 @@
     data-testid="input-form-one"
     use:validators={[minLength(3), maxLength(5)]}
   />
-  <Hint data-testid="hint-min-form-one" for="input" on="minLength" form="form-one"
-    >Input must be more than 3 characters</Hint
+  <Hint
+    data-testid="hint-min-form-one"
+    for="input"
+    on="minLength"
+    form="form-one">Input must be more than 3 characters</Hint
   >
-  <Hint data-testid="hint-max-form-one" for="input" on="maxLength" form="form-one"
-    >Input must be less than 5 characters</Hint
+  <Hint
+    data-testid="hint-max-form-one"
+    for="input"
+    on="maxLength"
+    form="form-one">Input must be less than 5 characters</Hint
   >
 
-  <button on:click|preventDefault data-testid="submit-form-one" disabled={!$formOne.valid}>Submit</button>
+  <button
+    on:click|preventDefault
+    data-testid="submit-form-one"
+    disabled={!$formOne.valid}>Submit</button
+  >
 </form>
 
 <form data-testid="form-two" use:formTwo>
@@ -47,13 +57,27 @@
   />
 
   <HintGroup form="form-two" for="input">
-    <Hint data-testid="hint-min-form-two" form="form-two" on="minLength" let:value>
+    <Hint
+      data-testid="hint-min-form-two"
+      form="form-two"
+      on="minLength"
+      let:value
+    >
       Input must be more than {value} characters
     </Hint>
-    <Hint data-testid="hint-max-form-two" form="form-two" on="maxLength" let:value>
+    <Hint
+      data-testid="hint-max-form-two"
+      form="form-two"
+      on="maxLength"
+      let:value
+    >
       Input must be less than {value} characters
     </Hint>
   </HintGroup>
 
-  <button on:click|preventDefault data-testid="submit-form-two" disabled={!$formTwo.valid}>Submit</button>
+  <button
+    on:click|preventDefault
+    data-testid="submit-form-two"
+    disabled={!$formTwo.valid}>Submit</button
+  >
 </form>

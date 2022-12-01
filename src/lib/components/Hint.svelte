@@ -54,7 +54,10 @@
 
 {#if !(hideWhenRequired && requiredError) && !hideWhenError}
   {#if (touched || showWhenUntouched) && value}
-    <div class="{form}-hint {internalClass || ''}" data-testid={$$props["data-testid"] || ''}>
+    <div
+      class="{form}-hint {internalClass || ''}"
+      data-testid={$$props["data-testid"] || ""}
+    >
       <slot {value} />
     </div>
   {/if}
