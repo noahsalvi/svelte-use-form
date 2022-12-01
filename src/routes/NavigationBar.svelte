@@ -7,6 +7,7 @@
     "dynamic-typing",
     "dynamic-form",
     "multi-forms",
+    "ignore-attribute"
   ];
 
   const getTitle = (path: string) => {
@@ -30,7 +31,7 @@
 
 <style>
   nav {
-    padding: 0 50px;
+    padding: 0 30px;
     display: flex;
     align-items: center;
     widows: 100%;
