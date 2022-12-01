@@ -17,7 +17,7 @@ test
   <input
     type="text"
     name="name"
-    placeholder="data-suf-ignore="false""
+    placeholder="data-suf-ignore='false'"
     use:validators={[required]}
     data-suf-ignore="false"
   />
@@ -33,7 +33,7 @@ test
   <input
     type="text"
     name="input2"
-    placeholder="data-suf-ignore="true""
+    placeholder="data-suf-ignore='true'"
     data-suf-ignore="true"
   />
 
