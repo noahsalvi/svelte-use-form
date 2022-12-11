@@ -19,8 +19,13 @@
    * </HintGroup>
    * ```
    */
+  let name = "";
   export { name as for };
-
+  /** `class` of the underlying html element */
+  let _class = "";
+  export { _class as class };
+  /** `id` of the underlying html element */
+  export let id: string | undefined = undefined;
   /** The name of the error that should show this hint */
   export let on = "";
   /** Hides this hint when the given validator is triggered */
@@ -29,10 +34,6 @@
   export let hideWhenRequired = false;
   /** Show the hint even when the field is untouched */
   export let showWhenUntouched = false;
-
-  let name = "";
-
-  let internalClass = $$props.class;
 
   // Tries to get the name from the parent HintGroup
   if (!name) name = getContext("svelte-use-form_hint-group-name");
@@ -52,7 +53,7 @@
 
 {#if !(hideWhenRequired && requiredError) && !hideWhenError}
   {#if (touched || showWhenUntouched) && value}
-    <div class="svelte-use-form-hint {internalClass}">
+    <div {id} class="svelte-use-form-hint {_class}">
       <slot {value} />
     </div>
   {/if}
