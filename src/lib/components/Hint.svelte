@@ -27,7 +27,7 @@
   let _class = "";
   export { _class as class };
   /** `id` of the underlying html element */
-  export let id: string | undefined = undefined;
+  export let id: string | undefined = undefined;
   /** The name of the error that should show this hint */
   export let on = "";
   /** Hides this hint when the given validator is triggered */
