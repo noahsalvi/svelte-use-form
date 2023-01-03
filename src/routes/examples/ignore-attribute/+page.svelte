@@ -5,7 +5,7 @@
 </script>
 
 test
-<form use:form data-testid="form-attributes">
+<form use:form id="form-attributes">
   <label for="email">Email [💡 Do not ignore]</label>
   <input
     type="text"
@@ -38,7 +38,7 @@ test
   />
 
   <p>Registered inputs:</p>
-  <ul data-testid="registered">
+  <ul id="registered">
     {#each Object.keys($form.values) as input}
       <li>{input}</li>
     {/each}
