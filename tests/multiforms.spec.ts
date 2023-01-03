@@ -4,20 +4,20 @@ test("multi-forms", async ({ page }) => {
   await page.goto("examples/multi-forms");
 
   // Forms
-  const form1 = page.getByTestId("form-one");
-  const form2 = page.getByTestId("form-two");
+  const form1 = page.locator('[id="form-one"]');
+  const form2 = page.locator('[id="form-two"]');
 
   // Form 1
-  const form1Input = form1.getByTestId("input-form-one");
-  const form1Submit = form1.getByTestId("submit-form-one");
-  const form1HintMin = form1.getByTestId("hint-min-form-one");
-  const form1HintMax = form1.getByTestId("hint-max-form-one");
+  const form1Input = form1.locator('[id="input-form-one"]');
+  const form1Submit = form1.locator('[id="submit-form-one"]');
+  const form1HintMin = form1.locator('[id="hint-min-form-one"]');
+  const form1HintMax = form1.locator('[id="hint-max-form-one"]');
 
   // Form 2
-  const form2Input = form2.getByTestId("input-form-two");
-  const form2Submit = form2.getByTestId("submit-form-two");
-  const form2HintMin = form2.getByTestId("hint-min-form-two");
-  const form2HintMax = form2.getByTestId("hint-max-form-two");
+  const form2Input = form2.locator('[id="input-form-two"]');
+  const form2Submit = form2.locator('[id="submit-form-two"]');
+  const form2HintMin = form2.locator('[id="hint-min-form-two"]');
+  const form2HintMax = form2.locator('[id="hint-max-form-two"]');
 
   // Form one tests:
   await expect(form1Submit).toBeDisabled();
