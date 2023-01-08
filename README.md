@@ -66,35 +66,36 @@ or you could also print the error message like this:
     </b>
   </summary>
 
-  ```svelte
-  <script>
-    import {
-      useForm,
-      HintGroup,
-      Hint,
-      validators,
-      email,
-      required,
-    } from "svelte-use-form";
+```svelte
+<script>
+  import {
+    useForm,
+    HintGroup,
+    Hint,
+    validators,
+    email,
+    required,
+  } from "svelte-use-form";
 
-    const form = useForm();
-  </script>
+  const form = useForm();
+</script>
 
-  <form use:form>
-    <h1>Login</h1>
+<form use:form>
+  <h1>Login</h1>
 
-    <input type="email" name="email" use:validators={[required, email]} />
-    <HintGroup for="email">
-      <Hint on="required">This is a mandatory field</Hint>
-      <Hint on="email" hideWhenRequired>Email is not valid</Hint>
-    </HintGroup>
+  <input type="email" name="email" use:validators={[required, email]} />
+  <HintGroup for="email">
+    <Hint on="required">This is a mandatory field</Hint>
+    <Hint on="email" hideWhenRequired>Email is not valid</Hint>
+  </HintGroup>
 
-    <input type="password" name="password" use:validators={[required]} />
-    <Hint for="password" on="required">This is a mandatory field</Hint>
+  <input type="password" name="password" use:validators={[required]} />
+  <Hint for="password" on="required">This is a mandatory field</Hint>
 
-    <button disabled={!$form.valid}>Login</button>
-  </form>
-  ```
+  <button disabled={!$form.valid}>Login</button>
+</form>
+```
+
 </details>
 
 <details>
@@ -107,95 +108,109 @@ or you could also print the error message like this:
     </b>
   </summary>
 
-  ```svelte
+```svelte
 <script>
-	import { useForm, Hint, HintGroup, validators, required, minLength, email } from "svelte-use-form@2.0.0";
-	
-	const form = useForm();
-	const requiredMessage = "This field is required";
+  import {
+    useForm,
+    Hint,
+    HintGroup,
+    validators,
+    required,
+    minLength,
+    email,
+  } from "svelte-use-form@2.0.0";
+
+  const form = useForm();
+  const requiredMessage = "This field is required";
 
   function passwordMatch(value, form) {
-	  if (value !== form.values.password) {
-			  return { passwordMatch: true };
-	  }
+    if (value !== form.values.password) {
+      return { passwordMatch: true };
+    }
   }
 
   function containNumbers(numbers) {
-	  return function(value) {
-		  if (value.replace(/[^0-9]/g,"").length < numbers) {
-			  return { containNumbers: numbers };
-		  }
-	  }
+    return function (value) {
+      if (value.replace(/[^0-9]/g, "").length < numbers) {
+        return { containNumbers: numbers };
+      }
+    };
   }
 </script>
+
 <main>
-	<form use:form>
-		<h1>
-			Registration
-		</h1>
-		<label for="email">Email</label>
-		<input type="email" name="email" use:validators={[required, email]} />
-		<HintGroup for="email">
-			<Hint on="required">{requiredMessage}</Hint>
-			<Hint on="email" hideWhenRequired>This must be a valid email</Hint>	
-		</HintGroup>
+  <form use:form>
+    <h1>Registration</h1>
+    <label for="email">Email</label>
+    <input type="email" name="email" use:validators={[required, email]} />
+    <HintGroup for="email">
+      <Hint on="required">{requiredMessage}</Hint>
+      <Hint on="email" hideWhenRequired>This must be a valid email</Hint>
+    </HintGroup>
 
-		<label for="name">Name</label>
-		<input type="text" name="name"  />
+    <label for="name">Name</label>
+    <input type="text" name="name" />
 
-		<label for="password">Password</label>
-		<input type="password" name="password" use:validators={[required, minLength(5), containNumbers(2)]} />
-		<HintGroup for="password">
-			<Hint on="required">{requiredMessage}</Hint>
-			<Hint on="minLength" hideWhenRequired let:value>This field must have at least {value} characters.</Hint>	
-			<Hint on="containNumbers" hideWhen="minLength" let:value>
-				This field must contain at least {value} numbers.
-			</Hint>	
-		</HintGroup>
+    <label for="password">Password</label>
+    <input
+      type="password"
+      name="password"
+      use:validators={[required, minLength(5), containNumbers(2)]}
+    />
+    <HintGroup for="password">
+      <Hint on="required">{requiredMessage}</Hint>
+      <Hint on="minLength" hideWhenRequired let:value
+        >This field must have at least {value} characters.</Hint
+      >
+      <Hint on="containNumbers" hideWhen="minLength" let:value>
+        This field must contain at least {value} numbers.
+      </Hint>
+    </HintGroup>
 
-		<label for="passwordConfirmation">Password Confirmation</label>
-		<input type="password" name="passwordConfirmation" use:validators={[required, passwordMatch]} />
-		<HintGroup for="passwordConfirmation">
-			<Hint on="required">{requiredMessage}</Hint>
-			<Hint on="passwordMatch" hideWhenRequired>Passwords do not match</Hint>	
-		</HintGroup><br />
+    <label for="passwordConfirmation">Password Confirmation</label>
+    <input
+      type="password"
+      name="passwordConfirmation"
+      use:validators={[required, passwordMatch]}
+    />
+    <HintGroup for="passwordConfirmation">
+      <Hint on="required">{requiredMessage}</Hint>
+      <Hint on="passwordMatch" hideWhenRequired>Passwords do not match</Hint>
+    </HintGroup><br />
 
-		<button disabled={!$form.valid} on:click|preventDefault>
-			Submit
-		</button>
-	</form>
-	<pre>
+    <button disabled={!$form.valid} on:click|preventDefault> Submit </button>
+  </form>
+  <pre>
 		{JSON.stringify($form, null, 1)}
 	</pre>
 </main>
-	
 
 <style>
-	:global(.touched:invalid) {
-		border-color: red;
-		outline-color: red;
-	}
-	
-	main {
-		display: flex;
-		justify-content: space-around;
-	}
-	
-	pre {
-		height: 80vh;
-		overflow: auto;
-		font-size: 12px;
-	}
-</style>
-  ```
-</details>
+  :global(.touched:invalid) {
+    border-color: red;
+    outline-color: red;
+  }
 
+  main {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  pre {
+    height: 80vh;
+    overflow: auto;
+    font-size: 12px;
+  }
+</style>
+```
+
+</details>
 
 **[Edge Cases REPL](https://svelte.dev/repl/d4fc021f688d4ad0b3ceb9a1c44c9be9?version=3.34.0)**
 
 # API
 
-## `useForm(FormProperties | null)`
+## `useForm(properties: FormProperties?, formName?: string)`
 
 useForm() returns a svelte `store` (Observable) that is also an `action`. (That's what I call [svelte](https://www.dictionary.com/browse/svelte) 😆)
 
@@ -208,6 +223,14 @@ const form = useForm({ firstName: {} });
 $form.firstName // Works as expected
 $form?.lastName // lastName would be null on page load
 ```
+
+### Why specify `formName`?
+
+By providing a name you'll have the ability to specifically reference a form from a `Hint` component instead of inferring it from context.
+
+`useForm({}, "form-1")` --> `<Hint form="form-1"...>`.
+
+This allows you to use multiple `useForm` instances in a single component.
 
 ### `$form`
 
@@ -301,22 +324,30 @@ e.g.
 
 Helper component for displaying information based on errors in an input.
 
-Properties:
+**Properties:**
 
-- `for="name_of_input"`
-- `on="error"` the error which should trigger it
-- `hideWhen="different_error"` hides the hint if the different error is throwing
-- `hideWhenRequired` shortcut for hideWhen="required"
-- `showWhenUntouched` hint will get displayed even if the field hasn't been touched yet.
-- `let:value` returns the value of the error
+- `for="name_of_input"` - Name of concerning input
+- `on="error"` - The error which should trigger it
+
+**Optional attributes:**
+
+- `form="form-name"` - Name of the form. Defaults to form from context.
+- `hideWhen="different_error"` - Hides the hint if the error is active
+- `hideWhenRequired` - Shortcut for hideWhen="required"
+- `showWhenUntouched` - Display Hint even if the field hasn't been touched yet
+- `let:value` - Returns the value of the error
 
 ## `<HintGroup><Hint></Hint></HintGroup>`
 
-You can omit the Hint `name` prop when wrapping it with a HintGroup.
+You can omit the Hint `for` property when wrapping it with a `HintGroup`.
 
-Properties:
+**Properties:**
 
 - `for="name_of_input"`
+
+**Optional Properties:**
+
+- `form="form-name"` - Name of the form. Defaults to form from context.
 
 ## Ignore a form control
 
