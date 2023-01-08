@@ -1,10 +1,10 @@
-  <h1>
-    <img align="left" height=40 src="svelte-use-form.svg" />
-    &nbsp;
-    <span align="left">Svelte Use Form</span>
-  </h1>
+<h1>
+  <img align="left" height=36 src="svelte-use-form.svg" />
+  &nbsp;
+  <span align="left">svelte-use-form</span>
+</h1>
 
-A svelte form library that is easy to use and has no boilerplate. It lets you create and control complicated forms with ease. Like svelte, the focus is **DX** 💻‍✨
+A Svelte form library that enables you to create complicated forms with minimal effort. As for Svelte, the focus is **DX** 💻‍✨
 
 ```bash
 npm i -D svelte-use-form
@@ -15,11 +15,10 @@ npm i -D svelte-use-form
 
 **Features:**
 
-- Minimalistic approach. Don't write more than necessary. 😘
-- No new components, bindings or callbacks required! ✅
-- OOTB validators and custom validator support ✅
-- Works with dynamic inputs => Show / Hide Inputs at runtime. ✅
-- Type inference [TS] ✅
+- Minimalistic - Don't write more than necessary.
+- No new components, bindings or callbacks required
+- Validators included and custom validator support
+- Automagically binds to inputs
 
 # Usage
 
@@ -55,44 +54,144 @@ or you could also print the error message like this:
 {/if}
 ```
 
-**Login Example (Styling omitted)** [REPL](https://svelte.dev/repl/ca967b45a5aa47b2bb2f9118eb79eefe?version=3)
-
-```svelte
-<script>
-  import {
-    useForm,
-    HintGroup,
-    Hint,
-    validators,
-    email,
-    required,
-  } from "svelte-use-form";
-
-  const form = useForm();
-</script>
-
-<form use:form>
-  <h1>Login</h1>
-
-  <input type="email" name="email" use:validators={[required, email]} />
-  <HintGroup for="email">
-    <Hint on="required">This is a mandatory field</Hint>
-    <Hint on="email" hideWhenRequired>Email is not valid</Hint>
-  </HintGroup>
-
-  <input type="password" name="password" use:validators={[required]} />
-  <Hint for="password" on="required">This is a mandatory field</Hint>
-
-  <button disabled={!$form.valid}>Login</button>
-</form>
-```
-
 ## More Examples
 
-**REPLs:**
+<details>
+  <summary>
+    <b>
+      Login Example 
+      <a href="https://svelte.dev/repl/ca967b45a5aa47b2bb2f9118eb79eefe?version=3">
+        REPL
+      </a>
+    </b>
+  </summary>
 
-- [Registration](https://svelte.dev/repl/a6665267d7d0435ebc7921a250552a25?version=3.34.0)
-- [Testing the limits](https://svelte.dev/repl/d4fc021f688d4ad0b3ceb9a1c44c9be9?version=3.34.0)
+  ```svelte
+  <script>
+    import {
+      useForm,
+      HintGroup,
+      Hint,
+      validators,
+      email,
+      required,
+    } from "svelte-use-form";
+
+    const form = useForm();
+  </script>
+
+  <form use:form>
+    <h1>Login</h1>
+
+    <input type="email" name="email" use:validators={[required, email]} />
+    <HintGroup for="email">
+      <Hint on="required">This is a mandatory field</Hint>
+      <Hint on="email" hideWhenRequired>Email is not valid</Hint>
+    </HintGroup>
+
+    <input type="password" name="password" use:validators={[required]} />
+    <Hint for="password" on="required">This is a mandatory field</Hint>
+
+    <button disabled={!$form.valid}>Login</button>
+  </form>
+  ```
+</details>
+
+<details>
+  <summary>
+    <b>
+      Registration Example 
+      <a href="https://svelte.dev/repl/a6665267d7d0435ebc7921a250552a25?version=3.34.0">
+        REPL
+      </a>
+    </b>
+  </summary>
+
+  ```svelte
+<script>
+	import { useForm, Hint, HintGroup, validators, required, minLength, email } from "svelte-use-form@2.0.0";
+	
+	const form = useForm();
+	const requiredMessage = "This field is required";
+
+  function passwordMatch(value, form) {
+	  if (value !== form.values.password) {
+			  return { passwordMatch: true };
+	  }
+  }
+
+  function containNumbers(numbers) {
+	  return function(value) {
+		  if (value.replace(/[^0-9]/g,"").length < numbers) {
+			  return { containNumbers: numbers };
+		  }
+	  }
+  }
+</script>
+<main>
+	<form use:form>
+		<h1>
+			Registration
+		</h1>
+		<label for="email">Email</label>
+		<input type="email" name="email" use:validators={[required, email]} />
+		<HintGroup for="email">
+			<Hint on="required">{requiredMessage}</Hint>
+			<Hint on="email" hideWhenRequired>This must be a valid email</Hint>	
+		</HintGroup>
+
+		<label for="name">Name</label>
+		<input type="text" name="name"  />
+
+		<label for="password">Password</label>
+		<input type="password" name="password" use:validators={[required, minLength(5), containNumbers(2)]} />
+		<HintGroup for="password">
+			<Hint on="required">{requiredMessage}</Hint>
+			<Hint on="minLength" hideWhenRequired let:value>This field must have at least {value} characters.</Hint>	
+			<Hint on="containNumbers" hideWhen="minLength" let:value>
+				This field must contain at least {value} numbers.
+			</Hint>	
+		</HintGroup>
+
+		<label for="passwordConfirmation">Password Confirmation</label>
+		<input type="password" name="passwordConfirmation" use:validators={[required, passwordMatch]} />
+		<HintGroup for="passwordConfirmation">
+			<Hint on="required">{requiredMessage}</Hint>
+			<Hint on="passwordMatch" hideWhenRequired>Passwords do not match</Hint>	
+		</HintGroup><br />
+
+		<button disabled={!$form.valid} on:click|preventDefault>
+			Submit
+		</button>
+	</form>
+	<pre>
+		{JSON.stringify($form, null, 1)}
+	</pre>
+</main>
+	
+
+<style>
+	:global(.touched:invalid) {
+		border-color: red;
+		outline-color: red;
+	}
+	
+	main {
+		display: flex;
+		justify-content: space-around;
+	}
+	
+	pre {
+		height: 80vh;
+		overflow: auto;
+		font-size: 12px;
+	}
+</style>
+  ```
+</details>
+
+
+**[Edge Cases REPL](https://svelte.dev/repl/d4fc021f688d4ad0b3ceb9a1c44c9be9?version=3.34.0)**
 
 # API
 
@@ -155,7 +254,7 @@ export type FormProperties = {
 A FormControl represents an input of the form. (input, textarea, radio, select...)
 
 **Important**:
-Every control in the form will be accessible through $form directly via the name attribute.
+Every control in the form will be accessible through `$form` directly via the `name` attribute.
 
 e.g. `<input name="email" />` --> `$form.email`
 
