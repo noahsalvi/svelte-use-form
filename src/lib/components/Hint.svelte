@@ -21,11 +21,13 @@
    */
   let name = "";
   export { name as for };
+  /** The name of useForm instance */
+  export let form: string = "svelte-use-form";
   /** `class` of the underlying html element */
   let _class = "";
   export { _class as class };
   /** `id` of the underlying html element */
-  export let id: string | undefined = undefined;
+  export let id: string | undefined = undefined;
   /** The name of the error that should show this hint */
   export let on = "";
   /** Hides this hint when the given validator is triggered */
@@ -36,16 +38,16 @@
   export let showWhenUntouched = false;
 
   // Tries to get the name from the parent HintGroup
-  if (!name) name = getContext("svelte-use-form_hint-group-name");
+  if (!name) name = getContext(`${form}_hint-group-name`);
 
-  const form: {
+  const formContext: {
     subscribe: (
       callback: (form: Form<any> & FormControlsUnspecified) => any
     ) => void;
-  } = getContext("svelte-use-form_form");
+  } = getContext(form);
 
-  $: touched = $form[name]?.touched ?? {};
-  $: errors = $form[name]?.errors ?? {};
+  $: touched = $formContext[name]?.touched ?? {};
+  $: errors = $formContext[name]?.errors ?? {};
   $: hideWhenError = hideWhen ? errors[hideWhen] : "";
   $: requiredError = errors["required"];
   $: value = errors[on];

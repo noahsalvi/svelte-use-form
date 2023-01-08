@@ -16,7 +16,11 @@ export function isFormControlElement(node: any): node is FormControlElement {
   It's used to ignore elements that should not be part of the form
 */
 export function isIgnoredElement(node: any): boolean {
-  return node.hasAttribute("data-suf-ignore");
+  return (
+    (node.hasAttribute("data-suf-ignore") &&
+      node.getAttribute("data-suf-ignore") === "true") || // <div data-suf-ignore="true">
+    node.getAttribute("data-suf-ignore") === true // <div data-suf-ignore> or <div data-suf-ignore={true}>
+  );
 }
 
 export type TextElement = HTMLInputElement | HTMLTextAreaElement;

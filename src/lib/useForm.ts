@@ -49,7 +49,10 @@ interface EventListener {
 export function useForm<
   Keys extends keyof T = "",
   T extends FormProperties = any
->(properties: T | FormProperties = {} as FormProperties) {
+>(
+  formName: string = "svelte-use-form",
+  properties: T | FormProperties = {} as FormProperties
+) {
   const subscribers: Function[] = [];
 
   let eventListeners: EventListener[] = [];
@@ -62,7 +65,7 @@ export function useForm<
   action.set = set;
 
   // Passing state via context to subcomponents like Hint
-  setContext("svelte-use-form_form", action);
+  setContext(formName, action);
 
   /**
    * ### The store and action of a form.
