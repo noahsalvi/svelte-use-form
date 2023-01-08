@@ -8,8 +8,8 @@
     maxLength,
   } from "$lib";
 
-  const formOne = useForm("form-one");
-  const formTwo = useForm("form-two");
+  const formOne = useForm({}, "form-one");
+  const formTwo = useForm({}, "form-two");
 </script>
 
 <form id="form-one" use:formOne>

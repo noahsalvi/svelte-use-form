@@ -34,7 +34,7 @@ interface EventListener {
  * <input name="firstName />
  * ```
  * ----
- * or handle everything directly in the form control
+ * or handle everything directly in the template
  *
  * ----
  *
@@ -50,8 +50,8 @@ export function useForm<
   Keys extends keyof T = "",
   T extends FormProperties = any
 >(
+  properties: T | FormProperties = {} as FormProperties,
   formName: string = "svelte-use-form",
-  properties: T | FormProperties = {} as FormProperties
 ) {
   const subscribers: Function[] = [];
 
