@@ -375,8 +375,8 @@ And thus it won't be validated or observed for changes.
 A validator needs to be a function that returns null if valid else an object with the key being the name of the error. The value of the object will be accessible through the error. e.g. $form.title.errors.name_of_error -> 'info'.
 
 ```typescript
-function passwordMatch(value: string, form: Form): null | ValidationErrors {
-  return value === form.password.value
+const passwordMatch: Validator = (value, form) => {
+  return value === form.password?.value
     ? null
     : { passwordMatch: "Passwords are not matching" };
 }
