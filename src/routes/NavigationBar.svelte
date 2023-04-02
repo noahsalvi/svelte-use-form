@@ -8,6 +8,7 @@
     "dynamic-form",
     "multi-forms",
     "ignore-attribute",
+    "custom-validator",
   ];
 
   const getTitle = (path: string) => {

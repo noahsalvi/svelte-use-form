@@ -51,7 +51,7 @@ export function useForm<
   T extends FormProperties = any
 >(
   properties: T | FormProperties = {} as FormProperties,
-  formName: string = "svelte-use-form",
+  formName: string = "svelte-use-form"
 ) {
   const subscribers: Function[] = [];
 
