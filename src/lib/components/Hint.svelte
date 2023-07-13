@@ -6,7 +6,7 @@
    * The name of the form control.
    *
    * @remarks Can be omitted when using a wrapping HintGroup setting the `for` property.
-   * @exmaple
+   * @example
    * ``` svelte
    * <input name="nameOfFormControl" use:validators={[required]} />
    * <Hint for="nameOfFormControl" on="required">HINT</Hint>

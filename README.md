@@ -379,7 +379,7 @@ const passwordMatch: Validator = (value, form) => {
   return value === form.password?.value
     ? null
     : { passwordMatch: "Passwords are not matching" };
-}
+};
 ```
 
 ```
