@@ -9,6 +9,7 @@
     "multi-forms",
     "ignore-attribute",
     "custom-validator",
+    "dynamic-validator"
   ];
 
   const getTitle = (path: string) => {

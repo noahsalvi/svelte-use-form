@@ -22,7 +22,8 @@
   ],
   "scripts": {
     "dev": "vite dev",
-    "build": "svelte-kit sync && svelte-package",
+    "build": "vite build",
+    "package": "svelte-kit sync && svelte-package",
     "preview": "vite preview",
     "test": "npx playwright test",
     "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
@@ -35,7 +36,7 @@
     "svelte": ">=3.46.0 < 5"
   },
   "devDependencies": {
-    "@playwright/test": "^1.25.0",
+    "@playwright/test": "^1.36.1",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
     "@sveltejs/package": "^1.0.0-next.6",
