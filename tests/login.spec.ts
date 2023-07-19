@@ -7,11 +7,13 @@ test("Login Example", async ({ page }) => {
   const button = page.locator("button");
 
   await expect(button).toBeDisabled();
+  await expect(email).not.toHaveClass("touched");
+  await expect(password).not.toHaveClass("touched");
 
   await email.type("max@");
   await password.type("random pass");
-  await expect(password).not.toHaveClass("touched");
   await expect(email).toHaveClass("touched");
+  await expect(password).not.toHaveClass("touched");
   await expect(button).toBeDisabled();
 
   await email.type("example.com");
