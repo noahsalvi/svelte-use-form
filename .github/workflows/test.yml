@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-node@v3
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Build App
+        run: yarn build
       - name: Install playwright browsers
         run: npx playwright install --with-deps
       - name: Run tests
