@@ -3,7 +3,7 @@ import { get } from "svelte/store";
 import { FormControl } from "./models/formControl";
 import type { FormControlElement } from "./models/formControlElement";
 import type { Validator } from "./models/validator";
-import { formReferences } from "./stores/formReferences";
+import { formReferences, type FormReference } from "./stores/formReferences";
 
 /**
  * Add validators to form control
@@ -16,30 +16,58 @@ export function validators(
   element: FormControlElement,
   validators: Validator[]
 ) {
-  setupValidation();
+  let formControl: FormControl | undefined;
+  let formReference: FormReference | undefined;
 
-  async function setupValidation() {
+  setupValidators();
+
+  return {
+    update: updateValidators,
+  };
+
+  async function setupValidators() {
     const formElement = element.form;
     if (!formElement)
       throw new ValidatorsActionError(
         "HTML element doesn't have an ancestral form"
       );
+
     await tick();
-    const formReference = get(formReferences).find(
+    const possibleFormReference = get(formReferences).find(
       (form) => form.node === formElement
     );
 
-    if (!formReference)
+    if (!possibleFormReference)
       throw new ValidatorsActionError(
         "HTML form doesn't have a svelte-use-form binded. (use:form)"
       );
 
-    const formControl = formReference.form[element.name];
-    if (!(formControl instanceof FormControl))
+    formReference = possibleFormReference;
+
+    let possibleFormControl = formReference.form[element.name];
+    if (!(possibleFormControl instanceof FormControl))
       throw new ValidatorsActionError(
         `Form Control [${element.name}] doesn't exist.`
       );
+
+    formControl = possibleFormControl;
     formControl.validators.push(...validators);
+    formControl.validate();
+    formReference.notifyListeners();
+  }
+
+  function updateValidators(updatedValidators: Validator[]) {
+    if (!formControl || !formReference) return;
+
+    // Get the static validators (The validators set via useForm({...}))
+    const newValidators = formControl.validators.filter(
+      (validator) => !validators.find((v) => v === validator)
+    );
+
+    // Add the new validators to it
+    newValidators.push(...updatedValidators);
+
+    formControl.validators = newValidators;
     formControl.validate();
     formReference.notifyListeners();
   }
