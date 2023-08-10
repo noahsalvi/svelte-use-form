@@ -15,12 +15,21 @@
 <form use:form>
   <input id="inputA" bind:value={aValue} />
   B
-  <input id="inputB" name="copy" use:validators={[matchValidator(aValue), minLength(2)]} />
+  <input
+    id="inputB"
+    name="copy"
+    use:validators={[matchValidator(aValue), minLength(2)]}
+  />
   Does B match A?<b id="is-matching">{$form.copy?.valid ? "Yes" : "No"}</b>
-  Is required triggered? <input type="checkbox" id="is-empty" checked={!!$form.copy?.errors.required} />
+  Is required triggered?
+  <input
+    type="checkbox"
+    id="is-empty"
+    checked={!!$form.copy?.errors.required}
+  />
 </form>
 <pre>
-    { JSON.stringify($form.copy?.errors, null, "  ") }
+    {JSON.stringify($form.copy?.errors, null, "  ")}
 </pre>
 
 <style>

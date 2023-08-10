@@ -14,9 +14,6 @@ npm i -D svelte-use-form
 <a href="https://npmjs.com/package/svelte-use-form">![npm](https://img.shields.io/npm/dw/svelte-use-form?style=for-the-badge)</a>
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=for-the-badge)](https://paypal.me/noahvsalvi)
 
-
-
-
 **Features:**
 
 - Minimalistic - Don't write more than necessary.

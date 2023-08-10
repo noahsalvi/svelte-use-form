@@ -11,11 +11,12 @@ test("Login Example", async ({ page }) => {
   await expect(password).not.toHaveClass("touched");
 
   await email.type("max@");
-  await password.type("random pass");
   await expect(email).toHaveClass("touched");
   await expect(password).not.toHaveClass("touched");
+  await password.type("random pass");
   await expect(button).toBeDisabled();
 
   await email.type("example.com");
+  await expect(password).toHaveClass("touched");
   await expect(button).toBeEnabled();
 });
