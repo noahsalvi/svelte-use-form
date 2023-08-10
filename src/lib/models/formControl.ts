@@ -123,7 +123,7 @@ export class FormControl {
     this.errors = {};
 
     for (const validator of this.validators) {
-      const errors = validator(this.value, this.formRef() as any);
+      const errors = validator(this.value, this.formRef() as any, this);
       if (!errors) continue;
 
       valid = false;
