@@ -1,13 +1,17 @@
 import type { Form, FormControlsUnspecified } from "./form";
 import type { FormControl } from "./formControl";
 
-/** 
- * A function that either returns `null | undefined` when valid or else a {@link ValidationErrors} object. 
+/**
+ * A function that depending on the control's validity either returns:
+ * - `null | undefined` when **valid**
+ * - {@link ValidationErrors} when **invalid**.
  */
 export type Validator = (
+  /** The value of the control. */
   value: string,
+  /** The containing form. */
   form: Form<any> & FormControlsUnspecified,
-  /** The control (field) this validator was assigned to. */
+  /** The control this validator was assigned to. */
   control: FormControl
 ) => ValidationErrors | (null | undefined);
 
