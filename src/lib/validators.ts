@@ -1,22 +1,22 @@
-import type { ValidationErrors } from "./models/validator";
+import type { Validator } from "./models/validator";
 
-export function required(value: string): null | ValidationErrors {
+export const required: Validator = (value) => {
   return value.trim() ? null : { required: "Required" };
-}
+};
 
-export function maxLength(length: number) {
-  return function (value: string): null | ValidationErrors {
-    return value.trim().length <= length ? null : { maxLength: length };
+export function maxLength(length: number): Validator {
+  return (value) => {
+    if (value.trim().length > length) return { maxLength: length };
   };
 }
 
-export function minLength(length: number) {
-  return function (value: string): null | ValidationErrors {
-    return value.trim().length >= length ? null : { minLength: length };
+export function minLength(length: number): Validator {
+  return (value) => {
+    if (value.trim().length < length) return { minLength: length };
   };
 }
 
-export function email(value: string): null | ValidationErrors {
+export const email: Validator = (value) => {
   if (
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
       value
@@ -25,9 +25,9 @@ export function email(value: string): null | ValidationErrors {
     return null;
   }
   return { email: {} };
-}
+};
 
-export function url(value: string): null | ValidationErrors {
+export const url: Validator = (value) => {
   // https://stackoverflow.com/a/5717133/13475809
   var pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
@@ -42,18 +42,16 @@ export function url(value: string): null | ValidationErrors {
     return null;
   }
   return { url: "URL is not valid" };
-}
+};
 
-export function number(value: string): null | ValidationErrors {
+export const number: Validator = (value) => {
   if (/^[0-9]+$/.test(value)) {
     return null;
   }
   return { number: {} };
-}
+};
 
-export function pattern(regExp: string | RegExp) {
+export function pattern(regExp: string | RegExp): Validator {
   const r = typeof regExp === "string" ? new RegExp(regExp) : regExp;
-  return (value: string): null | ValidationErrors => {
-    return r.test(value) ? null : { pattern: "Pattern error" };
-  };
+  return (value) => (r.test(value) ? null : { pattern: "Pattern error" });
 }
