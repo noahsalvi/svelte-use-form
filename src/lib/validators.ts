@@ -27,6 +27,21 @@ export const email: Validator = (value) => {
   return { email: {} };
 };
 
+/**
+ * A variation of the `email` validator that requires a TLD component. Verifying
+ * the validity of the TLD is not the responsibility of this validation library.
+ */
+export const email_with_tld: Validator = (value) => {
+  if (
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/.test(
+      value
+    )
+  ) {
+    return null;
+  }
+  return { email_with_tld: {} };
+};
+
 export const url: Validator = (value) => {
   // https://stackoverflow.com/a/5717133/13475809
   var pattern = new RegExp(
