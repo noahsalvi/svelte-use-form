@@ -368,6 +368,7 @@ And thus it won't be validated or observed for changes.
 - `maxLength(n)`
 - `number`
 - `email`
+- `email_with_tld`
 - `url`
 - `pattern(regExp)`
 
