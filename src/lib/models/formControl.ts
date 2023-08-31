@@ -115,6 +115,9 @@ export class FormControl {
   change(value: any) {
     this.value = value;
     this.elements.forEach((element) => (element.value = value));
+
+    // Update the $form
+    this.formRef()["_notifyListeners"]();
   }
 
   /** Validate the FormControl by querying through the given validators. */
