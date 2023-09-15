@@ -3,7 +3,7 @@ import type { ErrorMap, Validator } from "./validator";
 export type FormProperties = {
   [key: string]: {
     /** Initial value of the form control */
-    initial?: string;
+    initial?: string | string[];
     /** The validators that will be checked when the input changes */
     validators?: Validator[];
     /**

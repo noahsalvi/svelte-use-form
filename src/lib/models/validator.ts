@@ -8,7 +8,7 @@ import type { FormControl } from "./formControl";
  */
 export type Validator = (
   /** The value of the control. */
-  value: string,
+  value: string | string[],
   /** The containing form. */
   form: Form<any> & FormControlsUnspecified,
   /** The control this validator was assigned to. */

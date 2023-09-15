@@ -67,7 +67,7 @@ export class Form<Keys extends keyof any> {
   /** @internal Add a form conrol to the Form */
   _addControl(
     name: string,
-    initial: string = "",
+    initial: string | string[] = "",
     validators: Validator[] = [],
     elements: FormControlElement[] = [],
     errorMap: ErrorMap = {}

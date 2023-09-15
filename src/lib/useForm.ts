@@ -13,6 +13,7 @@ import type {
 import { formReferences } from "./stores/formReferences";
 import type { FormControl } from "./models/formControl";
 import type { FormProperties } from "./models/formProperties";
+import {  getElementValue, setElementValue } from '$lib/helpers/FormHelper';
 
 interface EventListener {
   node: HTMLElement;
@@ -116,31 +117,27 @@ export function useForm<
       const name = textElement.name;
       let formControl = state[name];
       // TextElement doesn't have FormControl yet (TextElement wasn't statically provided)
+      const initial = getElementValue(textElement, textElements);
+
       if (!formControl) {
-        const initial = getInitialValueFromTextElement(textElement);
         state._addControl(name, initial, [], [textElement], {});
         formControl = state[name]!;
       } else {
         formControl.elements.push(textElement);
-        if (
-          textElement.type === "radio" &&
-          textElement instanceof HTMLInputElement &&
-          textElement.checked
-        ) {
-          formControl.initial = textElement.value;
-        }
+        formControl.initial = formControl.initial || initial;
       }
+
+      formControl.value = formControl.initial;
+      setElementValue(textElement, formControl.initial);
 
       switch (textElement.type) {
         case "checkbox":
         case "radio":
           mountEventListener(textElement, "click", handleBlurOrClick);
-          break;
         default:
-          setInitialValue(textElement, formControl!);
           handleAutofill(textElement, formControl!);
           mountEventListener(textElement, "blur", handleBlurOrClick);
-      }
+      } 
 
       mountEventListener(textElement, "input", handleInput);
     }
@@ -149,15 +146,19 @@ export function useForm<
   function setupSelectElements(selectElements: HTMLSelectElement[]) {
     for (const selectElement of selectElements) {
       const name = selectElement.name;
-      const formControl = state[name];
+      let formControl = state[name];
+      const initial = getElementValue(selectElement);
 
       if (!formControl) {
-        const initial = selectElement.value;
         state._addControl(name, initial, [], [selectElement], {});
+        formControl = state[name]!;
       } else {
         formControl.elements.push(selectElement);
-        setInitialValue(selectElement, formControl);
+        formControl.initial = formControl.initial || initial;
       }
+
+      formControl.value = formControl.initial;
+      setElementValue(selectElement, formControl.initial);
 
       mountEventListener(selectElement, "input", handleInput);
       mountEventListener(selectElement, "input", handleBlurOrClick);
@@ -251,16 +252,10 @@ export function useForm<
     if (isFormControlElement(node)) {
       const name = node.name;
       const formControl = state[name];
+
       if (!formControl) throw new FormControlMissingError();
 
-      let value: string;
-      if (node.type === "checkbox" && node instanceof HTMLInputElement) {
-        value = node.checked ? "checked" : "";
-      } else {
-        value = node.value;
-      }
-
-      formControl.value = value;
+      formControl.value = getElementValue(node, formControl.elements);
 
       notifyListeners();
     }
@@ -293,13 +288,6 @@ export function useForm<
     }
   }
 
-  function setInitialValue(
-    element: FormControlElement,
-    formControl: FormControl
-  ) {
-    if (formControl.initial) element.value = formControl.initial;
-  }
-
   function notifyListeners() {
     for (const callback of subscribers) callback(state);
   }
@@ -324,23 +312,6 @@ export function useForm<
   }
 
   return action;
-}
-
-function getInitialValueFromTextElement(textElement: TextElement) {
-  let initial: string;
-
-  // Handle Radio button initial values
-  if (textElement.type === "radio" && textElement instanceof HTMLInputElement) {
-    initial = textElement.checked ? textElement.value : "";
-  } else if (
-    textElement.type === "checkbox" &&
-    textElement instanceof HTMLInputElement
-  ) {
-    initial = textElement.checked ? "checked" : "";
-  } else {
-    initial = textElement.value;
-  }
-  return initial;
 }
 
 /*
