@@ -115,7 +115,7 @@ export class FormControl {
   /** Change the value and the value of all HTML-Elements associated with this control */
   change(value: any) {
     this.value = value;
-    this.elements.forEach((element) => (element.value = value));
+    this.elements.forEach((element) => setElementValue(element, value));
 
     // Update the $form
     this.formRef()["_notifyListeners"]();
