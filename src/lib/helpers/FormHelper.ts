@@ -1,6 +1,7 @@
 import type { FormControlElement } from '$lib/models/formControlElement';
+import type { ValueType } from '$lib/models/formControl';
 
-export function setElementValue(element: FormControlElement, value: string | string[] | null) {
+export function setElementValue(element: FormControlElement, value: ValueType | null) {
     if (!value) return;
 
     if (element instanceof HTMLSelectElement) {
@@ -27,7 +28,7 @@ export function setElementValue(element: FormControlElement, value: string | str
     }
 }
 
-export function getElementValue(element: FormControlElement, allElements: FormControlElement[] = []): string | string[] {
+export function getElementValue(element: FormControlElement, allElements: FormControlElement[] = []): ValueType {
     if (element instanceof HTMLSelectElement) {
         if (element.multiple) {
             return [...element.selectedOptions].map((option) => option.value);
@@ -44,7 +45,7 @@ export function getElementValue(element: FormControlElement, allElements: FormCo
 }
 
 
-function getCheckboxValue(element: HTMLInputElement, allElements: FormControlElement[]): string | string[] {
+function getCheckboxValue(element: HTMLInputElement, allElements: FormControlElement[]): ValueType {
     const name = element.name;
     const matchingElements =
         allElements.filter(el => el instanceof HTMLInputElement && el.name === name);

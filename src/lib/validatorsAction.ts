@@ -1,6 +1,6 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { FormControl } from "./models/formControl";
+import { FormControl, type ValueType } from './models/formControl';
 import type { FormControlElement } from "./models/formControlElement";
 import type { Validator } from "./models/validator";
 import { formReferences, type FormReference } from "./stores/formReferences";
@@ -14,7 +14,7 @@ import { formReferences, type FormReference } from "./stores/formReferences";
  */
 export function validators(
   element: FormControlElement,
-  validators: Validator[]
+  validators: Validator<ValueType>[]
 ) {
   let formControl: FormControl | undefined;
   let formReference: FormReference | undefined;
@@ -56,7 +56,7 @@ export function validators(
     formReference.notifyListeners();
   }
 
-  function updateValidators(updatedValidators: Validator[]) {
+  function updateValidators(updatedValidators: Validator<ValueType>[]) {
     if (!formControl || !formReference) return;
 
     // Get the static validators (The validators set via useForm({...}))

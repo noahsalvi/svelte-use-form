@@ -1,4 +1,4 @@
-import { FormControl } from "./formControl";
+import { FormControl, type ValueType } from './formControl';
 import type { FormControlElement } from "./formControlElement";
 import type { FormProperties } from "./formProperties";
 import type { ErrorMap, Validator } from "./validator";
@@ -67,8 +67,8 @@ export class Form<Keys extends keyof any> {
   /** @internal Add a form conrol to the Form */
   _addControl(
     name: string,
-    initial: string | string[] = "",
-    validators: Validator[] = [],
+    initial: ValueType = "",
+    validators: Validator<ValueType>[] = [],
     elements: FormControlElement[] = [],
     errorMap: ErrorMap = {}
   ) {

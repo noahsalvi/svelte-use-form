@@ -3,9 +3,11 @@ import type { FormControlElement } from "./formControlElement";
 import type { Validator, ValidationErrors, ErrorMap } from "./validator";
 import { setElementValue } from '$lib/helpers/FormHelper';
 
+export type ValueType = string | string[];
+
 /** A FormControl represents the state of a {@link FormControlElement} like (input, textarea...) */
 export class FormControl {
-  validators: Validator[];
+  validators: Validator<ValueType>[];
 
   /**
    * Returns an object containing possible validation errors
@@ -38,12 +40,12 @@ export class FormControl {
   _touched = false;
 
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
-  initial: string | string[];
+  initial: ValueType;
 
   // TODO can we get the Form via Svelte context?
   private readonly formRef: () => Form<any>;
 
-  private _value: string | string[] = "";
+  private _value: ValueType = "";
 
   get value() {
     return this._value;
@@ -58,7 +60,7 @@ export class FormControl {
    *
    * See `change(value: String)` for doing both
    */
-  set value(value: string | string[]) {
+  set value(value: ValueType) {
     this._value = value;
     this.validate();
   }
@@ -72,8 +74,8 @@ export class FormControl {
   }
 
   constructor(formControl: {
-    value: string | string[];
-    validators: Validator[];
+    value: ValueType;
+    validators: Validator<ValueType>[];
     errorMap: ErrorMap;
     elements: FormControlElement[];
     formRef: () => Form<any>;
@@ -113,7 +115,7 @@ export class FormControl {
   }
 
   /** Change the value and the value of all HTML-Elements associated with this control */
-  change(value: any) {
+  change(value: ValueType) {
     this.value = value;
     this.elements.forEach((element) => setElementValue(element, value));
 
@@ -156,7 +158,7 @@ export class FormControl {
   }
 
   /** Reset the form control value to its initial value or `{ value }` and untouch it */
-  reset({ value }: { value?: string | null } = {}) {
+  reset({ value }: { value?: ValueType | null } = {}) {
     const resetValue = value == null ? this.initial : value;
     this.elements.forEach((element) => setElementValue(element, resetValue));
     this.value = resetValue;
