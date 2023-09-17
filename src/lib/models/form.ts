@@ -72,33 +72,20 @@ export class Form<SKeys extends keyof any, MKeys extends keyof any> {
   /** @internal Add a form conrol to the Form */
   _addControl<T extends ValueType>(
     name: string,
-    initial: T | undefined,
+    initial: T,
     multiple: boolean,
     validators: Validator<T>[] = [],
     elements: FormControlElement[] = [],
     errorMap: ErrorMap = {}
   ) {
-    if (multiple) {
-      (this as any)[name] = new FormControl<string>({
-        value: initial as string || '',
-        multiple: multiple,
-        validators: validators as Validator<string>[],
+      (this as any)[name] = new FormControl<T>({
+        value: initial,
+        multiple: true,
+        validators: validators,
         elements: elements,
         errorMap: errorMap,
         formRef: () => this,
       });
-    } else {
-      (this as any)[name] = new FormControl<string[]>({
-        value: initial as string[] || [],
-        multiple: multiple,
-        validators: validators as Validator<string[]>[],
-        elements: elements,
-        errorMap: errorMap,
-        formRef: () => this,
-      });
-    }
-    const value = initial || (multiple ? [] : "");
-
   }
 
   private forEachControl(

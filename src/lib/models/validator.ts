@@ -10,9 +10,9 @@ export type Validator<T extends ValueType> = (
   /** The value of the control. */
   value: T,
   /** The containing form. */
-  form: Form<any> & FormControlsUnspecified,
+  form: Form<any, any> & FormControlsUnspecified,
   /** The control this validator was assigned to. */
-  control: FormControl
+  control: FormControl<T>
 ) => ValidationErrors | (null | undefined);
 
 /** An object that contains errors thrown by the validator. */
