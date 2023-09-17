@@ -12,11 +12,11 @@ import { formReferences, type FormReference } from "./stores/formReferences";
  * <input name="nameOfInput" use:validators={[required, minLength(5), maxLength(20)]} />
  * ```
  */
-export function validators(
+export function validators<T extends ValueType>(
   element: FormControlElement,
-  validators: Validator<ValueType>[]
+  validators: Validator<T>[]
 ) {
-  let formControl: FormControl | undefined;
+  let formControl: FormControl<T> | undefined;
   let formReference: FormReference | undefined;
 
   setupValidators();
