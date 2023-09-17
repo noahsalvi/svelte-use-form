@@ -10,10 +10,10 @@ const valid_emails = [
   "example_address_2@a.b.c",
 ];
 
-for (const address of valid_emails) {
-  test(`${address} should be considered valid by the "email_with_tld" validator`, async ({
-    page,
-  }) => {
+test(`Verify valid emails are marked as valid by the emailWithTld validator`, async ({
+  page,
+}) => {
+  for (const address of valid_emails) {
     await page.goto("examples/email-validator");
 
     const input = page.locator("#email_field");
@@ -22,8 +22,8 @@ for (const address of valid_emails) {
     await input.clear();
     await input.type(address);
     await expect(isRequiredErrorTriggered).not.toBeChecked();
-  });
-}
+  }
+});
 
 const invalid_emails = [
   "email@test",
@@ -38,10 +38,10 @@ const invalid_emails = [
   "@example.com",
 ];
 
-for (const address of invalid_emails) {
-  test(`${address} should be considered invalid by the "email_with_tld" validator`, async ({
-    page,
-  }) => {
+test(`Verify invalid emails are marked as invalid by the emailWithTld validator`, async ({
+  page,
+}) => {
+  for (const address of invalid_emails) {
     await page.goto("examples/email-validator");
 
     const input = page.locator("#email_field");
@@ -50,5 +50,5 @@ for (const address of invalid_emails) {
     await input.clear();
     await input.type(address);
     await expect(isRequiredErrorTriggered).toBeChecked();
-  });
-}
+  }
+});
