@@ -1,10 +1,13 @@
 import type { Form } from "./form";
 import type { FormControlElement } from "./formControlElement";
 import type { Validator, ValidationErrors, ErrorMap } from "./validator";
+import { setElementValue } from '$lib/helpers/FormHelper';
+
+export type ValueType = string | string[];
 
 /** A FormControl represents the state of a {@link FormControlElement} like (input, textarea...) */
-export class FormControl {
-  validators: Validator[];
+export class FormControl<T extends ValueType> {
+  validators: Validator<T>[];
 
   /**
    * Returns an object containing possible validation errors
@@ -37,15 +40,21 @@ export class FormControl {
   _touched = false;
 
   /** The initial value of the FormControl. Defaults to `""` if not set via `useForm(params)`. */
-  initial: string;
+  initial: T;
+
+  _multiple: boolean = false;
 
   // TODO can we get the Form via Svelte context?
-  private readonly formRef: () => Form<any>;
+  private readonly formRef: () => Form<any, any>;
 
-  private _value: string = "";
+  private _value: T;
 
   get value() {
     return this._value;
+  }
+
+  get multiple() {
+    return this._multiple;
   }
 
   get touched() {
@@ -57,7 +66,7 @@ export class FormControl {
    *
    * See `change(value: String)` for doing both
    */
-  set value(value: string) {
+  set value(value: T) {
     this._value = value;
     this.validate();
   }
@@ -71,18 +80,20 @@ export class FormControl {
   }
 
   constructor(formControl: {
-    value: string;
-    validators: Validator[];
+    value: T;
+    multiple: boolean;
+    validators: Validator<T>[];
     errorMap: ErrorMap;
     elements: FormControlElement[];
-    formRef: () => Form<any>;
+    formRef: () => Form<any, any>;
   }) {
     this.formRef = formControl.formRef;
     this.validators = formControl.validators;
     this.errorMap = formControl.errorMap;
     this.initial = formControl.value;
     this.elements = formControl.elements;
-    this.value = formControl.value;
+    this._value = formControl.value;
+    this._multiple = formControl.multiple;
   }
 
   /**
@@ -112,9 +123,9 @@ export class FormControl {
   }
 
   /** Change the value and the value of all HTML-Elements associated with this control */
-  change(value: any) {
+  change(value: T) {
     this.value = value;
-    this.elements.forEach((element) => (element.value = value));
+    this.elements.forEach((element) => setElementValue(element, value));
 
     // Update the $form
     this.formRef()["_notifyListeners"]();
@@ -155,13 +166,14 @@ export class FormControl {
   }
 
   /** Reset the form control value to its initial value or `{ value }` and untouch it */
-  reset({ value }: { value?: string | null } = {}) {
+  reset({ value }: { value?: T | null } = {}) {
     const resetValue = value == null ? this.initial : value;
-    this.elements.forEach((element) => (element.value = resetValue));
-    this.value = resetValue;
+    this.elements.forEach((element) => setElementValue(element, resetValue));
+    this._value = resetValue;
     this.touched = false;
 
     // Updating the $form
     this.formRef()["_notifyListeners"]();
   }
+
 }

@@ -1,6 +1,6 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { FormControl } from "./models/formControl";
+import { FormControl } from './models/formControl';
 import type { FormControlElement } from "./models/formControlElement";
 import type { Validator } from "./models/validator";
 import { formReferences, type FormReference } from "./stores/formReferences";
@@ -14,9 +14,9 @@ import { formReferences, type FormReference } from "./stores/formReferences";
  */
 export function validators(
   element: FormControlElement,
-  validators: Validator[]
+  validators: Validator<any>[]
 ) {
-  let formControl: FormControl | undefined;
+  let formControl: FormControl<string | string[]> | undefined;
   let formReference: FormReference | undefined;
 
   setupValidators();
@@ -45,18 +45,18 @@ export function validators(
     formReference = possibleFormReference;
 
     let possibleFormControl = formReference.form[element.name];
-    if (!(possibleFormControl instanceof FormControl))
+    if (!(possibleFormControl instanceof FormControl<any>))
       throw new ValidatorsActionError(
         `Form Control [${element.name}] doesn't exist.`
       );
 
-    formControl = possibleFormControl;
+    formControl = possibleFormControl as FormControl<any>;
     formControl.validators.push(...validators);
     formControl.validate();
     formReference.notifyListeners();
   }
 
-  function updateValidators(updatedValidators: Validator[]) {
+  function updateValidators(updatedValidators: Validator<any>[]) {
     if (!formControl || !formReference) return;
 
     // Get the static validators (The validators set via useForm({...}))

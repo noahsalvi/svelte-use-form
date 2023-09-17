@@ -1,19 +1,20 @@
-import { FormControl } from "./formControl";
+import { FormControl, type ValueType } from './formControl';
 import type { FormControlElement } from "./formControlElement";
-import type { FormProperties } from "./formProperties";
+import type { FormProperties } from './formProperties';
 import type { ErrorMap, Validator } from "./validator";
 
-export class Form<Keys extends keyof any> {
+export class Form<SKeys extends keyof any, MKeys extends keyof any> {
   /**
    * Function for creating a Form
    * @remarks This allows us to specify the index signatures in the class
    */
-  static create<Keys extends keyof any>(
+  static create<SKeys extends keyof any, MKeys extends keyof any>(
     initialData: FormProperties,
     notifyListeners: Function
   ) {
-    return new Form<Keys>(initialData, notifyListeners) as Form<Keys> &
-      FormControlsSpecified<Keys> &
+    return new Form<SKeys, MKeys>(initialData, notifyListeners) as Form<SKeys, MKeys> &
+      FormControlsSpecifiedSingle<SKeys> &
+      FormControlsSpecifiedMultiple<MKeys> &
       FormControlsUnspecified;
   }
   private readonly _notifyListeners: Function;
@@ -34,7 +35,7 @@ export class Form<Keys extends keyof any> {
     return touched;
   }
 
-  get values(): FormValues<Keys> {
+  get values(): FormValues<SKeys, MKeys> {
     let values = {} as any;
     this.forEachControl((formControl, key) => {
       values[key] = formControl.value;
@@ -53,7 +54,11 @@ export class Form<Keys extends keyof any> {
 
   private constructor(initialData: FormProperties, notifyListeners: Function) {
     for (const [k, v] of Object.entries(initialData)) {
-      this._addControl(k, v.initial, v.validators, [], v.errorMap);
+      if (v.multiple) {
+        this._addControl(k, v.initial || [], true, v.validators, [], v.errorMap);
+      } else {
+        this._addControl(k, v.initial || '', false, v.validators, [], v.errorMap);
+      }
     }
 
     this._notifyListeners = notifyListeners;
@@ -65,24 +70,26 @@ export class Form<Keys extends keyof any> {
   }
 
   /** @internal Add a form conrol to the Form */
-  _addControl(
+  _addControl<T extends ValueType>(
     name: string,
-    initial: string = "",
-    validators: Validator[] = [],
+    initial: T,
+    multiple: boolean,
+    validators: Validator<T>[] = [],
     elements: FormControlElement[] = [],
     errorMap: ErrorMap = {}
   ) {
-    (this as any)[name] = new FormControl({
-      value: initial,
-      validators: validators,
-      elements: elements,
-      errorMap: errorMap,
-      formRef: () => this,
-    });
+      (this as any)[name] = new FormControl<T>({
+        value: initial,
+        multiple: true,
+        validators: validators,
+        elements: elements,
+        errorMap: errorMap,
+        formRef: () => this,
+      });
   }
 
   private forEachControl(
-    callback: (formControl: FormControl, key: string) => void
+    callback: (formControl: FormControl<any>, key: string) => void
   ) {
     for (const [key, value] of Object.entries(this)) {
       if (value instanceof FormControl) {
@@ -96,12 +103,18 @@ export class FormControlMissingError extends Error {}
 
 // We do not use utility types here, since they would hide the name of the type
 export type FormControlsUnspecified = {
-  [key: string]: FormControl | undefined;
+  [key: string]: FormControl<string | string[]> | undefined;
 };
-export type FormControlsSpecified<Keys extends keyof any> = {
-  [K in Keys]: FormControl;
+
+export type FormControlsSpecifiedSingle<Keys extends keyof any> = {
+  [K in Keys]: FormControl<string>;
 };
-export type FormValues<Keys extends keyof any> = Partial<
+
+export type FormControlsSpecifiedMultiple<Keys extends keyof any> = {
+  [K in Keys]: FormControl<string[]>;
+};
+
+export type FormValues<SKeys extends keyof any, MKeys extends keyof any> = Partial<
   Record<string, string>
 > &
-  Record<Keys, string>;
+  Record<SKeys, string> & Record<MKeys, string[]>;
