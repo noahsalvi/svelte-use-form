@@ -13,6 +13,7 @@ export {
   minLength,
   maxLength,
   email,
+  emailWithTld,
   url,
   number,
   pattern,

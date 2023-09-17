@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { useForm, validators } from "$lib";
-  import { emailWithTld } from "$lib/validators";
+  import { useForm, validators, emailWithTld } from "$lib";
+
   const form = useForm();
 </script>
 

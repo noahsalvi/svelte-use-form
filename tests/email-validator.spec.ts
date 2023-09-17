@@ -17,7 +17,6 @@ test(`Verify valid emails are marked as valid by the emailWithTld validator`, as
     await page.goto("examples/email-validator");
 
     const input = page.locator("#testEmailField");
-    console.log(input);
     const isRequiredErrorTriggered = page.locator("#isValid");
 
     await input.clear();
@@ -46,7 +45,6 @@ test(`Verify invalid emails are marked as invalid by the emailWithTld validator`
     await page.goto("examples/email-validator");
 
     const input = page.locator("#testEmailField");
-    console.log(input);
     const isRequiredErrorTriggered = page.locator("#isValid");
 
     await input.clear();

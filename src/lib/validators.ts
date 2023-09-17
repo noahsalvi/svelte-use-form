@@ -28,7 +28,7 @@ export const email: Validator = (value) => {
 };
 
 /**
- * A variation of the `email` validator that requires a TLD component. Verifying
+ * A variation of the `email` validator that requires a [TLD](https://en.wikipedia.org/wiki/Top-level_domain) component. Verifying
  * the validity of the TLD is not the responsibility of this validation library.
  */
 export const emailWithTld: Validator = (value) => {
