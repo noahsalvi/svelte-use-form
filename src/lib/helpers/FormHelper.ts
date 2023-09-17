@@ -51,7 +51,7 @@ function getCheckboxValue(element: HTMLInputElement, allElements: FormControlEle
         allElements.filter(el => el instanceof HTMLInputElement && el.name === name);
 
     if (matchingElements.length === 1) {
-        return element.checked ? element.value : '';
+        return element.checked ? element.value || 'checked' : '';
     }
 
     return matchingElements
