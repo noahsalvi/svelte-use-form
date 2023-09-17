@@ -7,7 +7,7 @@ export type ValueType = string | string[];
 
 /** A FormControl represents the state of a {@link FormControlElement} like (input, textarea...) */
 export class FormControl<T extends ValueType> {
-  validators: Validator<any>[];
+  validators: Validator<T>[];
 
   /**
    * Returns an object containing possible validation errors
