@@ -5,10 +5,14 @@
 </script>
 
 <form use:form>
-  <input id="email_field" name="email_field" use:validators={[emailWithTld]} />
+  <input
+    id="testEmailField"
+    name="testEmailField"
+    use:validators={[emailWithTld]}
+  />
   <input
     type="checkbox"
-    id="is-valid"
-    checked={!!$form.email_field?.errors.emailWithTld}
+    id="isValid"
+    checked={!!$form.testEmailField?.errors.emailWithTld}
   />
 </form>

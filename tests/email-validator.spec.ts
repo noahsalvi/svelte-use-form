@@ -1,6 +1,6 @@
 import test, { expect } from "@playwright/test";
 
-const valid_emails = [
+const validEmails = [
   "email@test.com",
   "email@test.xyz",
   "email@test.a",
@@ -13,11 +13,12 @@ const valid_emails = [
 test(`Verify valid emails are marked as valid by the emailWithTld validator`, async ({
   page,
 }) => {
-  for (const address of valid_emails) {
+  for (const address of validEmails) {
     await page.goto("examples/email-validator");
 
-    const input = page.locator("#email_field");
-    const isRequiredErrorTriggered = page.locator("#is-valid");
+    const input = page.locator("#testEmailField");
+    console.log(input);
+    const isRequiredErrorTriggered = page.locator("#isValid");
 
     await input.clear();
     await input.type(address);
@@ -25,7 +26,7 @@ test(`Verify valid emails are marked as valid by the emailWithTld validator`, as
   }
 });
 
-const invalid_emails = [
+const invalidEmails = [
   "email@test",
   "example.address@noTLD",
   "example.com@a",
@@ -41,11 +42,12 @@ const invalid_emails = [
 test(`Verify invalid emails are marked as invalid by the emailWithTld validator`, async ({
   page,
 }) => {
-  for (const address of invalid_emails) {
+  for (const address of invalidEmails) {
     await page.goto("examples/email-validator");
 
-    const input = page.locator("#email_field");
-    const isRequiredErrorTriggered = page.locator("#is-valid");
+    const input = page.locator("#testEmailField");
+    console.log(input);
+    const isRequiredErrorTriggered = page.locator("#isValid");
 
     await input.clear();
     await input.type(address);
