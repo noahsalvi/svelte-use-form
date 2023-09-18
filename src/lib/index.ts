@@ -15,6 +15,7 @@ export {
   email,
   emailWithTld,
   url,
+  digits,
   number,
   pattern,
 } from "./validators";

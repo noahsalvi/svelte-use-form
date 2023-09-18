@@ -367,6 +367,7 @@ And thus it won't be validated or observed for changes.
 - `minLength(n)`
 - `maxLength(n)`
 - `number`
+- `digits`
 - `email`
 - `emailWithTld`
 - `url`
