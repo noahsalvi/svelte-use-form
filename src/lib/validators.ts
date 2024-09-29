@@ -1,22 +1,22 @@
 import type { Validator } from "./models/validator";
 
-export const required: Validator = (value) => {
+export const required: Validator<string> = (value) => {
   return value.trim() ? null : { required: "Required" };
 };
 
-export function maxLength(length: number): Validator {
+export function maxLength(length: number): Validator<string> {
   return (value) => {
     if (value.trim().length > length) return { maxLength: length };
   };
 }
 
-export function minLength(length: number): Validator {
+export function minLength(length: number): Validator<string> {
   return (value) => {
     if (value.trim().length < length) return { minLength: length };
   };
 }
 
-export const email: Validator = (value) => {
+export const email: Validator<string> = (value) => {
   if (
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
       value
@@ -31,7 +31,7 @@ export const email: Validator = (value) => {
  * A variation of the `email` validator that requires a [TLD](https://en.wikipedia.org/wiki/Top-level_domain) component. Verifying
  * the validity of the TLD is not the responsibility of this validation library.
  */
-export const emailWithTld: Validator = (value) => {
+export const emailWithTld: Validator<string> = (value) => {
   if (
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/.test(
       value
@@ -42,7 +42,7 @@ export const emailWithTld: Validator = (value) => {
   return { emailWithTld: {} };
 };
 
-export const url: Validator = (value) => {
+export const url: Validator<string> = (value) => {
   // https://stackoverflow.com/a/5717133/13475809
   var pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
@@ -59,7 +59,7 @@ export const url: Validator = (value) => {
   return { url: "URL is not valid" };
 };
 
-export const digits: Validator = (value) => {
+export const digits: Validator<string> = (value) => {
   if (/^[0-9]+$/.test(value)) {
     return null;
   }
@@ -73,7 +73,7 @@ export const number: Validator = (value) => {
   return { number: {} };
 };
 
-export function pattern(regExp: string | RegExp): Validator {
+export function pattern(regExp: string | RegExp): Validator<string> {
   const r = typeof regExp === "string" ? new RegExp(regExp) : regExp;
   return (value) => (r.test(value) ? null : { pattern: "Pattern error" });
 }

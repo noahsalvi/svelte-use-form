@@ -42,7 +42,7 @@
 
   const formContext: {
     subscribe: (
-      callback: (form: Form<any> & FormControlsUnspecified) => any
+      callback: (form: Form<any, any> & FormControlsUnspecified) => any
     ) => void;
   } = getContext(form);
 
