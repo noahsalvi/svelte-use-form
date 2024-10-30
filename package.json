@@ -1,6 +1,6 @@
 {
   "name": "svelte-use-form",
-  "version": "2.10.0",
+  "version": "2.10.1-beta.0",
   "description": "The most svelte form library! 🥷",
   "author": "Noah Versace Salvi",
   "homepage": "https://github.com/noahsalvi/svelte-use-form#readme",
@@ -26,7 +26,6 @@
     "package": "svelte-kit sync && svelte-package -o package",
     "preview": "vite preview",
     "test": "npx playwright test",
-    "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check .",
