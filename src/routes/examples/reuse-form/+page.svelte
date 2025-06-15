@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
+
   import { tick } from "svelte";
 
   /*
@@ -22,19 +24,19 @@
     dialog.open();
   };
 
-  let dialog: any;
-  let selectedPerson = { ...NEW_PERSON };
+  let dialog: any = $state();
+  let selectedPerson = $state({ ...NEW_PERSON });
 </script>
 
 <h3>Svelte-use-form "reusing form" test</h3>
-<button class="btn" on:click|preventDefault={addPerson}>New person</button>
+<button class="btn" onclick={preventDefault(addPerson)}>New person</button>
 <table>
   <thead>
     <tr>
       <th>ID</th>
       <th>Nome</th>
       <th>Ativo</th>
-      <th />
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -44,7 +46,7 @@
         <td>{p.nome}</td>
         <td>{p.ativo ? "Yes" : "No"}</td>
         <td>
-          <buton class="btn" on:click={() => editPerson(p)}>Edit</buton>
+          <buton class="btn" onclick={() => editPerson(p)}>Edit</buton>
         </td>
       </tr>
     {/each}

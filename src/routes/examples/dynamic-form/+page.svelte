@@ -1,13 +1,15 @@
 <script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
+
   import { minLength, required, useForm, validators } from "$lib";
 
   const form = useForm({ username: { initial: "Michael" } });
-  let showUsername = false;
-  let showPassword = false;
+  let showUsername = $state(false);
+  let showPassword = $state(false);
 </script>
 
 <form use:form>
-  <button on:click|preventDefault={() => (showUsername = !showUsername)}
+  <button onclick={preventDefault(() => (showUsername = !showUsername))}
     >Toggle Username</button
   >
   {#if showUsername}
@@ -18,7 +20,7 @@
       use:validators={[required, minLength(10)]}
     />
   {/if}
-  <button on:click|preventDefault={() => (showPassword = !showPassword)}
+  <button onclick={preventDefault(() => (showPassword = !showPassword))}
     >Toggle Password</button
   >
   {#if showPassword}

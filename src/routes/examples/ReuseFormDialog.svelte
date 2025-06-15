@@ -1,9 +1,15 @@
-<script>
+<script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
+
   import { Hint, required, useForm, validators } from "$lib";
   const form = useForm();
 
-  export let person = { nome: "", ativo: true };
-  export let showDialog = false;
+  interface Props {
+    person?: any;
+    showDialog?: boolean;
+  }
+
+  let { person = { nome: "", ativo: true }, showDialog = $bindable(false) }: Props = $props();
 
   export const open = () => {
     showDialog = true;
@@ -26,7 +32,7 @@
   <form
     autocomplete="off"
     use:form
-    on:submit|preventDefault={formSubmit}
+    onsubmit={preventDefault(formSubmit)}
     novalidate
   >
     <h5>Form</h5>
@@ -49,7 +55,7 @@
       />
       <label class="form-check-label" for="ativo">Ativo</label>
     </p>
-    <button type="submit" class="btn" value="Submit" />
+    <button type="submit" class="btn" value="Submit"></button>
     <br />
 
     Form is valid?

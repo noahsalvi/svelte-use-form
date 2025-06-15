@@ -19,23 +19,44 @@
    * </HintGroup>
    * ```
    */
-  let name = "";
-  export { name as for };
-  /** The name of useForm instance */
-  export let form: string = "svelte-use-form";
+  
+  
   /** `class` of the underlying html element */
-  let _class = "";
-  export { _class as class };
-  /** `id` of the underlying html element */
-  export let id: string | undefined = undefined;
-  /** The name of the error that should show this hint */
-  export let on = "";
-  /** Hides this hint when the given validator is triggered */
-  export let hideWhen = "";
-  /** Does the same thing as `hideWhen="required"` */
-  export let hideWhenRequired = false;
-  /** Show the hint even when the field is untouched */
-  export let showWhenUntouched = false;
+  
+  
+  
+  
+  
+  
+  interface Props {
+    for?: string;
+    /** The name of useForm instance */
+    form?: string;
+    class?: string;
+    /** `id` of the underlying html element */
+    id?: string | undefined;
+    /** The name of the error that should show this hint */
+    on?: string;
+    /** Hides this hint when the given validator is triggered */
+    hideWhen?: string;
+    /** Does the same thing as `hideWhen="required"` */
+    hideWhenRequired?: boolean;
+    /** Show the hint even when the field is untouched */
+    showWhenUntouched?: boolean;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let {
+    for: name = $bindable(""),
+    form = "svelte-use-form",
+    class: _class = "",
+    id = undefined,
+    on = "",
+    hideWhen = "",
+    hideWhenRequired = false,
+    showWhenUntouched = false,
+    children
+  }: Props = $props();
 
   if (!name) name = getContext(`${form}_hint-group-name`);
 
@@ -46,17 +67,17 @@
     ) => void;
   } = getContext(form);
 
-  $: touched = $formContext[name]?.touched;
-  $: errors = $formContext[name]?.errors || {};
-  $: hideWhenError = hideWhen ? !!errors[hideWhen] : false;
-  $: requiredError = !!errors["required"];
-  $: value = errors[on];
+  let touched = $derived($formContext[name]?.touched);
+  let errors = $derived($formContext[name]?.errors || {});
+  let hideWhenError = $derived(hideWhen ? !!errors[hideWhen] : false);
+  let requiredError = $derived(!!errors["required"]);
+  let value = $derived(errors[on]);
 </script>
 
 {#if !(hideWhenRequired && requiredError) && !hideWhenError}
   {#if (touched || showWhenUntouched) && value}
     <div {id} class="svelte-use-form-hint {_class}">
-      <slot {value} />
+      {@render children?.({ value, })}
     </div>
   {/if}
 {/if}

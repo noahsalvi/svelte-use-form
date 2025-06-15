@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
+
   import {
     HintGroup,
     Hint,
@@ -37,17 +39,21 @@
     use:validators={[minLength(6), maxLength(12)]}
   />
   <HintGroup for="value2">
-    <Hint on="minLength" let:value>
-      The password is too short, min = {value}
-    </Hint>
-    <Hint on="maxLength" let:value>
-      The password is too long, max = {value}
-    </Hint>
+    <Hint on="minLength" >{#snippet children({ value })}
+          
+        The password is too short, min = {value}
+                {/snippet}
+        </Hint>
+    <Hint on="maxLength" >{#snippet children({ value })}
+          
+        The password is too long, max = {value}
+                {/snippet}
+        </Hint>
   </HintGroup>
 
-  <button on:click|preventDefault={resetForm}>Reset Form</button>
+  <button onclick={preventDefault(resetForm)}>Reset Form</button>
 
-  <button on:click|preventDefault={resetFoo}>Reset Controls to "Foo"</button>
+  <button onclick={preventDefault(resetFoo)}>Reset Controls to "Foo"</button>
   {#if $form.valid}
     Form is Valid
   {/if}

@@ -15,12 +15,17 @@
    * <Hint for="nameOfFormControl" on="required">HINT</Hint>
    * ```
    */
-  export { name as for };
-  export let form: string = "svelte-use-form";
+  
 
-  let name = "";
+  interface Props {
+    form?: string;
+    for?: string;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let { form = "svelte-use-form", for: name = "", children }: Props = $props();
 
   setContext(`${form}_hint-group-name`, name);
 </script>
 
-<slot {form} />
+{@render children?.({ form, })}

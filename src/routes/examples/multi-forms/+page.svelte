@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { createBubbler, preventDefault } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import {
     HintGroup,
     Hint,
@@ -31,7 +34,7 @@
   >
 
   <button
-    on:click|preventDefault
+    onclick={preventDefault(bubble('click'))}
     id="submit-form-one"
     disabled={!$formOne.valid}>Submit</button
   >
@@ -50,16 +53,20 @@
   />
 
   <HintGroup form="form-two" for="input">
-    <Hint id="hint-min-form-two" form="form-two" on="minLength" let:value>
-      Input must be more than {value} characters
-    </Hint>
-    <Hint id="hint-max-form-two" form="form-two" on="maxLength" let:value>
-      Input must be less than {value} characters
-    </Hint>
+    <Hint id="hint-min-form-two" form="form-two" on="minLength" >{#snippet children({ value })}
+          
+        Input must be more than {value} characters
+                {/snippet}
+        </Hint>
+    <Hint id="hint-max-form-two" form="form-two" on="maxLength" >{#snippet children({ value })}
+          
+        Input must be less than {value} characters
+                {/snippet}
+        </Hint>
   </HintGroup>
 
   <button
-    on:click|preventDefault
+    onclick={preventDefault(bubble('click'))}
     id="submit-form-two"
     disabled={!$formTwo.valid}>Submit</button
   >
