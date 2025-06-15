@@ -10,7 +10,7 @@ export class Form<Keys extends keyof any> {
    */
   static create<Keys extends keyof any>(
     initialData: FormProperties,
-    notifyListeners: Function
+    notifyListeners: Function,
   ) {
     return new Form<Keys>(initialData, notifyListeners) as Form<Keys> &
       FormControlsSpecified<Keys> &
@@ -70,7 +70,7 @@ export class Form<Keys extends keyof any> {
     initial: string = "",
     validators: Validator[] = [],
     elements: FormControlElement[] = [],
-    errorMap: ErrorMap = {}
+    errorMap: ErrorMap = {},
   ) {
     (this as any)[name] = new FormControl({
       value: initial,
@@ -82,7 +82,7 @@ export class Form<Keys extends keyof any> {
   }
 
   private forEachControl(
-    callback: (formControl: FormControl, key: string) => void
+    callback: (formControl: FormControl, key: string) => void,
   ) {
     for (const [key, value] of Object.entries(this)) {
       if (value instanceof FormControl) {

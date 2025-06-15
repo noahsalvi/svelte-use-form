@@ -15,7 +15,7 @@
   const getTitle = (path: string) => {
     const words = path.split("-");
     const wordsUppercased = words.map(
-      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+      (word) => word.charAt(0).toUpperCase() + word.slice(1),
     );
     return wordsUppercased.join(" ");
   };

@@ -148,7 +148,7 @@ export class FormControl {
 
     this.valid = valid;
     this.elements.forEach((element) =>
-      element.setCustomValidity(valid ? "" : "Field is invalid")
+      element.setCustomValidity(valid ? "" : "Field is invalid"),
     );
 
     return valid;

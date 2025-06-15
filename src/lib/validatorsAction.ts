@@ -14,7 +14,7 @@ import { formReferences, type FormReference } from "./stores/formReferences";
  */
 export function validators(
   element: FormControlElement,
-  validators: Validator[]
+  validators: Validator[],
 ) {
   let formControl: FormControl | undefined;
   let formReference: FormReference | undefined;
@@ -29,17 +29,17 @@ export function validators(
     const formElement = element.form;
     if (!formElement)
       throw new ValidatorsActionError(
-        "HTML element doesn't have an ancestral form"
+        "HTML element doesn't have an ancestral form",
       );
 
     await tick();
     const possibleFormReference = get(formReferences).find(
-      (form) => form.node === formElement
+      (form) => form.node === formElement,
     );
 
     if (!possibleFormReference)
       throw new ValidatorsActionError(
-        "HTML form doesn't have a svelte-use-form binded. (use:form)"
+        "HTML form doesn't have a svelte-use-form binded. (use:form)",
       );
 
     formReference = possibleFormReference;
@@ -47,7 +47,7 @@ export function validators(
     let possibleFormControl = formReference.form[element.name];
     if (!(possibleFormControl instanceof FormControl))
       throw new ValidatorsActionError(
-        `Form Control [${element.name}] doesn't exist.`
+        `Form Control [${element.name}] doesn't exist.`,
       );
 
     formControl = possibleFormControl;
@@ -61,7 +61,7 @@ export function validators(
 
     // Get the static validators (The validators set via useForm({...}))
     const newValidators = formControl.validators.filter(
-      (validator) => !validators.find((v) => v === validator)
+      (validator) => !validators.find((v) => v === validator),
     );
 
     // Add the new validators to it

@@ -48,10 +48,10 @@ interface EventListener {
  */
 export function useForm<
   Keys extends keyof T = "",
-  T extends FormProperties = any
+  T extends FormProperties = any,
 >(
   properties: T | FormProperties = {} as FormProperties,
-  formName: string = "svelte-use-form"
+  formName: string = "svelte-use-form",
 ) {
   const subscribers: Function[] = [];
 
@@ -184,7 +184,7 @@ export function useForm<
             initialFormControlProperty.initial,
             initialFormControlProperty.validators,
             [], // The setup function will add this node to the form control
-            initialFormControlProperty.errorMap
+            initialFormControlProperty.errorMap,
           );
         }
         if (isTextElement(node)) setupTextElements([node]);
@@ -203,7 +203,7 @@ export function useForm<
         elements.forEach((element) => {
           delete state[element.name];
           eventListeners = eventListeners.filter(
-            (eventListener) => eventListener.node !== element
+            (eventListener) => eventListener.node !== element,
           );
         });
       }
@@ -215,7 +215,7 @@ export function useForm<
   function mountEventListener(
     node: HTMLElement,
     event: string,
-    listener: EventListenerOrEventListenerObject
+    listener: EventListenerOrEventListenerObject,
   ) {
     node.addEventListener(event, listener);
     eventListeners.push({ node, event, listener });
@@ -295,7 +295,7 @@ export function useForm<
 
   function setInitialValue(
     element: FormControlElement,
-    formControl: FormControl
+    formControl: FormControl,
   ) {
     if (formControl.initial) element.value = formControl.initial;
   }
@@ -349,10 +349,10 @@ function getInitialValueFromTextElement(textElement: TextElement) {
 */
 function getNodeElementsByTagName<T>(
   node: HTMLFormElement | HTMLElement,
-  tagName: string
+  tagName: string,
 ): T[] {
   return Array.from(node.getElementsByTagName(tagName)).filter(
-    (element) => !isIgnoredElement(element)
+    (element) => !isIgnoredElement(element),
   ) as T[];
 }
 
@@ -360,7 +360,7 @@ function getAllFormControlElements(node: HTMLElement): FormControlElement[] {
   const inputs = getNodeElementsByTagName<HTMLInputElement>(node, "input");
   const textareas = getNodeElementsByTagName<HTMLTextAreaElement>(
     node,
-    "textarea"
+    "textarea",
   );
   const selects = getNodeElementsByTagName<HTMLSelectElement>(node, "select");
   return [...inputs, ...textareas, ...selects];

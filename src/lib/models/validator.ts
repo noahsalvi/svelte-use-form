@@ -12,7 +12,7 @@ export type Validator = (
   /** The containing form. */
   form: Form<any> & FormControlsUnspecified,
   /** The control this validator was assigned to. */
-  control: FormControl
+  control: FormControl,
 ) => ValidationErrors | (null | undefined);
 
 /** An object that contains errors thrown by the validator. */

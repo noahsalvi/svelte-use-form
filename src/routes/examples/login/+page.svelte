@@ -19,6 +19,7 @@
     name="email"
     placeholder="Email"
     use:validators={[email]}
+    class:touched={$form.email?.touched}
   />
   <Hint for="email" on="email">Input is not a valid email</Hint>
 
@@ -28,6 +29,7 @@
     name="password"
     placeholder="Password"
     use:validators={[minLength(6), maxLength(12)]}
+    class:touched={$form.password?.touched}
   />
   <HintGroup for="password">
     <Hint on="minLength" let:value>

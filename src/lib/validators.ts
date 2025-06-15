@@ -19,7 +19,7 @@ export function minLength(length: number): Validator {
 export const email: Validator = (value) => {
   if (
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-      value
+      value,
     )
   ) {
     return null;
@@ -34,7 +34,7 @@ export const email: Validator = (value) => {
 export const emailWithTld: Validator = (value) => {
   if (
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/.test(
-      value
+      value,
     )
   ) {
     return null;
@@ -51,7 +51,7 @@ export const url: Validator = (value) => {
       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
       "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
       "(\\#[-a-z\\d_]*)?$", // fragment locator
-    "i"
+    "i",
   );
   if (pattern.test(value)) {
     return null;

@@ -37,19 +37,19 @@
   /** Show the hint even when the field is untouched */
   export let showWhenUntouched = false;
 
-  // Tries to get the name from the parent HintGroup
   if (!name) name = getContext(`${form}_hint-group-name`);
 
+  // Get the form store from context
   const formContext: {
     subscribe: (
-      callback: (form: Form<any> & FormControlsUnspecified) => any
+      callback: (form: Form<any> & FormControlsUnspecified) => any,
     ) => void;
   } = getContext(form);
 
-  $: touched = $formContext[name]?.touched ?? {};
-  $: errors = $formContext[name]?.errors ?? {};
-  $: hideWhenError = hideWhen ? errors[hideWhen] : "";
-  $: requiredError = errors["required"];
+  $: touched = $formContext[name]?.touched;
+  $: errors = $formContext[name]?.errors || {};
+  $: hideWhenError = hideWhen ? !!errors[hideWhen] : false;
+  $: requiredError = !!errors["required"];
   $: value = errors[on];
 </script>
 

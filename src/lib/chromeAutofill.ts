@@ -29,7 +29,7 @@ function startAnimationWhenAutofilled() {
 export function handleChromeAutofill(
   textElement: TextElement,
   control: FormControl,
-  callback: Function
+  callback: Function,
 ) {
   if (!isChrome()) return;
 
