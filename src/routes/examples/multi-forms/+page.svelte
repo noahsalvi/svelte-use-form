@@ -30,10 +30,8 @@
     >Input must be less than 5 characters</Hint
   >
 
-  <button
-    on:click|preventDefault
-    id="submit-form-one"
-    disabled={!$formOne.valid}>Submit</button
+  <button type="button" id="submit-form-one" disabled={!$formOne.valid}
+    >Submit</button
   >
 </form>
 
@@ -58,9 +56,7 @@
     </Hint>
   </HintGroup>
 
-  <button
-    on:click|preventDefault
-    id="submit-form-two"
-    disabled={!$formTwo.valid}>Submit</button
+  <button type="button" id="submit-form-two" disabled={!$formTwo.valid}
+    >Submit</button
   >
 </form>
