@@ -34,7 +34,7 @@
       <th>ID</th>
       <th>Nome</th>
       <th>Ativo</th>
-      <th />
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -44,7 +44,9 @@
         <td>{p.nome}</td>
         <td>{p.ativo ? "Yes" : "No"}</td>
         <td>
-          <buton class="btn" on:click={() => editPerson(p)}>Edit</buton>
+          <button class="btn" type="button" on:click={() => editPerson(p)}>
+            Edit
+          </button>
         </td>
       </tr>
     {/each}
