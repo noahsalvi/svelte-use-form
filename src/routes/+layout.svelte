@@ -7,12 +7,12 @@
   <slot />
 </main>
 
-<style global>
-  input.touched:invalid {
+<style>
+  :global(input.touched:invalid) {
     border-color: red;
   }
 
-  .svelte-use-form-hint {
+  :global(.svelte-use-form-hint) {
     background: rgb(255, 229, 198);
     padding: 10px;
     border-radius: 5px;
@@ -20,20 +20,20 @@
     margin-bottom: 10px;
   }
 
-  html {
+  :global(html) {
     font-family: sans-serif;
   }
 
-  html,
-  body,
-  #svelte {
+  :global(html),
+  :global(body),
+  :global(#svelte) {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
   }
 
-  #svelte {
+  :global(#svelte) {
     display: flex;
     flex-direction: column;
   }
@@ -45,7 +45,7 @@
     justify-content: center;
   }
 
-  form {
+  :global(form) {
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -55,7 +55,7 @@
     border-radius: 10px;
   }
 
-  form button {
+  :global(form button) {
     height: 36px;
     margin-bottom: 0;
     background: rgb(254, 182, 39);
@@ -65,15 +65,15 @@
     font-weight: bold;
   }
 
-  button {
+  :global(button) {
     cursor: pointer;
   }
 
-  button:disabled {
+  :global(button:disabled) {
     opacity: 0.6;
   }
 
-  input {
+  :global(input) {
     height: 30px;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -81,7 +81,7 @@
     outline: none;
   }
 
-  input:focus {
+  :global(input:focus) {
     border-color: rgb(64, 164, 251);
   }
 </style>

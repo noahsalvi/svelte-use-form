@@ -49,7 +49,7 @@
       />
       <label class="form-check-label" for="ativo">Ativo</label>
     </p>
-    <button type="submit" class="btn" value="Submit" />
+    <button type="submit" class="btn">Submit</button>
     <br />
 
     Form is valid?
