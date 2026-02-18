@@ -11,6 +11,7 @@ npm i svelte-use-form
 ```
 
 Compatible with Svelte `^4` and `^5`.
+If you are on Svelte 3, stay on `svelte-use-form@2.x`.
 
 <a href="https://npmjs.com/package/svelte-use-form">![GitHub package.json version](https://img.shields.io/github/package-json/v/noahsalvi/svelte-use-form?style=for-the-badge)</a>
 <a href="https://npmjs.com/package/svelte-use-form">![npm](https://img.shields.io/npm/dw/svelte-use-form?style=for-the-badge)</a>
@@ -121,7 +122,7 @@ or you could also print the error message like this:
     required,
     minLength,
     email,
-  } from "svelte-use-form@2.0.0";
+  } from "svelte-use-form";
 
   const form = useForm();
   const requiredMessage = "This field is required";

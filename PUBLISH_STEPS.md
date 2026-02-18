@@ -1,5 +1,20 @@
-#  Workflow to publish to npm
+# Workflow to publish to npm
 
-- Run `npm version [patch/minor/major]`. This will create a commit and bump the version in `package.json`.
-- Run `yarn package` to bulid the project as a package.
-- Run `cd package` and then `npm publish` to publish it to the registry.
+All commands are run from the repository root.
+
+## Stable release
+
+- Run `npm version [patch/minor/major]` (or update `package.json` manually if you do not want an automatic git tag/commit).
+- Run `npm run package`.
+- Run `npm publish`.
+
+## Prerelease (beta/alpha)
+
+- Run `npm version [major/minor/patch]-[beta/alpha].0 --no-git-tag-version` (example: `npm version 3.0.0-beta.0 --no-git-tag-version`).
+- Run `npm run package`.
+- Run `npm publish --tag beta` (or `--tag alpha`).
+
+## Notes
+
+- If publishing fails with 2FA errors, publish with OTP: `npm publish --tag <tag> --otp=<6-digit-code>`.
+- If using auth tokens, ensure the token has publish permissions (and bypass-2FA publish capability when required by npm policy).
