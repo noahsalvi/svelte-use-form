@@ -21,6 +21,7 @@ test("Dynamic Validators (Validators with changing parameters)", async ({
 
   // Focus important so that the cursor is placed at the end
   await inputA.focus();
+  await inputA.press("End");
   await inputA.type("A");
   await expect(isMatching).toHaveText("Yes");
   await expect(isRequiredErrorTriggered).not.toBeChecked();

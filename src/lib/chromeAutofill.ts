@@ -33,7 +33,9 @@ export function handleChromeAutofill(
 ) {
   if (!isChrome()) return;
 
-  function handleAnimationStart(event: AnimationEvent) {
+  function handleAnimationStart(event: Event) {
+    if (!(event instanceof AnimationEvent)) return;
+
     if (event.animationName.includes(animationName)) {
       const currentValue = textElement.value;
       // If chrome did not actually fill the value of the input
