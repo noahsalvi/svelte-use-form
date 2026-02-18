@@ -9,7 +9,7 @@
   } from "$lib";
   import HintGroup from "$lib/components/HintGroup.svelte";
   const form = useForm();
-  let loading = false;
+  let loading = $state(false);
 
   const checkUsernameAvailability = (value: any) => {
     loading = true;

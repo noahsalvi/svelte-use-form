@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useForm, validators, Hint, minLength, required } from "$lib";
-  let aValue = "world";
+  let aValue = $state("world");
   const form = useForm({
     copy: { validators: [required] },
   });
@@ -10,9 +10,7 @@
       return { nomatch: `Not matching ${matchString}` };
     }
   };
-  let dynamicValidators = [matchValidator(aValue), minLength(2)];
-
-  $: dynamicValidators = [matchValidator(aValue), minLength(2)];
+  let dynamicValidators = $derived([matchValidator(aValue), minLength(2)]);
 </script>
 
 <form use:form>

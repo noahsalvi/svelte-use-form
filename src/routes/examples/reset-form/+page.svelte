@@ -45,9 +45,9 @@
     </Hint>
   </HintGroup>
 
-  <button on:click|preventDefault={resetForm}>Reset Form</button>
+  <button type="button" onclick={resetForm}>Reset Form</button>
 
-  <button on:click|preventDefault={resetFoo}>Reset Controls to "Foo"</button>
+  <button type="button" onclick={resetFoo}>Reset Controls to "Foo"</button>
   {#if $form.valid}
     Form is Valid
   {/if}

@@ -27,7 +27,7 @@
 </script>
 
 <h3>Svelte-use-form "reusing form" test</h3>
-<button class="btn" on:click|preventDefault={addPerson}>New person</button>
+<button class="btn" type="button" onclick={addPerson}>New person</button>
 <table>
   <thead>
     <tr>
@@ -44,7 +44,7 @@
         <td>{p.nome}</td>
         <td>{p.ativo ? "Yes" : "No"}</td>
         <td>
-          <button class="btn" type="button" on:click={() => editPerson(p)}>
+          <button class="btn" type="button" onclick={() => editPerson(p)}>
             Edit
           </button>
         </td>

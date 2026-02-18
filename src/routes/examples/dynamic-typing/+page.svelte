@@ -51,7 +51,7 @@
     </Hint>
   </HintGroup>
 
-  <button on:click|preventDefault disabled={!$form.valid}>Login</button>
+  <button type="button" disabled={!$form.valid}>Login</button>
 </form>
 <pre>
   {JSON.stringify($form, null, "\t")}

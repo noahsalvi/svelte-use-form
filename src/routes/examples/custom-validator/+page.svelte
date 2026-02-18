@@ -46,5 +46,5 @@
 
   <Hint for="password-repeat" on="passwordMatch">Passwords do not match</Hint>
 
-  <button on:click|preventDefault disabled={!$form.valid}>Login</button>
+  <button type="button" disabled={!$form.valid}>Login</button>
 </form>
