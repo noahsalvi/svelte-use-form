@@ -11,6 +11,7 @@ test("Login Example", async ({ page }) => {
   await expect(password).not.toHaveClass("touched");
 
   await email.type("max@");
+  await password.click();
   await expect(email).toHaveClass("touched");
   await expect(password).not.toHaveClass("touched");
   await password.type("random pass");

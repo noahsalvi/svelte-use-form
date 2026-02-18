@@ -10,6 +10,9 @@
       return { nomatch: `Not matching ${matchString}` };
     }
   };
+  let dynamicValidators = [matchValidator(aValue), minLength(2)];
+
+  $: dynamicValidators = [matchValidator(aValue), minLength(2)];
 </script>
 
 <form use:form>
@@ -18,7 +21,7 @@
   <input
     id="inputB"
     name="copy"
-    use:validators={[matchValidator(aValue), minLength(2)]}
+    use:validators={dynamicValidators}
   />
   Does B match A?<b id="is-matching">{$form.copy?.valid ? "Yes" : "No"}</b>
   Is required triggered?

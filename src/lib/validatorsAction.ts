@@ -16,6 +16,7 @@ export function validators(
   element: FormControlElement,
   validators: Validator[]
 ) {
+  let currentValidators = validators;
   let formControl: FormControl | undefined;
   let formReference: FormReference | undefined;
 
@@ -51,7 +52,7 @@ export function validators(
       );
 
     formControl = possibleFormControl;
-    formControl.validators.push(...validators);
+    formControl.validators.push(...currentValidators);
     formControl.validate();
     formReference.notifyListeners();
   }
@@ -61,11 +62,12 @@ export function validators(
 
     // Get the static validators (The validators set via useForm({...}))
     const newValidators = formControl.validators.filter(
-      (validator) => !validators.find((v) => v === validator)
+      (validator) => !currentValidators.find((v) => v === validator)
     );
 
     // Add the new validators to it
     newValidators.push(...updatedValidators);
+    currentValidators = updatedValidators;
 
     formControl.validators = newValidators;
     formControl.validate();

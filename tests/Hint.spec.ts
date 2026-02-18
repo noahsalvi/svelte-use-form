@@ -9,8 +9,8 @@ test("Hint.svelte", async ({ page }) => {
   await expect(requiredHint).not.toBeVisible();
   await expect(emailHint).not.toBeVisible();
 
-  await input.focus();
-  await input.blur();
+  await input.click();
+  await input.press("Tab");
   await expect(requiredHint).toBeVisible();
 
   await input.type("max");
