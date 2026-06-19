@@ -176,19 +176,32 @@ export function useForm<
 
       // If node gets added
       for (const node of mutation.addedNodes) {
-        if (!(isFormControlElement(node) && !isIgnoredElement(node))) continue;
-        const initialFormControlProperty = properties[node.name];
-        if (!state[node.name] && initialFormControlProperty) {
-          state._addControl(
-            node.name,
-            initialFormControlProperty.initial,
-            initialFormControlProperty.validators,
-            [], // The setup function will add this node to the form control
-            initialFormControlProperty.errorMap
-          );
+        if (!(node instanceof HTMLElement)) continue;
+
+        let elements: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[] = [];
+        if (isFormControlElement(node)) {
+          elements = [node];
+        } else {
+          elements = getAllFormControlElements(node);
         }
-        if (isTextElement(node)) setupTextElements([node]);
-        else if (node instanceof HTMLSelectElement) setupSelectElements([node]);
+
+        for (const element of elements) {
+          if (isIgnoredElement(element)) continue;
+
+          const initialFormControlProperty = properties[element.name];
+          if (!state[element.name] && initialFormControlProperty) {
+            state._addControl(
+              element.name,
+              initialFormControlProperty.initial,
+              initialFormControlProperty.validators,
+              [], // The setup function will add this node to the form control
+              initialFormControlProperty.errorMap,
+            );
+          }
+          if (isTextElement(element)) setupTextElements([element]);
+          else if (element instanceof HTMLSelectElement)
+            setupSelectElements([element]);
+        }
       }
 
       // If node gets removed
