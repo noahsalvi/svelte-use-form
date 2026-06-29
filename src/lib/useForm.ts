@@ -213,12 +213,23 @@ export function useForm<
           ? [node]
           : getAllFormControlElements(node);
 
-        elements.forEach((element) => {
-          delete state[element.name];
+        // Remove element from its control, keeping the control alive if other elements
+        // with the same name still exist in the DOM (e.g. sibling radio buttons).
+        // Delete the control only when no elements remain.
+        for (const element of elements) {
+          const formControl = state[element.name];
+          if (formControl) {
+            formControl.elements = formControl.elements.filter(
+              (e) => e !== element,
+            );
+            if (formControl.elements.length === 0) {
+              delete state[element.name];
+            }
+          }
           eventListeners = eventListeners.filter(
-            (eventListener) => eventListener.node !== element
+            (eventListener) => eventListener.node !== element,
           );
-        });
+        }
       }
     }
 
